@@ -1,7 +1,82 @@
 {
+  "workbench.iconTheme": "a-file-icon-vscode",
+  "workbench.editor.enablePreview": true,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "packaged.json": ".browserslistrc, .dockerignore, .editorconfig, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .nvmrc, .prettierignore, .prettierrc, .prettierrc.*, README.md, babel.config.json, cypress.json, jest.config.ts, jest.preset.js, nx.json, package.json, package-lock.json, workspace.json, yarn.lock, vercel.json, netlify.toml, pnpm-lock.yaml, pnpm-workspace.yaml, README.md, components.json",
+    ".env": ".env*",
+    "tsconfig.json": "tsconfig.*.json, webpack.config.js",
+    "nx.json": ", package.json, package-lock.json, workspace.json, yarn.lock, pnpm-lock.yaml, components.json",
+    ".eslintrc.json": ".editorconfig, .eslintignore, .eslintrc.*, .prettierignore, .prettierrc, .prettierrc.*, .git*",
+    "jest.config.ts": "jest*",
+    "Dockerfile": "Dockerfile, .dockerignore, docker-compose*"
+  },
+  "editor.wordWrap": "on",
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.autoClosingBrackets": "always",
+  "editor.autoClosingComments": "always",
+  "editor.autoClosingQuotes": "always",
+  "editor.autoSurround": "languageDefined",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": false,
   "eslint.workingDirectories": [
     {
       "mode": "auto"
+    }
+  ],
+  "a-file-icon-vscode.folderTheme": "specific",
+  "a-file-icon-vscode.opacity": 1,
+  "editor.cursorBlinking": "expand",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.cursorStyle": "line",
+  "better-comments.tags": [
+    {
+      "tag": "BUG:",
+      "color": "#FFFFFF",
+      "strikethrough": false,
+      "backgroundColor": "#FF6600"
+    },
+    {
+      "tag": "FIX:",
+      "color": "#FFFFFF",
+      "strikethrough": false,
+      "backgroundColor": "#FF2D00"
+    },
+    {
+      "tag": "TODO:",
+      "color": "#FFFFFF",
+      "strikethrough": false,
+      "backgroundColor": "#9333EA"
+    },
+    {
+      "tag": "HACK:",
+      "color": "#FFFFFF",
+      "strikethrough": false,
+      "backgroundColor": "#C026D3"
+    },
+    {
+      "tag": "NOTE:",
+      "color": "#FFFFFF",
+      "strikethrough": false,
+      "backgroundColor": "#2563EB"
+    },
+    {
+      "tag": "INFO:",
+      "color": "#FFFFFF",
+      "strikethrough": false,
+      "backgroundColor": "#0EA5E9"
+    },
+    {
+      "tag": "IDEA:",
+      "color": "#FFFFFF",
+      "strikethrough": false,
+      "backgroundColor": "#028482"
     }
   ]
 }
