@@ -3,18 +3,19 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, Logger } from "@nestjs/common";
 
 import {
-  ORGANIZATION_SCHEMA_NAME,
-  OrganizationDocument,
-} from "@/app/organizations/entities/organization.entity";
+  EMAIL_APP_SCHEMA_NAME,
+  EmailAppDocument,
+  TYPES as EMAIL_APP_TYPES,
+} from "@/app/email/apps/entities/app.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 
 @Injectable()
-export class OrganizationsService {
-  private logger: Logger = new Logger(OrganizationsService.name);
+export class EmailAppsService {
+  private logger: Logger = new Logger(EmailAppsService.name);
 
   constructor(
-    @InjectModel(ORGANIZATION_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.EMAIL)
-    private readonly organizationModel: Model<OrganizationDocument>,
+    @InjectModel(EMAIL_APP_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.EMAIL)
+    private readonly emailAppModel: Model<EmailAppDocument>,
   ) {
     try {
       this.logger.log({
@@ -32,12 +33,13 @@ export class OrganizationsService {
 
   // POST
   async insertOne(doc: {
-    domain: string;
     clientId: string;
+    organizationId: string;
     name: string;
     description: string;
+    type: EMAIL_APP_TYPES;
     metadata: { [field: string]: unknown };
-  }): Promise<OrganizationDocument> {
+  }): Promise<EmailAppDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -47,8 +49,8 @@ export class OrganizationsService {
         },
       });
 
-      const organizationDocument: OrganizationDocument =
-        await this.organizationModel.insertOne(doc, {
+      const emailAppDocument: EmailAppDocument =
+        await this.emailAppModel.insertOne(doc, {
           validateBeforeSave: true,
         });
 
@@ -57,7 +59,7 @@ export class OrganizationsService {
         method: this.insertOne.name,
         metadata: {
           ...doc,
-          documentKeys: Object.keys(organizationDocument),
+          documentKeys: Object.keys(emailAppDocument),
         },
       });
 
@@ -66,11 +68,11 @@ export class OrganizationsService {
         method: this.insertOne.name,
         metadata: {
           ...doc,
-          organizationDocument,
+          emailAppDocument,
         },
       });
 
-      return organizationDocument;
+      return emailAppDocument;
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -81,7 +83,7 @@ export class OrganizationsService {
         },
       });
 
-      throw new Error("Failed to insert organization document");
+      throw new Error("Failed to insert email app document");
     }
   }
 
@@ -94,7 +96,7 @@ export class OrganizationsService {
     filter: { [field: string]: unknown };
     projection: { [field: string]: number };
     conditions?: { [field: string]: unknown };
-  }): Promise<OrganizationDocument> {
+  }): Promise<EmailAppDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -106,13 +108,13 @@ export class OrganizationsService {
         },
       });
 
-      const organizationDocument: OrganizationDocument | null | undefined =
-        await this.organizationModel
+      const emailAppDocument: EmailAppDocument | null | undefined =
+        await this.emailAppModel
           .findOne(filter, projection)
           .where(conditions ?? {});
 
-      if (!organizationDocument) {
-        throw new Error("Organization Document not found");
+      if (!emailAppDocument) {
+        throw new Error("Email App Document not found");
       }
 
       this.logger.log({
@@ -122,7 +124,7 @@ export class OrganizationsService {
           filter,
           projection,
           conditions,
-          documentKeys: Object.keys(organizationDocument),
+          documentKeys: Object.keys(emailAppDocument),
         },
       });
 
@@ -133,11 +135,11 @@ export class OrganizationsService {
           filter,
           projection,
           conditions,
-          organizationDocument,
+          emailAppDocument,
         },
       });
 
-      return organizationDocument;
+      return emailAppDocument;
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -150,7 +152,7 @@ export class OrganizationsService {
         },
       });
 
-      throw new Error("Failed to find organization document by filter");
+      throw new Error("Failed to find email app document by filter");
     }
   }
 
@@ -161,7 +163,7 @@ export class OrganizationsService {
   }: {
     conditions: { [field: string]: unknown };
     update: { [field: string]: unknown };
-  }): Promise<OrganizationDocument> {
+  }): Promise<EmailAppDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -172,14 +174,14 @@ export class OrganizationsService {
         },
       });
 
-      const organizationDocument: OrganizationDocument | null | undefined =
-        await this.organizationModel.findOneAndUpdate(conditions, update, {
+      const emailAppDocument: EmailAppDocument | null | undefined =
+        await this.emailAppModel.findOneAndUpdate(conditions, update, {
           timestamps: true,
           new: true,
         });
 
-      if (!organizationDocument) {
-        throw new Error("Organization Document not found");
+      if (!emailAppDocument) {
+        throw new Error("Email App Document not found");
       }
 
       this.logger.log({
@@ -198,11 +200,11 @@ export class OrganizationsService {
         metadata: {
           conditions,
           update,
-          organizationDocument,
+          emailAppDocument,
         },
       });
 
-      return organizationDocument;
+      return emailAppDocument;
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -214,7 +216,7 @@ export class OrganizationsService {
         },
       });
 
-      throw new Error("Failed to update organization document by conditions");
+      throw new Error("Failed to update email app document by conditions");
     }
   }
 
@@ -225,7 +227,7 @@ export class OrganizationsService {
   }: {
     filter: { [field: string]: unknown };
     replacement: { [field: string]: unknown };
-  }): Promise<OrganizationDocument> {
+  }): Promise<EmailAppDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -236,14 +238,14 @@ export class OrganizationsService {
         },
       });
 
-      const organizationDocument: OrganizationDocument | null | undefined =
-        await this.organizationModel.findOneAndReplace(filter, replacement, {
+      const emailAppDocument: EmailAppDocument | null | undefined =
+        await this.emailAppModel.findOneAndReplace(filter, replacement, {
           timestamps: true,
           new: true,
         });
 
-      if (!organizationDocument) {
-        throw new Error("Organization Document not found");
+      if (!emailAppDocument) {
+        throw new Error("Email App Document not found");
       }
 
       this.logger.log({
@@ -262,11 +264,11 @@ export class OrganizationsService {
         metadata: {
           filter,
           replacement,
-          organizationDocument,
+          emailAppDocument,
         },
       });
 
-      return organizationDocument;
+      return emailAppDocument;
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -278,7 +280,7 @@ export class OrganizationsService {
         },
       });
 
-      throw new Error("Failed to replacement organization document by filter");
+      throw new Error("Failed to replacement email app document by filter");
     }
   }
 
@@ -287,7 +289,7 @@ export class OrganizationsService {
     conditions,
   }: {
     conditions: { [field: string]: unknown };
-  }): Promise<OrganizationDocument> {
+  }): Promise<EmailAppDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -297,11 +299,11 @@ export class OrganizationsService {
         },
       });
 
-      const organizationDocument: OrganizationDocument | null | undefined =
-        await this.organizationModel.findOneAndDelete(conditions);
+      const emailAppDocument: EmailAppDocument | null | undefined =
+        await this.emailAppModel.findOneAndDelete(conditions);
 
-      if (!organizationDocument) {
-        throw new Error("Organization Document not found");
+      if (!emailAppDocument) {
+        throw new Error("Email App Document not found");
       }
 
       this.logger.log({
@@ -309,7 +311,7 @@ export class OrganizationsService {
         method: this.findOneAndDelete.name,
         metadata: {
           conditions,
-          documentKeys: Object.keys(organizationDocument),
+          documentKeys: Object.keys(emailAppDocument),
         },
       });
 
@@ -318,11 +320,11 @@ export class OrganizationsService {
         method: this.findOneAndDelete.name,
         metadata: {
           conditions,
-          organizationDocument,
+          emailAppDocument,
         },
       });
 
-      return organizationDocument;
+      return emailAppDocument;
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -333,7 +335,7 @@ export class OrganizationsService {
         },
       });
 
-      throw new Error("Failed to delete organization document by conditions");
+      throw new Error("Failed to delete email app document by conditions");
     }
   }
 }

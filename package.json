@@ -1,5 +1,5 @@
 {
-  "name": "full-auth",
+  "name": "no-auth",
   "private": true,
   "scripts": {
     "build": "turbo build",
@@ -8,10 +8,16 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.6",
+    "@turbo/gen": "^2.4.1",
+    "@types/node": "^22.13.1",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "@workspace/ui": "workspace:*",
     "prettier": "^3.5.0",
+    "tailwindcss": "^4.0.6",
     "turbo": "^2.4.1",
     "typescript": "5.7.3"
   },
@@ -20,17 +26,11 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.0.6",
-    "@turbo/gen": "^2.4.1",
-    "@types/node": "^22.13.1",
-    "@types/react": "19.0.8",
-    "@types/react-dom": "19.0.3",
     "lucide-react": "0.475.0",
     "next": "^15.1.6",
     "next-themes": "^0.4.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwindcss": "^4.0.6",
     "zod": "^3.24.1"
   }
 }

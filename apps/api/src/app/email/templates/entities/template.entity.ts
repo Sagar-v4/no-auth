@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
-import { Client } from "@/app/clients/entities/client.entity";
-import { Organization } from "@/app/organizations/entities/organization.entity";
+import { randomUUID } from "crypto";
+
+import { CLIENT_SCHEMA_NAME } from "@/app/clients/entities/client.entity";
+import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
 
 export enum STATUS {
   PERSONAL = "Personal",
@@ -9,29 +11,32 @@ export enum STATUS {
   LIVE = "Live",
 }
 
-export enum TYPE {
-  PERSONAL = "Personal",
-  ORGANIZATIONAL = "Organizational",
-  LIVE = "Live",
+export enum TYPES {
+  OTP = "OTP",
 }
 
 @Schema({
   timestamps: true,
 })
-export class Template {
-  @Prop({ type: String, required: true, unique: true })
+export class EmailTemplate {
+  @Prop({
+    type: Types.UUID,
+    required: true,
+    unique: true,
+    default: () => randomUUID(),
+  })
   uuid!: string;
 
   @Prop({
     type: Types.ObjectId,
-    ref: Client.name,
+    ref: CLIENT_SCHEMA_NAME,
     required: true,
   })
   clientId!: string;
 
   @Prop({
     type: Types.ObjectId,
-    ref: Organization.name,
+    ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
   })
   organizationId!: string;
@@ -49,7 +54,7 @@ export class Template {
   })
   description!: string;
 
-  @Prop({ type: String, enum: TYPE, required: true })
+  @Prop({ type: String, enum: TYPES, required: true, default: TYPES.OTP })
   type!: string;
 
   @Prop({
@@ -61,11 +66,11 @@ export class Template {
   status!: string;
 
   @Prop({ type: Object })
-  metadata: object | undefined;
+  metadata?: object;
 }
 
-export type TemplateDocument = HydratedDocument<Template>;
+export const EMAIL_TEMPLATE_SCHEMA_NAME: string = EmailTemplate.name;
 
-export const TEMPLATE_SCHEMA_NAME: string = Template.name;
+export const EmailTemplateSchema = SchemaFactory.createForClass(EmailTemplate);
 
-export const TemplateSchema = SchemaFactory.createForClass(Template);
+export type EmailTemplateDocument = HydratedDocument<EmailTemplate>;

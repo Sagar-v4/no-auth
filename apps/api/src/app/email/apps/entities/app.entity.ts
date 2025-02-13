@@ -1,34 +1,41 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
-import { Client } from "@/app/clients/entities/client.entity";
-import { Organization } from "@/app/organizations/entities/organization.entity";
+import { randomUUID } from "crypto";
+
+import { CLIENT_SCHEMA_NAME } from "@/app/clients/entities/client.entity";
+import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
 
 export enum STATUS {
   ACTIVE = "Active",
   BLOCKED = "Blocked",
 }
 
-export enum TYPE {
-  SMTP = "SMTP",
+export enum TYPES {
+  NODE_MAILER = "Node Mailer",
 }
 
 @Schema({
   timestamps: true,
 })
-export class Agent {
-  @Prop({ type: String, required: true, unique: true })
+export class EmailApp {
+  @Prop({
+    type: Types.UUID,
+    required: true,
+    unique: true,
+    default: () => randomUUID(),
+  })
   uuid!: string;
 
   @Prop({
     type: Types.ObjectId,
-    ref: Client.name,
+    ref: CLIENT_SCHEMA_NAME,
     required: true,
   })
   clientId!: string;
 
   @Prop({
     type: Types.ObjectId,
-    ref: Organization.name,
+    ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
   })
   organizationId!: string;
@@ -46,7 +53,7 @@ export class Agent {
   })
   description!: string;
 
-  @Prop({ type: String, enum: TYPE, required: true })
+  @Prop({ type: String, enum: TYPES, required: true })
   type!: string;
 
   @Prop({
@@ -58,11 +65,11 @@ export class Agent {
   status!: string;
 
   @Prop({ type: Object })
-  metadata: object | undefined;
+  metadata?: object;
 }
 
-export type AgentDocument = HydratedDocument<Agent>;
+export const EMAIL_APP_SCHEMA_NAME: string = EmailApp.name;
 
-export const AGENT_SCHEMA_NAME: string = Agent.name;
+export const EmailAppSchema = SchemaFactory.createForClass(EmailApp);
 
-export const AgentSchema = SchemaFactory.createForClass(Agent);
+export type EmailAppDocument = HydratedDocument<EmailApp>;

@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
-import { Client } from "@/app/clients/entities/client.entity";
-import { Organization } from "@/app/organizations/entities/organization.entity";
+import { randomUUID } from "crypto";
+
+import { CLIENT_SCHEMA_NAME } from "@/app/clients/entities/client.entity";
+import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
 
 export enum STATUS {
   ACTIVE = "Active",
@@ -12,19 +14,24 @@ export enum STATUS {
   timestamps: true,
 })
 export class Key {
-  @Prop({ type: String, required: true, unique: true })
+  @Prop({
+    type: Types.UUID,
+    required: true,
+    unique: true,
+    default: () => randomUUID(),
+  })
   key!: string;
 
   @Prop({
     type: Types.ObjectId,
-    ref: Client.name,
+    ref: CLIENT_SCHEMA_NAME,
     required: true,
   })
   clientId!: string;
 
   @Prop({
     type: Types.ObjectId,
-    ref: Organization.name,
+    ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
   })
   organizationId!: string;
@@ -45,11 +52,11 @@ export class Key {
   status!: string;
 
   @Prop({ type: Object })
-  metadata: object | undefined;
+  metadata?: object;
 }
-
-export type KeyDocument = HydratedDocument<Key>;
 
 export const KEY_SCHEMA_NAME: string = Key.name;
 
 export const KeySchema = SchemaFactory.createForClass(Key);
+
+export type KeyDocument = HydratedDocument<Key>;

@@ -12,6 +12,7 @@ export interface MongooseDbSchema {
 export enum MONGOOSE_DB_CONNECTION {
   MAIN = "MAIN_CONN",
   FORM = "FROM_CONN",
+  EMAIL = "EMAIL_CONN",
 }
 
 export const MONGOOSE_DB_SCHEMA = {

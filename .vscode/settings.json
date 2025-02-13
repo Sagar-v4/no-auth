@@ -78,5 +78,6 @@
       "strikethrough": false,
       "backgroundColor": "#028482"
     }
-  ]
+  ],
+  "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose"
 }
