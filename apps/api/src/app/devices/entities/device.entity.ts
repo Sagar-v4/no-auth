@@ -21,11 +21,6 @@ export class Device {
   })
   uuid!: string;
 
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: SESSION_SCHEMA_NAME }],
-  })
-  sessionIds?: string[];
-
   @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
   status!: string;
 

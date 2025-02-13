@@ -1,7 +1,6 @@
 import * as nodemailer from "nodemailer";
 import { Injectable, Logger } from "@nestjs/common";
-import { EmailTemplatesService } from "@/app/email/templates/templates.service";
-import { EmailAppsService } from "@/app/email/apps/apps.service";
+
 @Injectable()
 export class NodeMailer {
   private html!: string;
@@ -163,7 +162,7 @@ export class NodeMailer {
       const verification: true = await this.transporter.verify();
 
       if (!verification) {
-        throw new Error("Failed to verify node mailer configuration");
+        throw new Error("Failed to verify configuration");
       }
 
       this.logger.log({

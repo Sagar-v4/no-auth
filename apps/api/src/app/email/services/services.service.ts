@@ -3,19 +3,10 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, Logger } from "@nestjs/common";
 
 import {
-  STATUS as EMAIL_APP_STATUS,
-  TYPES as EMAIL_APP_TYPES,
-} from "@/app/email/apps/entities/app.entity";
-import {
   EMAIL_SERVICE_SCHEMA_NAME,
   EmailServiceDocument,
 } from "@/app/email/services/entities/service.entity";
-import { NodeMailer } from "@/app/email/services/providers/node-mailer.service";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
-import { EmailAppsService } from "@/app/email/apps/apps.service";
-import { EmailTemplatesService } from "@/app/email/templates/templates.service";
-import { OrganizationsService } from "@/app/organizations/organizations.service";
-import { STATUS as ORGANIZATION_STATUS } from "@/app/organizations/entities/organization.entity";
 
 @Injectable()
 export class EmailServicesService {
@@ -24,9 +15,6 @@ export class EmailServicesService {
   constructor(
     @InjectModel(EMAIL_SERVICE_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.EMAIL)
     private readonly emailServiceModel: Model<EmailServiceDocument>,
-    private readonly emailAppsService: EmailAppsService,
-    private readonly emailTemplatesService: EmailTemplatesService,
-    private readonly organizationsService: OrganizationsService,
   ) {
     try {
       this.logger.log({
@@ -233,122 +221,122 @@ export class EmailServicesService {
     }
   }
 
-  async sendEmail(email: {
-    to: string | string[];
-    cc?: string | string[];
-    bcc?: string | string[];
-    from?: string;
-    sender?: string;
-    subject: string;
-    otp?: string;
-    formId: string;
-    emailAppId: string;
-    organizationId: string;
-  }): Promise<string> {
+  // PUT
+  async findOneAndReplace({
+    filter,
+    replacement,
+  }: {
+    filter: { [field: string]: unknown };
+    replacement: { [field: string]: unknown };
+  }): Promise<EmailServiceDocument> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.sendEmail.name,
+        method: this.findOneAndReplace.name,
         metadata: {
-          ...email,
+          filter,
+          replacement,
         },
       });
-
-      const { otp, formId, emailAppId, organizationId, ...metadata } = email;
-      const emailApp: any = await this.emailAppsService.findOne({
-        filter: { _id: emailAppId, organizationId: organizationId },
-        projection: { type: 1, metadata: 1 },
-        conditions: { status: EMAIL_APP_STATUS.ACTIVE },
-      });
-      if (!emailApp) {
-        throw new Error("Email App not found or not active");
-      }
-
-      const organization: any = await this.organizationsService.findOne({
-        filter: { _id: organizationId },
-        projection: { domain: 1 },
-        conditions: { status: ORGANIZATION_STATUS.ACTIVE },
-      });
-      if (!organization) {
-        throw new Error("Organization not found or not active");
-      }
-
-      let finalOTP: string | undefined = otp;
-      if (!finalOTP) {
-        finalOTP = "123456";
-      }
 
       const emailServiceDocument: EmailServiceDocument | null | undefined =
-        await this.insertOne({
-          formId,
-          emailAppId,
-          organizationId,
-          metadata: { otp: finalOTP, ...metadata },
+        await this.emailServiceModel.findOneAndReplace(filter, replacement, {
+          timestamps: true,
+          new: true,
         });
 
-      let emailServiceProvider: NodeMailer | undefined;
-      switch (emailApp.type) {
-        case EMAIL_APP_TYPES.NODE_MAILER:
-          emailServiceProvider = new NodeMailer();
-          break;
-        default:
-          throw new Error("Unsupported email service type");
+      if (!emailServiceDocument) {
+        throw new Error("Email Service Document not found");
       }
-
-      const { html, text } = this.emailTemplatesService.generateTemplateOTP({
-        otp: finalOTP,
-      });
-
-      emailServiceProvider.createTemplate({ text, html });
-      emailServiceProvider.createTransporter({
-        appMetadata: emailApp.metadata,
-        messageId: emailServiceDocument.uuid,
-        ...metadata,
-      });
-      await emailServiceProvider.verifyConfiguration();
-
-      const emailSendResult = await emailServiceProvider.sendEmail();
-
-      await this.findOneAndUpdate({
-        conditions: { _id: emailServiceDocument._id },
-        update: {
-          metadata: {
-            ...emailServiceDocument.metadata,
-            result: emailSendResult,
-          },
-        },
-      });
 
       this.logger.log({
         action: "Exit",
-        method: this.sendEmail.name,
+        method: this.findOneAndReplace.name,
         metadata: {
-          ...email,
-          uuid: emailServiceDocument.uuid,
+          filter,
+          replacement,
+          replacedKeys: Object.keys(replacement),
         },
       });
 
       this.logger.debug({
         action: "Exit",
-        method: this.sendEmail.name,
+        method: this.findOneAndReplace.name,
         metadata: {
-          ...email,
-          emailServiceDocument: emailServiceDocument,
+          filter,
+          replacement,
+          emailServiceDocument,
         },
       });
 
-      return emailServiceDocument.uuid;
+      return emailServiceDocument;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.sendEmail.name,
+        method: this.findOneAndReplace.name,
         error: error,
         metadata: {
-          ...email,
+          filter,
+          replacement,
         },
       });
 
-      throw new Error("Failed to send email");
+      throw new Error("Failed to replacement email service document by filter");
+    }
+  }
+
+  // DELETE
+  async findOneAndDelete({
+    conditions,
+  }: {
+    conditions: { [field: string]: unknown };
+  }): Promise<EmailServiceDocument> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.findOneAndDelete.name,
+        metadata: {
+          conditions,
+        },
+      });
+
+      const emailServiceDocument: EmailServiceDocument | null | undefined =
+        await this.emailServiceModel.findOneAndDelete(conditions);
+
+      if (!emailServiceDocument) {
+        throw new Error("Email Service Document not found");
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.findOneAndDelete.name,
+        metadata: {
+          conditions,
+          documentKeys: Object.keys(emailServiceDocument),
+        },
+      });
+
+      this.logger.debug({
+        action: "Exit",
+        method: this.findOneAndDelete.name,
+        metadata: {
+          conditions,
+          emailServiceDocument,
+        },
+      });
+
+      return emailServiceDocument;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.findOneAndDelete.name,
+        error: error,
+        metadata: {
+          conditions,
+        },
+      });
+
+      throw new Error("Failed to delete email service document by conditions");
     }
   }
 }

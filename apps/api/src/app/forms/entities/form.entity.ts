@@ -49,7 +49,7 @@ export class Form {
   emailAppId!: string;
 
   @Prop({ type: String, enum: TYPES, required: true, default: TYPES.OTP })
-  type!: string;
+  type?: string;
 
   @Prop({ type: String, required: true })
   title!: string;
@@ -64,7 +64,7 @@ export class Form {
   description?: string;
 
   @Prop({ type: Number, required: true, default: 0 })
-  expiry!: number; // Ex: new Date().getTime()
+  expiry?: number; // Ex: new Date().getTime()
 
   @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
   status!: string;

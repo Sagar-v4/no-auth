@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+
 import { EmailTemplatesService } from "@/app/email/templates/templates.service";
 import { EmailTemplatesController } from "@/app/email/templates/templates.controller";
 

@@ -1,10 +1,10 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
 import { randomUUID } from "crypto";
+import { HydratedDocument, Types } from "mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-// import { Client } from "@/app/clients/entities/client.entity";
-// import { Clientele } from "@/app/clienteles/entities/clientele.entity";
 import { DEVICE_SCHEMA_NAME } from "@/app/devices/entities/device.entity";
+import { CLIENT_SCHEMA_NAME } from "@/app/clients/entities/client.entity";
+import { CLIENTELE_SCHEMA_NAME } from "@/app/clienteles/entities/clientele.entity";
 
 export enum STATUS {
   ACTIVE = "Active",
@@ -23,19 +23,19 @@ export class Session {
   })
   uuid!: string;
 
-  // @Prop({
-  //   type: Types.ObjectId,
-  //   // ref: "userType",
-  //   required: true,
-  // })
-  // userId!: string;
+  @Prop({
+    type: Types.ObjectId,
+    ref: "userType",
+    required: true,
+  })
+  userId!: string;
 
-  // @Prop({
-  //   type: String,
-  //   required: true,
-  //   enum: [Client.name, Clientele.name],
-  // })
-  // userType!: string;
+  @Prop({
+    type: String,
+    required: true,
+    enum: [CLIENT_SCHEMA_NAME, CLIENTELE_SCHEMA_NAME],
+  })
+  userType!: string;
 
   @Prop({
     type: Types.ObjectId,

@@ -10,9 +10,14 @@ export interface MongooseDbSchema {
 }
 
 export enum MONGOOSE_DB_CONNECTION {
-  MAIN = "MAIN_CONN",
-  FORM = "FROM_CONN",
-  EMAIL = "EMAIL_CONN",
+  KEY = "KEY",
+  FORM = "FORM",
+  EMAIL = "EMAIL",
+  CLIENT = "CLIENT",
+  DEVICE = "DEVICE",
+  SESSIOIN = "SESSIOIN",
+  CLIENTELE = "CLIENTELE",
+  ORGANIZATION = "ORGANIZATION",
 }
 
 export const MONGOOSE_DB_SCHEMA = {

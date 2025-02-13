@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
-import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
-import { EmailAppsService } from "@/app/email/apps/apps.service";
-import { EmailAppsController } from "@/app/email/apps/apps.controller";
 import {
   EMAIL_APP_SCHEMA_NAME,
   EmailAppSchema,
 } from "@/app/email/apps/entities/app.entity";
+import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
+import { EmailAppsService } from "@/app/email/apps/apps.service";
+import { EmailAppsController } from "@/app/email/apps/apps.controller";
 
 @Module({
   imports: [

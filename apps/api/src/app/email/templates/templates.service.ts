@@ -1,4 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
+
 import { otp as blueprintOTP } from "@/app/email/templates/blueprints/otp";
 
 @Injectable()

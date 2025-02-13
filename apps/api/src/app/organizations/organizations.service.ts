@@ -13,7 +13,7 @@ export class OrganizationsService {
   private logger: Logger = new Logger(OrganizationsService.name);
 
   constructor(
-    @InjectModel(ORGANIZATION_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.EMAIL)
+    @InjectModel(ORGANIZATION_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.ORGANIZATION)
     private readonly organizationModel: Model<OrganizationDocument>,
   ) {
     try {

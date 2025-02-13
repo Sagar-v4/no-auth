@@ -1,4 +1,3 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import {
   HydratedDocument,
   IndexDefinition,
@@ -6,10 +5,11 @@ import {
   Types,
 } from "mongoose";
 import { randomUUID } from "crypto";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
+import { FORM_SCHEMA_NAME } from "@/app/forms/entities/form.entity";
 import { EMAIL_APP_SCHEMA_NAME } from "@/app/email/apps/entities/app.entity";
 import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
-import { FORM_SCHEMA_NAME } from "@/app/forms/entities/form.entity";
 
 @Schema({
   timestamps: true,
