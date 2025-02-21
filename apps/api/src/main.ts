@@ -7,10 +7,10 @@ async function bootstrap() {
   const logger: Logger = new Logger("Main");
 
   const app: INestApplication<any> = await NestFactory.create(AppModule);
-  const configService: EnvService = app.get(EnvService);
 
-  const PORT: number = configService.get("PORT");
-  const NODE_ENV: string = configService.get("NODE_ENV");
+  const envService: EnvService = app.get(EnvService);
+  const PORT: number = envService.get("PORT");
+  const NODE_ENV: string = envService.get("NODE_ENV");
   await app.listen(PORT);
 
   logger.debug(

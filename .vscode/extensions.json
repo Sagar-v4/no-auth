@@ -1,16 +1,16 @@
 {
-    "recommendations": [
-        "aaron-bond.better-comments",
-        "usernamehw.errorlens",
-        "dbaeumer.vscode-eslint",
-        "wix.vscode-import-cost",
-        "eamodio.gitlens",
-        "codeandstuff.package-json-upgrade",
-        "esbenp.prettier-vscode",
-        "yoavbls.pretty-ts-errors",
-        "bradlc.vscode-tailwindcss",
-        "stivo.tailwind-fold",
-        "atommaterial.a-file-icon-vscode",
-        "csstools.postcss"
-    ]
+  "recommendations": [
+    "aaron-bond.better-comments",
+    "usernamehw.errorlens",
+    "dbaeumer.vscode-eslint",
+    "wix.vscode-import-cost",
+    "eamodio.gitlens",
+    "codeandstuff.package-json-upgrade",
+    "esbenp.prettier-vscode",
+    "yoavbls.pretty-ts-errors",
+    "bradlc.vscode-tailwindcss",
+    "stivo.tailwind-fold",
+    "atommaterial.a-file-icon-vscode",
+    "csstools.postcss"
+  ]
 }

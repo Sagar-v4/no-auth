@@ -1,0 +1,4 @@
+{
+  "pattern": "^(main|master|develop|release|test)$|^(feat|(bug|hot)?fix|refactor|test|chore|revert|docs)/[a-zA-Z0-9]+.+$|^sprint-.+$",
+  "errorMsg": "Branch name is Invalid"
+}

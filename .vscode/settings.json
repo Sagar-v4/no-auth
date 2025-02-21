@@ -1,7 +1,7 @@
 {
   "workbench.iconTheme": "a-file-icon-vscode",
   "workbench.editor.enablePreview": true,
-  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.enabled": false,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
     "packaged.json": ".browserslistrc, .dockerignore, .editorconfig, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .nvmrc, .prettierignore, .prettierrc, .prettierrc.*, README.md, babel.config.json, cypress.json, jest.config.ts, jest.preset.js, nx.json, package.json, package-lock.json, workspace.json, yarn.lock, vercel.json, netlify.toml, pnpm-lock.yaml, pnpm-workspace.yaml, README.md, components.json",
