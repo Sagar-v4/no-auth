@@ -7,6 +7,9 @@ settings:
 importers:
   .:
     dependencies:
+      "@trpc/server":
+        specifier: ^10.45.2
+        version: 10.45.2
       lucide-react:
         specifier: 0.475.0
         version: 0.475.0(react@19.0.0)
@@ -110,6 +113,9 @@ importers:
       mongoose:
         specifier: ^8.10.0
         version: 8.10.0(socks@2.8.4)
+      nestjs-trpc:
+        specifier: ^1.6.1
+        version: 1.6.1(@nestjs/common@11.0.9(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.9)(@trpc/server@10.45.2)(reflect-metadata@0.2.2)(rxjs@7.8.1)(zod@3.24.1)
       nodemailer:
         specifier: ^6.10.0
         version: 6.10.0
@@ -119,6 +125,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
+      trpc-panel:
+        specifier: ^1.3.4
+        version: 1.3.4(@trpc/server@10.45.2)(zod@3.24.1)
     devDependencies:
       "@nestjs/cli":
         specifier: ^11.0.2
@@ -2243,6 +2252,18 @@ packages:
         integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==,
       }
 
+  "@trpc/server@10.45.2":
+    resolution:
+      {
+        integrity: sha512-wOrSThNNE4HUnuhJG6PfDRp4L2009KDVxsd+2VYH8ro6o/7/jwYZ8Uu5j+VaW+mOmc8EHerHzGcdbGNQSAUPgg==,
+      }
+
+  "@ts-morph/common@0.23.0":
+    resolution:
+      {
+        integrity: sha512-m7Lllj9n/S6sOkCkRftpM7L24uvmfXQFedlW/4hENcuJH1HHm9u5EgxZb9uVjQSCGrbBWBkOGgcTxNg36r6ywA==,
+      }
+
   "@tsconfig/node10@1.0.11":
     resolution:
       {
@@ -3640,6 +3661,12 @@ packages:
         integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==,
       }
     engines: { iojs: ">= 1.0.0", node: ">= 0.12.0" }
+
+  code-block-writer@13.0.3:
+    resolution:
+      {
+        integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==,
+      }
 
   collect-v8-coverage@1.0.2:
     resolution:
@@ -5159,6 +5186,12 @@ packages:
         integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==,
       }
 
+  fuzzysort@2.0.4:
+    resolution:
+      {
+        integrity: sha512-Api1mJL+Ad7W7vnDZnWq5pGaXJjyencT+iKGia2PlHUcSsSzWwIQ3S1isiMpwpavjYtGd2FzhUIhnnhOULZgDw==,
+      }
+
   gensync@1.0.0-beta.2:
     resolution:
       {
@@ -5664,6 +5697,12 @@ packages:
         integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==,
       }
     deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+
+  inherits@2.0.3:
+    resolution:
+      {
+        integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==,
+      }
 
   inherits@2.0.4:
     resolution:
@@ -7228,6 +7267,14 @@ packages:
       }
     hasBin: true
 
+  mkdirp@3.0.1:
+    resolution:
+      {
+        integrity: sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==,
+      }
+    engines: { node: ">=10" }
+    hasBin: true
+
   mongodb-connection-string-url@3.0.2:
     resolution:
       {
@@ -7349,6 +7396,19 @@ packages:
       {
         integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==,
       }
+
+  nestjs-trpc@1.6.1:
+    resolution:
+      {
+        integrity: sha512-FZ0n1n9czPaZ5HHoDM7hlWsR1g3C79MhZ1Dg1xidehrl9Agk4F3XX71aLh8fgVD5sNR08B3d/xITaLP3PkOUWw==,
+      }
+    peerDependencies:
+      "@nestjs/common": ^9.3.8 || ^10.0.0
+      "@nestjs/core": ^9.3.8 || ^10.0.0
+      "@trpc/server": ^10.0.0
+      reflect-metadata: ^0.1.13 || ^0.2.0
+      rxjs: 7.8.1
+      zod: ^3.14.0
 
   netmask@2.0.2:
     resolution:
@@ -7786,6 +7846,12 @@ packages:
         integrity: sha512-qjS4s8rBOJa2Xm0jmxXiyh1+OFf6ekCWOvUaRgAQSktzlTbMotS0nmG9gyYAybCWBcuP4fsBeRCKNwGBnMe2OQ==,
       }
 
+  path-browserify@1.0.1:
+    resolution:
+      {
+        integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==,
+      }
+
   path-case@2.1.1:
     resolution:
       {
@@ -7860,6 +7926,12 @@ packages:
         integrity: sha512-5HviZNaZcfqP95rwpv+1HDgUamezbqdSYTyzjTvwtJSnIH+3vnbmWsItli8OFEndS984VT55M3jduxZbX351gg==,
       }
     engines: { node: ">=12" }
+
+  path@0.12.7:
+    resolution:
+      {
+        integrity: sha512-aXXC6s+1w7otVF9UletFkFcDsJeO7lSZBPUQhtb5O0xJe8LtYhj/GxldoL09bBj9+ZmE2hNoHqQSFMN5fikh4Q==,
+      }
 
   peek-readable@5.4.2:
     resolution:
@@ -7997,6 +8069,13 @@ packages:
         integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==,
       }
 
+  process@0.11.10:
+    resolution:
+      {
+        integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==,
+      }
+    engines: { node: ">= 0.6.0" }
+
   prompts@2.4.2:
     resolution:
       {
@@ -8040,6 +8119,12 @@ packages:
     resolution:
       {
         integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==,
+      }
+
+  punycode@1.4.1:
+    resolution:
+      {
+        integrity: sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==,
       }
 
   punycode@2.3.1:
@@ -9254,6 +9339,15 @@ packages:
       }
     hasBin: true
 
+  trpc-panel@1.3.4:
+    resolution:
+      {
+        integrity: sha512-u5/dCi/AAp2tpJcCL5ZCfrdJtHHu8hrtm2hzSBZCE7z9Tw6MB1rCcliSQvgMPIEXMQrgwXk4t4IedfWkxioKng==,
+      }
+    peerDependencies:
+      "@trpc/server": ^10.0.0
+      zod: ^3.19.1
+
   ts-api-utils@2.0.1:
     resolution:
       {
@@ -9299,6 +9393,12 @@ packages:
     peerDependencies:
       typescript: "*"
       webpack: ^5.0.0
+
+  ts-morph@22.0.0:
+    resolution:
+      {
+        integrity: sha512-M9MqFGZREyeb5fTl6gNHKZLqBQA0TjA1lea+CR48R8EBTDuWrNqW6ccC5QvjNR4s6wDumD3LTCjOFSp9iwlzaw==,
+      }
 
   ts-node@10.9.2:
     resolution:
@@ -9628,10 +9728,23 @@ packages:
       }
     engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
 
+  url@0.11.4:
+    resolution:
+      {
+        integrity: sha512-oCwdVC7mTuWiPyjLUz/COz5TLk6wgp0RCsN+wHZ2Ekneac9w8uuV0njcbbie2ME+Vs+d6duwmYuR3HgQXs1fOg==,
+      }
+    engines: { node: ">= 0.4" }
+
   util-deprecate@1.0.2:
     resolution:
       {
         integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==,
+      }
+
+  util@0.10.4:
+    resolution:
+      {
+        integrity: sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==,
       }
 
   utils-merge@1.0.1:
@@ -9947,6 +10060,14 @@ packages:
         integrity: sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==,
       }
     engines: { node: ">=18" }
+
+  zod-to-json-schema@3.24.2:
+    resolution:
+      {
+        integrity: sha512-pNUqrcSxuuB3/+jBbU8qKUbTbDqYUaG1vf5cXFjbhGgoUuA1amO/y4Q8lzfOhHU8HNPK6VFJ18lBDKj3OHyDsg==,
+      }
+    peerDependencies:
+      zod: ^3.24.1
 
   zod@3.24.1:
     resolution:
@@ -11296,6 +11417,15 @@ snapshots:
 
   "@tootallnate/quickjs-emscripten@0.23.0": {}
 
+  "@trpc/server@10.45.2": {}
+
+  "@ts-morph/common@0.23.0":
+    dependencies:
+      fast-glob: 3.3.3
+      minimatch: 9.0.5
+      mkdirp: 3.0.1
+      path-browserify: 1.0.1
+
   "@tsconfig/node10@1.0.11": {}
 
   "@tsconfig/node12@1.0.11": {}
@@ -12264,6 +12394,8 @@ snapshots:
   clsx@2.1.1: {}
 
   co@4.6.0: {}
+
+  code-block-writer@13.0.3: {}
 
   collect-v8-coverage@1.0.2: {}
 
@@ -13307,6 +13439,8 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
+  fuzzysort@2.0.4: {}
+
   gensync@1.0.0-beta.2: {}
 
   get-caller-file@2.0.5: {}
@@ -13620,6 +13754,8 @@ snapshots:
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
+
+  inherits@2.0.3: {}
 
   inherits@2.0.4: {}
 
@@ -14637,6 +14773,8 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
+  mkdirp@3.0.1: {}
+
   mongodb-connection-string-url@3.0.2:
     dependencies:
       "@types/whatwg-url": 11.0.5
@@ -14704,6 +14842,18 @@ snapshots:
   negotiator@1.0.0: {}
 
   neo-async@2.6.2: {}
+
+  nestjs-trpc@1.6.1(@nestjs/common@11.0.9(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.9)(@trpc/server@10.45.2)(reflect-metadata@0.2.2)(rxjs@7.8.1)(zod@3.24.1):
+    dependencies:
+      "@nestjs/common": 11.0.9(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      "@nestjs/core": 11.0.9(@nestjs/common@11.0.9(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@11.0.9)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      "@trpc/server": 10.45.2
+      lodash: 4.17.21
+      reflect-metadata: 0.2.2
+      rxjs: 7.8.1
+      ts-morph: 22.0.0
+      tslib: 2.8.1
+      zod: 3.24.1
 
   netmask@2.0.2: {}
 
@@ -15015,6 +15165,8 @@ snapshots:
       camel-case: 3.0.0
       upper-case-first: 1.1.2
 
+  path-browserify@1.0.1: {}
+
   path-case@2.1.1:
     dependencies:
       no-case: 2.3.2
@@ -15041,6 +15193,11 @@ snapshots:
   path-type@4.0.0: {}
 
   path-type@5.0.0: {}
+
+  path@0.12.7:
+    dependencies:
+      process: 0.11.10
+      util: 0.10.4
 
   peek-readable@5.4.2: {}
 
@@ -15100,6 +15257,8 @@ snapshots:
 
   process-nextick-args@2.0.1: {}
 
+  process@0.11.10: {}
+
   prompts@2.4.2:
     dependencies:
       kleur: 3.0.3
@@ -15134,6 +15293,8 @@ snapshots:
       - supports-color
 
   proxy-from-env@1.1.0: {}
+
+  punycode@1.4.1: {}
 
   punycode@2.3.1: {}
 
@@ -15920,6 +16081,15 @@ snapshots:
 
   tree-kill@1.2.2: {}
 
+  trpc-panel@1.3.4(@trpc/server@10.45.2)(zod@3.24.1):
+    dependencies:
+      "@trpc/server": 10.45.2
+      fuzzysort: 2.0.4
+      path: 0.12.7
+      url: 0.11.4
+      zod: 3.24.1
+      zod-to-json-schema: 3.24.2(zod@3.24.1)
+
   ts-api-utils@2.0.1(typescript@5.7.3):
     dependencies:
       typescript: 5.7.3
@@ -15952,6 +16122,11 @@ snapshots:
       source-map: 0.7.4
       typescript: 5.7.3
       webpack: 5.97.1(@swc/core@1.10.15(@swc/helpers@0.5.15))
+
+  ts-morph@22.0.0:
+    dependencies:
+      "@ts-morph/common": 0.23.0
+      code-block-writer: 13.0.3
 
   ts-node@10.9.2(@swc/core@1.10.15(@swc/helpers@0.5.15))(@types/node@22.13.1)(typescript@5.7.3):
     dependencies:
@@ -16158,7 +16333,16 @@ snapshots:
 
   url-join@5.0.0: {}
 
+  url@0.11.4:
+    dependencies:
+      punycode: 1.4.1
+      qs: 6.14.0
+
   util-deprecate@1.0.2: {}
+
+  util@0.10.4:
+    dependencies:
+      inherits: 2.0.3
 
   utils-merge@1.0.1: {}
 
@@ -16364,5 +16548,9 @@ snapshots:
   yoctocolors-cjs@2.1.2: {}
 
   yoctocolors@2.1.1: {}
+
+  zod-to-json-schema@3.24.2(zod@3.24.1):
+    dependencies:
+      zod: 3.24.1
 
   zod@3.24.1: {}
