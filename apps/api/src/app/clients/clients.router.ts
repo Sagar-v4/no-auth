@@ -15,7 +15,7 @@ import { LoggerMiddleware } from "@/trpc/middleware/logger.midleware";
 @Router({
   alias: "clients",
 })
-// @UseMiddlewares(LoggerMiddleware)
+@UseMiddlewares(LoggerMiddleware)
 export class ClientsRouter {
   private logger: Logger = new Logger(ClientsRouter.name);
 

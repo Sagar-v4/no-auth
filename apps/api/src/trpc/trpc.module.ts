@@ -8,8 +8,9 @@ import { LoggerMiddleware } from "@/trpc/middleware/logger.midleware";
 @Module({
   imports: [
     TRPCModule.forRoot({
-      // context: AppContext,
-      autoSchemaFile: "src/trpc/@generated",
+      context: AppContext,
+      autoSchemaFile: "../../packages/trpc/src/@generated",
+      basePath: "/api/trpc",
     }),
   ],
   controllers: [TrpcPanelController],

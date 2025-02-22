@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { FastifyReply, FastifyRequest } from "fastify";
 
 export interface IAppContext {
-  req: Request;
-  res: Response;
+  req: FastifyRequest;
+  res: FastifyReply;
 }
