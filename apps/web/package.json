@@ -15,7 +15,8 @@
     "@trpc/next": "11.0.0-rc.802",
     "@trpc/tanstack-react-query": "11.0.0-rc.802",
     "@workspace/trpc": "workspace:*",
-    "@workspace/ui": "workspace:*"
+    "@workspace/ui": "workspace:*",
+    "nuqs": "^2.4.0"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

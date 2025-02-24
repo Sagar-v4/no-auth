@@ -1,8 +1,15 @@
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "@workspace/ui/globals.css";
-import { ThemeProvider } from "@/components/providers";
+import { Provider as ThemeProvider } from "@workspace/ui/theme/provider.tsx";
 import { TrpcReactQueryProvider } from "@/trpc/provider";
+import { cn } from "@workspace/ui/lib/utils";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
+const META_THEME_COLORS = {
+  light: "#ffffff",
+  dark: "#09090b",
+};
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -21,12 +28,38 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
       <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
+        className={cn(
+          "bg-background overscroll-none font-sans antialiased",
+          fontSans.variable,
+          fontMono.variable,
+        )}
       >
-        <TrpcReactQueryProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-        </TrpcReactQueryProvider>
+        <NuqsAdapter>
+          <TrpcReactQueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </TrpcReactQueryProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );

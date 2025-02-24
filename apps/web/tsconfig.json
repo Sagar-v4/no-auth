@@ -3,11 +3,6 @@
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "paths": {
       "@/*": ["./src/*"]
     }
