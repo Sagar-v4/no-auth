@@ -46,6 +46,7 @@ import {
 } from "@workspace/ui/components/sidebar";
 import { NavTheme } from "./nav-theme";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // This is sample data.
 const data = {
@@ -150,6 +151,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pageName = usePathname().valueOf().split("/").at(-1);
+
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>
       <SidebarHeader>
@@ -210,7 +213,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               } else {
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pageName === item.url}
+                    >
                       <Link href={item.url}>
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>
@@ -263,7 +270,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               } else {
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pageName === item.url}
+                    >
                       <Link href={item.url}>
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>
@@ -314,7 +325,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               } else {
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pageName === item.url}
+                    >
                       <Link href={item.url}>
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>

@@ -8,7 +8,7 @@ import { Separator } from "@workspace/ui/components/separator";
 export function NavTheme() {
   return (
     <SidebarMenu>
-      <SidebarMenuItem className="flex p-2 group-data-[collapsible=icon]:p-0">
+      <SidebarMenuItem className="flex px-2 group-data-[collapsible=icon]:p-0">
         <ModeSwitcher className="group-data-[collapsible=icon]:size-8" />
         <Separator
           orientation="vertical"

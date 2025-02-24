@@ -48,9 +48,9 @@ export function NavHeader({
     <Tabs
       defaultValue={tabName || pages[pageName].default}
       value={tabName || pages[pageName].default}
-      className="w-auto"
+      // className="w-auto"
     >
-      <header className="bg-background sticky inset-x-0 top-0 isolate flex shrink-0 items-center gap-2 border-b">
+      <header className="z-10 bg-background sticky inset-x-0 top-0 isolate flex shrink-0 items-center gap-2 border-b">
         <div className="flex h-14 w-full items-center gap-2 px-2">
           <SidebarTrigger />
           <Separator
@@ -73,7 +73,7 @@ export function NavHeader({
           </TabsList>
         </div>
       </header>
-      <div className="px-2">{children}</div>
+      <div className="p-2">{children}</div>
     </Tabs>
   );
 }

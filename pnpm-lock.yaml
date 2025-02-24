@@ -186,6 +186,9 @@ importers:
       "@tanstack/react-query":
         specifier: ^5.66.9
         version: 5.66.9(react@19.0.0)
+      "@tanstack/react-table":
+        specifier: ^8.21.2
+        version: 8.21.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       "@trpc/client":
         specifier: 11.0.0-rc.802
         version: 11.0.0-rc.802(@trpc/server@11.0.0-rc.802(typescript@5.7.3))(typescript@5.7.3)
@@ -359,6 +362,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      cmdk:
+        specifier: ^1.0.4
+        version: 1.0.4(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       lucide-react:
         specifier: 0.475.0
         version: 0.475.0(react@19.0.0)
@@ -3238,6 +3244,23 @@ packages:
     peerDependencies:
       react: ^18 || ^19
 
+  "@tanstack/react-table@8.21.2":
+    resolution:
+      {
+        integrity: sha512-11tNlEDTdIhMJba2RBH+ecJ9l1zgS2kjmexDPAraulc8jeNA4xocSNeyzextT0XJyASil4XsCYlJmf5jEWAtYg==,
+      }
+    engines: { node: ">=12" }
+    peerDependencies:
+      react: ">=16.8"
+      react-dom: ">=16.8"
+
+  "@tanstack/table-core@8.21.2":
+    resolution:
+      {
+        integrity: sha512-uvXk/U4cBiFMxt+p9/G7yUWI/UbHYbyghLCjlpWZ3mLeIZiUBSKcUnw9UnKkdRz7Z/N4UBuFLWQdJCjUe7HjvA==,
+      }
+    engines: { node: ">=12" }
+
   "@tokenizer/token@0.3.0":
     resolution:
       {
@@ -4662,6 +4685,15 @@ packages:
         integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==,
       }
     engines: { node: ">=6" }
+
+  cmdk@1.0.4:
+    resolution:
+      {
+        integrity: sha512-AnsjfHyHpQ/EFeAnG216WY7A5LiYCoZzCSygiLvfXC3H3LFGCprErteUcszaVluGOhuOTbJS3jWHrSDYPBBygg==,
+      }
+    peerDependencies:
+      react: ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^18 || ^19 || ^19.0.0-rc
 
   co@4.6.0:
     resolution:
@@ -11042,6 +11074,14 @@ packages:
       "@types/react":
         optional: true
 
+  use-sync-external-store@1.4.0:
+    resolution:
+      {
+        integrity: sha512-9WXSPC5fMv61vaupRkCKCxsPxBocVnwakBEkMIHHpkTTg6icbJtg6jzgtLDm4bl3cSHAca52rYWih0k4K3PfHw==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   util-deprecate@1.0.2:
     resolution:
       {
@@ -13458,6 +13498,14 @@ snapshots:
       "@tanstack/query-core": 5.66.4
       react: 19.0.0
 
+  "@tanstack/react-table@8.21.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)":
+    dependencies:
+      "@tanstack/table-core": 8.21.2
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+
+  "@tanstack/table-core@8.21.2": {}
+
   "@tokenizer/token@0.3.0": {}
 
   "@tootallnate/quickjs-emscripten@0.23.0": {}
@@ -14439,6 +14487,18 @@ snapshots:
   clone@1.0.4: {}
 
   clsx@2.1.1: {}
+
+  cmdk@1.0.4(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+    dependencies:
+      "@radix-ui/react-dialog": 1.1.6(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      "@radix-ui/react-id": 1.1.0(@types/react@19.0.8)(react@19.0.0)
+      "@radix-ui/react-primitive": 2.0.2(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      use-sync-external-store: 1.4.0(react@19.0.0)
+    transitivePeerDependencies:
+      - "@types/react"
+      - "@types/react-dom"
 
   co@4.6.0: {}
 
@@ -18611,6 +18671,10 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       "@types/react": 19.0.8
+
+  use-sync-external-store@1.4.0(react@19.0.0):
+    dependencies:
+      react: 19.0.0
 
   util-deprecate@1.0.2: {}
 
