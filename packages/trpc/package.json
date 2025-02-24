@@ -1,0 +1,9 @@
+{
+  "name": "@workspace/trpc",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {},
+  "exports": {
+    "./router": "./src/@generated/server.ts"
+  }
+}

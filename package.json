@@ -50,6 +50,7 @@
     "typescript": "5.7.3"
   },
   "dependencies": {
+    "@trpc/server": "11.0.0-rc.802",
     "lucide-react": "0.475.0",
     "next": "^15.1.6",
     "next-themes": "^0.4.4",

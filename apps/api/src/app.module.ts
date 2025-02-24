@@ -17,6 +17,7 @@ import { FormsModule } from "@/app/forms/forms.module";
 import { KeysModule } from "@/app/keys/keys.module";
 import { DevicesModule } from "@/app/devices/devices.module";
 import { SessionsModule } from "@/app/sessions/sessions.module";
+import { TrpcModule } from "@/trpc/trpc.module";
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SessionsModule } from "@/app/sessions/sessions.module";
       validate: envConfig,
       expandVariables: true,
     }),
+    TrpcModule,
     EnvModule,
     ClientsModule,
     ClientelesModule,

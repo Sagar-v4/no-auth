@@ -8,6 +8,7 @@ import {
 import { ClientsService } from "@/app/clients/clients.service";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { ClientsController } from "@/app/clients/clients.controller";
+import { ClientsRouter } from "@/app/clients/clients.router";
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { ClientsController } from "@/app/clients/clients.controller";
     ),
   ],
   controllers: [ClientsController],
-  providers: [ClientsService],
+  providers: [ClientsService, ClientsRouter],
   exports: [ClientsService],
 })
 export class ClientsModule {}
