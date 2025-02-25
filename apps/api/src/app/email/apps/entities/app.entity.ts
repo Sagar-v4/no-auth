@@ -53,7 +53,12 @@ export class EmailApp {
   })
   description!: string;
 
-  @Prop({ type: String, enum: TYPES, required: true })
+  @Prop({
+    type: String,
+    enum: TYPES,
+    default: TYPES.NODE_MAILER,
+    required: true,
+  })
   type!: string;
 
   @Prop({

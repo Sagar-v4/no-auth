@@ -25,8 +25,8 @@ import {
   TableRow,
 } from "@workspace/ui/components/table";
 
-import { DataTablePagination } from "../data-table/data-table-pagination";
-import { DataTableToolbar } from "./data-table-toolbar";
+import { DataTablePagination } from "@/components/data-table/data-table-pagination";
+import { DataTableToolbar } from "@/components/email-app-data-table/data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -68,7 +68,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="my-2 w-full">
+    <div className="grid grid-cols-1 my-2 w-full">
       <DataTableToolbar table={table} />
       <div className="rounded-md border my-2">
         <Table>

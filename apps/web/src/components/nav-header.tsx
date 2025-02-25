@@ -15,6 +15,29 @@ export function NavHeader({
   const pages: {
     [key: string]: { default: string; list: { name: string; value: string }[] };
   } = {
+    dashboard: {
+      default: "dashboard",
+      list: [{ name: "Dashboard", value: "dashboard" }],
+    },
+    profile: {
+      default: "profile",
+      list: [{ name: "Profile", value: "profile" }],
+    },
+    keys: {
+      default: "keys",
+      list: [{ name: "Keys", value: "keys" }],
+    },
+    team: {
+      default: "members",
+      list: [
+        { name: "Members", value: "members" },
+        { name: "Permissions", value: "permissions" },
+      ],
+    },
+    settings: {
+      default: "settings",
+      list: [{ name: "Settings", value: "settings" }],
+    },
     forms: {
       default: "all",
       list: [
@@ -37,6 +60,14 @@ export function NavHeader({
         { name: "Template", value: "template" },
       ],
     },
+    roles: {
+      default: "roles",
+      list: [{ name: "Roles", value: "roles" }],
+    },
+    permissions: {
+      default: "permissions",
+      list: [{ name: "Permissions", value: "permissions" }],
+    },
   };
 
   const [tabName, setTabName] = useQueryState("tab");
@@ -51,13 +82,13 @@ export function NavHeader({
       // className="w-auto"
     >
       <header className="z-10 bg-background sticky inset-x-0 top-0 isolate flex shrink-0 items-center gap-2 border-b">
-        <div className="flex h-14 w-full items-center gap-2 px-2">
+        <div className="flex w-full items-center gap-2 px-2">
           <SidebarTrigger />
           <Separator
             orientation="vertical"
             className="data-[orientation=vertical]:h-6"
           />
-          <TabsList className="gap-2 bg-background">
+          <TabsList className="h-14 gap-2 bg-background">
             {pages[pageName].list.map((tab, index) => {
               return (
                 <TabsTrigger

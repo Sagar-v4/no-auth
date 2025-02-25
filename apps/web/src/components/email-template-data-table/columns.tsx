@@ -3,10 +3,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 
-import { status as statuses, types } from "./data";
-import { Template } from "./schema";
-import { DataTableColumnHeader } from "../data-table/data-table-column-header";
-import { DataTableRowActions } from "./data-table-row-actions";
+import {
+  status as statuses,
+  types,
+} from "@/components/email-template-data-table/data";
+import { Template } from "@/components/email-template-data-table/schema";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DataTableRowActions } from "@/components/email-template-data-table/data-table-row-actions";
 
 export const columns: ColumnDef<Template>[] = [
   {

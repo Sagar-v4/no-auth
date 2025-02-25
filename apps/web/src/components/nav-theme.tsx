@@ -1,5 +1,3 @@
-// "use client";
-
 import { SidebarMenu, SidebarMenuItem } from "@workspace/ui/components/sidebar";
 import { Button } from "@workspace/ui/components/button";
 import { ModeSwitcher } from "@workspace/ui/components/mode-switcher";

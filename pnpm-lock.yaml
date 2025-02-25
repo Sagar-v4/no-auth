@@ -183,6 +183,9 @@ importers:
 
   apps/web:
     dependencies:
+      "@tanstack/react-form":
+        specifier: ^0.44.0
+        version: 0.44.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)
       "@tanstack/react-query":
         specifier: ^5.66.9
         version: 5.66.9(react@19.0.0)
@@ -374,6 +377,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.0.6)
+      vaul:
+        specifier: ^1.1.2
+        version: 1.1.2(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
     devDependencies:
       "@workspace/eslint-config":
         specifier: workspace:*
@@ -2926,6 +2932,68 @@ packages:
     peerDependencies:
       release-it: ^18.0.0
 
+  "@remix-run/node@2.15.3":
+    resolution:
+      {
+        integrity: sha512-TYfS6BPhbABBpSRZ6WBA4qIWSwWvJhRVQGXCHUtgOwkuW863rcFmjh9g2Xj/IHyTmbOYPdcjHsIgZ9el4CHOKQ==,
+      }
+    engines: { node: ">=18.0.0" }
+    peerDependencies:
+      typescript: ^5.1.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  "@remix-run/router@1.22.0":
+    resolution:
+      {
+        integrity: sha512-MBOl8MeOzpK0HQQQshKB7pABXbmyHizdTpqnrIseTbsv0nAepwC2ENZa1aaBExNQcpLoXmWthhak8SABLzvGPw==,
+      }
+    engines: { node: ">=14.0.0" }
+
+  "@remix-run/server-runtime@2.15.3":
+    resolution:
+      {
+        integrity: sha512-taHBe1DEqxZNjjj6OfkSYbup+sZPjbTgUhykaI+nHqrC2NDQuTiisBXhLwtx60GctONR/x0lWhF7R9ZGC5WsHw==,
+      }
+    engines: { node: ">=18.0.0" }
+    peerDependencies:
+      typescript: ^5.1.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  "@remix-run/web-blob@3.1.0":
+    resolution:
+      {
+        integrity: sha512-owGzFLbqPH9PlKb8KvpNJ0NO74HWE2euAn61eEiyCXX/oteoVzTVSN8mpLgDjaxBf2btj5/nUllSUgpyd6IH6g==,
+      }
+
+  "@remix-run/web-fetch@4.4.2":
+    resolution:
+      {
+        integrity: sha512-jgKfzA713/4kAW/oZ4bC3MoLWyjModOVDjFPNseVqcJKSafgIscrYL9G50SurEYLswPuoU3HzSbO0jQCMYWHhA==,
+      }
+    engines: { node: ^10.17 || >=12.3 }
+
+  "@remix-run/web-file@3.1.0":
+    resolution:
+      {
+        integrity: sha512-dW2MNGwoiEYhlspOAXFBasmLeYshyAyhIdrlXBi06Duex5tDr3ut2LFKVj7tyHLmn8nnNwFf1BjNbkQpygC2aQ==,
+      }
+
+  "@remix-run/web-form-data@3.1.0":
+    resolution:
+      {
+        integrity: sha512-NdeohLMdrb+pHxMQ/Geuzdp0eqPbea+Ieo8M8Jx2lGC6TBHsgHzYcBvr0LyPdPVycNRDEpWpiDdCOdCryo3f9A==,
+      }
+
+  "@remix-run/web-stream@1.1.0":
+    resolution:
+      {
+        integrity: sha512-KRJtwrjRV5Bb+pM7zxcTJkhIqWWSy+MYsIxHK+0m5atcznsf15YwUBWHWulZerV2+vvHH1Lp1DD7pw6qKW8SgA==,
+      }
+
   "@sec-ant/readable-stream@0.4.1":
     resolution:
       {
@@ -3230,11 +3298,32 @@ packages:
         integrity: sha512-noTaGPHjGCXTCc487TWnfAEN0VMjqDAecssWDOsfxV2hFrcZR0AHthX7IdY/0xHTg/EtpmIPdssddlZ5/B7JnQ==,
       }
 
+  "@tanstack/form-core@0.44.0":
+    resolution:
+      {
+        integrity: sha512-HFKtbRiCDIY66s8lKA3SV5msocvy6KTjT9FNjBX9eoTQkX2K2uzEGYosK6c4djA9o1GGSXrPaW8cE0zHh6+Hsg==,
+      }
+
   "@tanstack/query-core@5.66.4":
     resolution:
       {
         integrity: sha512-skM/gzNX4shPkqmdTCSoHtJAPMTtmIJNS0hE+xwTTUVYwezArCT34NMermABmBVUg5Ls5aiUXEDXfqwR1oVkcA==,
       }
+
+  "@tanstack/react-form@0.44.0":
+    resolution:
+      {
+        integrity: sha512-gaBRRr+IUadjezlq7PliYB8TU4fTfI0sEedLU4WIWFPjSBx7SdJvGx8l76FpnokdzaCjPmSOXPjSQ+mNKonyaw==,
+      }
+    peerDependencies:
+      "@tanstack/start": ^1.81.6
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+      vinxi: ^0.5.0
+    peerDependenciesMeta:
+      "@tanstack/start":
+        optional: true
+      vinxi:
+        optional: true
 
   "@tanstack/react-query@5.66.9":
     resolution:
@@ -3243,6 +3332,15 @@ packages:
       }
     peerDependencies:
       react: ^18 || ^19
+
+  "@tanstack/react-store@0.7.0":
+    resolution:
+      {
+        integrity: sha512-S/Rq17HaGOk+tQHV/yrePMnG1xbsKZIl/VsNWnNXt4XW+tTY8dTlvpJH2ZQ3GRALsusG5K6Q3unAGJ2pd9W/Ng==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   "@tanstack/react-table@8.21.2":
     resolution:
@@ -3253,6 +3351,12 @@ packages:
     peerDependencies:
       react: ">=16.8"
       react-dom: ">=16.8"
+
+  "@tanstack/store@0.7.0":
+    resolution:
+      {
+        integrity: sha512-CNIhdoUsmD2NolYuaIs8VfWM467RK6oIBAW4nPEKZhg1smZ+/CwtCdpURgp7nxSqOaV9oKkzdWD80+bC66F/Jg==,
+      }
 
   "@tanstack/table-core@8.21.2":
     resolution:
@@ -3395,6 +3499,12 @@ packages:
     resolution:
       {
         integrity: sha512-7uz5EHdzz2TqoMfV7ee61Egf5y6NkcO4FB/1iCCQnbeiI1F3xzv3vK5dBCXUCLQgGYS+mUeigK1iKQzvED+QnQ==,
+      }
+
+  "@types/cookie@0.6.0":
+    resolution:
+      {
+        integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==,
       }
 
   "@types/cookiejar@2.1.5":
@@ -3662,6 +3772,12 @@ packages:
       }
     engines: { node: ^18.18.0 || ^20.9.0 || >=21.1.0 }
 
+  "@web3-storage/multipart-parser@1.0.0":
+    resolution:
+      {
+        integrity: sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==,
+      }
+
   "@webassemblyjs/ast@1.14.1":
     resolution:
       {
@@ -3834,12 +3950,25 @@ packages:
         integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==,
       }
 
+  "@zxing/text-encoding@0.9.0":
+    resolution:
+      {
+        integrity: sha512-U/4aVJ2mxI0aDNI8Uq0wEhMgY+u4CNtEb0om3+y3+niDAsoTCOB33UF0sxpzqzdqXLqmvc+vZyAt4O8pPdfkwA==,
+      }
+
   JSONStream@1.3.5:
     resolution:
       {
         integrity: sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==,
       }
     hasBin: true
+
+  abort-controller@3.0.0:
+    resolution:
+      {
+        integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==,
+      }
+    engines: { node: ">=6.5" }
 
   abstract-logging@2.0.1:
     resolution:
@@ -5056,6 +5185,13 @@ packages:
       }
     engines: { node: ">=6.6.0" }
 
+  cookie@0.6.0:
+    resolution:
+      {
+        integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==,
+      }
+    engines: { node: ">= 0.6" }
+
   cookie@0.7.1:
     resolution:
       {
@@ -5171,6 +5307,13 @@ packages:
       }
     engines: { node: ">=12" }
 
+  data-uri-to-buffer@3.0.1:
+    resolution:
+      {
+        integrity: sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==,
+      }
+    engines: { node: ">= 6" }
+
   data-uri-to-buffer@6.0.2:
     resolution:
       {
@@ -5233,6 +5376,12 @@ packages:
     peerDependenciesMeta:
       supports-color:
         optional: true
+
+  decode-formdata@0.8.0:
+    resolution:
+      {
+        integrity: sha512-iUzDgnWsw5ToSkFY7VPFA5Gfph6ROoOxOB7Ybna4miUSzLZ4KaSJk6IAB2AdW6+C9vCVWhjjNA4gjT6wF3eZHQ==,
+      }
 
   decompress-response@6.0.0:
     resolution:
@@ -5841,6 +5990,13 @@ packages:
         integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==,
       }
     engines: { node: ">= 0.6" }
+
+  event-target-shim@5.0.1:
+    resolution:
+      {
+        integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==,
+      }
+    engines: { node: ">=6" }
 
   eventemitter3@5.0.1:
     resolution:
@@ -6904,6 +7060,13 @@ packages:
         integrity: sha512-Ag3wB2o37wslZS19hZqorUnrnzSkpOVy+IiiDEiTqNubEYpYuHWIf6K4psgN2ZWKExS4xhVCrRVfb/wfW8fWJA==,
       }
     engines: { node: ">= 10" }
+
+  is-arguments@1.2.0:
+    resolution:
+      {
+        integrity: sha512-7bVbi0huj/wrIAOzb8U1aszg9kdi3KN/CyU19CTI7tAoZYEZoL9yCDXpbXN+uPsuWnP02cyug1gleqq+TU+YCA==,
+      }
+    engines: { node: ">= 0.4" }
 
   is-array-buffer@3.0.5:
     resolution:
@@ -8473,6 +8636,13 @@ packages:
         integrity: sha512-iQMncpmEK8R8ncT8HJGsGc9Dsp8xcgYMVSbs5jgnm1lFHTZqMJTUWTDx1LBO8+mK3tPNZWFLBghQEIOULSTHZg==,
       }
     engines: { node: ">=14.0.0" }
+
+  mrmime@1.0.1:
+    resolution:
+      {
+        integrity: sha512-hzzEagAgDyoU1Q6yg5uI+AorQgdvMCur3FcKf7NhMKWsaYg+RnbTyHRa/9IlLF9rf455MOCtcqqrQQ83pPP7Uw==,
+      }
+    engines: { node: ">=10" }
 
   ms@2.0.0:
     resolution:
@@ -10234,6 +10404,12 @@ packages:
       }
     engines: { node: ">=18" }
 
+  stream-slice@0.1.2:
+    resolution:
+      {
+        integrity: sha512-QzQxpoacatkreL6jsxnVb7X5R/pGw9OUv2qWTYWnmLpg4NdN31snPy/f3TdQE1ZUXaThRvj1Zw4/OGg0ZkaLMA==,
+      }
+
   streamsearch@1.1.0:
     resolution:
       {
@@ -10788,6 +10964,12 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  turbo-stream@2.4.0:
+    resolution:
+      {
+        integrity: sha512-FHncC10WpBd2eOmGwpmQsWLDoK4cqsA/UT/GqNoaKOQnT8uzhtCbg3EoUDMvqpOSAI0S26mr0rkjzbOO6S3v1g==,
+      }
+
   turbo-windows-64@2.4.1:
     resolution:
       {
@@ -11094,6 +11276,12 @@ packages:
         integrity: sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==,
       }
 
+  util@0.12.5:
+    resolution:
+      {
+        integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==,
+      }
+
   utils-merge@1.0.1:
     resolution:
       {
@@ -11134,6 +11322,15 @@ packages:
       }
     engines: { node: ">= 0.8" }
 
+  vaul@1.1.2:
+    resolution:
+      {
+        integrity: sha512-ZFkClGpWyI2WUQjdLJ/BaGuV6AVQiJ3uELGk3OYtP+B6yCO7Cmn9vPFXVJkRaGkOJu3m8bQMgtyzNHixULceQA==,
+      }
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
+
   walker@1.0.8:
     resolution:
       {
@@ -11152,6 +11349,19 @@ packages:
       {
         integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==,
       }
+
+  web-encoding@1.1.5:
+    resolution:
+      {
+        integrity: sha512-HYLeVCdJ0+lBYV2FvNZmv3HJ2Nt0QYXqZojk3d9FJOLkwnuhzM9tmamh8d7HPM8QqjKH8DeHkFTx+CFlWpZZDA==,
+      }
+
+  web-streams-polyfill@3.3.3:
+    resolution:
+      {
+        integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==,
+      }
+    engines: { node: ">= 8" }
 
   webidl-conversions@7.0.0:
     resolution:
@@ -13335,6 +13545,60 @@ snapshots:
       - conventional-commits-filter
       - conventional-commits-parser
 
+  "@remix-run/node@2.15.3(typescript@5.7.3)":
+    dependencies:
+      "@remix-run/server-runtime": 2.15.3(typescript@5.7.3)
+      "@remix-run/web-fetch": 4.4.2
+      "@web3-storage/multipart-parser": 1.0.0
+      cookie-signature: 1.2.2
+      source-map-support: 0.5.21
+      stream-slice: 0.1.2
+      undici: 6.21.1
+    optionalDependencies:
+      typescript: 5.7.3
+
+  "@remix-run/router@1.22.0": {}
+
+  "@remix-run/server-runtime@2.15.3(typescript@5.7.3)":
+    dependencies:
+      "@remix-run/router": 1.22.0
+      "@types/cookie": 0.6.0
+      "@web3-storage/multipart-parser": 1.0.0
+      cookie: 0.6.0
+      set-cookie-parser: 2.7.1
+      source-map: 0.7.4
+      turbo-stream: 2.4.0
+    optionalDependencies:
+      typescript: 5.7.3
+
+  "@remix-run/web-blob@3.1.0":
+    dependencies:
+      "@remix-run/web-stream": 1.1.0
+      web-encoding: 1.1.5
+
+  "@remix-run/web-fetch@4.4.2":
+    dependencies:
+      "@remix-run/web-blob": 3.1.0
+      "@remix-run/web-file": 3.1.0
+      "@remix-run/web-form-data": 3.1.0
+      "@remix-run/web-stream": 1.1.0
+      "@web3-storage/multipart-parser": 1.0.0
+      abort-controller: 3.0.0
+      data-uri-to-buffer: 3.0.1
+      mrmime: 1.0.1
+
+  "@remix-run/web-file@3.1.0":
+    dependencies:
+      "@remix-run/web-blob": 3.1.0
+
+  "@remix-run/web-form-data@3.1.0":
+    dependencies:
+      web-encoding: 1.1.5
+
+  "@remix-run/web-stream@1.1.0":
+    dependencies:
+      web-streams-polyfill: 3.3.3
+
   "@sec-ant/readable-stream@0.4.1": {}
 
   "@sinclair/typebox@0.27.8": {}
@@ -13491,18 +13755,42 @@ snapshots:
       postcss: 8.5.2
       tailwindcss: 4.0.6
 
+  "@tanstack/form-core@0.44.0":
+    dependencies:
+      "@tanstack/store": 0.7.0
+
   "@tanstack/query-core@5.66.4": {}
+
+  "@tanstack/react-form@0.44.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)":
+    dependencies:
+      "@remix-run/node": 2.15.3(typescript@5.7.3)
+      "@tanstack/form-core": 0.44.0
+      "@tanstack/react-store": 0.7.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      decode-formdata: 0.8.0
+      react: 19.0.0
+    transitivePeerDependencies:
+      - react-dom
+      - typescript
 
   "@tanstack/react-query@5.66.9(react@19.0.0)":
     dependencies:
       "@tanstack/query-core": 5.66.4
       react: 19.0.0
 
+  "@tanstack/react-store@0.7.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)":
+    dependencies:
+      "@tanstack/store": 0.7.0
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      use-sync-external-store: 1.4.0(react@19.0.0)
+
   "@tanstack/react-table@8.21.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)":
     dependencies:
       "@tanstack/table-core": 8.21.2
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
+
+  "@tanstack/store@0.7.0": {}
 
   "@tanstack/table-core@8.21.2": {}
 
@@ -13612,6 +13900,8 @@ snapshots:
   "@types/conventional-commits-parser@5.0.1":
     dependencies:
       "@types/node": 22.13.1
+
+  "@types/cookie@0.6.0": {}
 
   "@types/cookiejar@2.1.5": {}
 
@@ -13797,6 +14087,8 @@ snapshots:
       "@typescript-eslint/types": 8.24.0
       eslint-visitor-keys: 4.2.0
 
+  "@web3-storage/multipart-parser@1.0.0": {}
+
   "@webassemblyjs/ast@1.14.1":
     dependencies:
       "@webassemblyjs/helper-numbers": 1.13.2
@@ -13945,10 +14237,17 @@ snapshots:
 
   "@xtuc/long@4.2.2": {}
 
+  "@zxing/text-encoding@0.9.0":
+    optional: true
+
   JSONStream@1.3.5:
     dependencies:
       jsonparse: 1.3.1
       through: 2.3.8
+
+  abort-controller@3.0.0:
+    dependencies:
+      event-target-shim: 5.0.1
 
   abstract-logging@2.0.1: {}
 
@@ -14728,8 +15027,9 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  cookie-signature@1.2.2:
-    optional: true
+  cookie-signature@1.2.2: {}
+
+  cookie@0.6.0: {}
 
   cookie@0.7.1:
     optional: true
@@ -14814,6 +15114,8 @@ snapshots:
 
   dargs@8.1.0: {}
 
+  data-uri-to-buffer@3.0.1: {}
+
   data-uri-to-buffer@6.0.2: {}
 
   data-view-buffer@1.0.2:
@@ -14847,6 +15149,8 @@ snapshots:
   debug@4.4.0:
     dependencies:
       ms: 2.1.3
+
+  decode-formdata@0.8.0: {}
 
   decompress-response@6.0.0:
     dependencies:
@@ -15250,6 +15554,8 @@ snapshots:
 
   etag@1.8.1:
     optional: true
+
+  event-target-shim@5.0.1: {}
 
   eventemitter3@5.0.1: {}
 
@@ -16028,6 +16334,11 @@ snapshots:
     optional: true
 
   ipaddr.js@2.2.0: {}
+
+  is-arguments@1.2.0:
+    dependencies:
+      call-bound: 1.0.3
+      has-tostringtag: 1.0.2
 
   is-array-buffer@3.0.5:
     dependencies:
@@ -17020,6 +17331,8 @@ snapshots:
       debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
+
+  mrmime@1.0.1: {}
 
   ms@2.0.0:
     optional: true
@@ -18137,6 +18450,8 @@ snapshots:
 
   stdin-discarder@0.2.2: {}
 
+  stream-slice@0.1.2: {}
+
   streamsearch@1.1.0: {}
 
   streamx@2.22.0:
@@ -18493,6 +18808,8 @@ snapshots:
   turbo-linux-arm64@2.4.1:
     optional: true
 
+  turbo-stream@2.4.0: {}
+
   turbo-windows-64@2.4.1:
     optional: true
 
@@ -18682,6 +18999,14 @@ snapshots:
     dependencies:
       inherits: 2.0.3
 
+  util@0.12.5:
+    dependencies:
+      inherits: 2.0.4
+      is-arguments: 1.2.0
+      is-generator-function: 1.1.0
+      is-typed-array: 1.1.15
+      which-typed-array: 1.1.18
+
   utils-merge@1.0.1:
     optional: true
 
@@ -18703,6 +19028,15 @@ snapshots:
   vary@1.1.2:
     optional: true
 
+  vaul@1.1.2(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+    dependencies:
+      "@radix-ui/react-dialog": 1.1.6(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+    transitivePeerDependencies:
+      - "@types/react"
+      - "@types/react-dom"
+
   walker@1.0.8:
     dependencies:
       makeerror: 1.0.12
@@ -18715,6 +19049,14 @@ snapshots:
   wcwidth@1.0.1:
     dependencies:
       defaults: 1.0.4
+
+  web-encoding@1.1.5:
+    dependencies:
+      util: 0.12.5
+    optionalDependencies:
+      "@zxing/text-encoding": 0.9.0
+
+  web-streams-polyfill@3.3.3: {}
 
   webidl-conversions@7.0.0: {}
 

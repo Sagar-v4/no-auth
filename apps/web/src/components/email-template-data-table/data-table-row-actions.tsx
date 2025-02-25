@@ -18,8 +18,8 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
 
-import { status } from "./data";
-import { templateSchema } from "./schema";
+import { status } from "@/components/email-template-data-table/data";
+import { templateSchema } from "@/components/email-template-data-table/schema";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;

@@ -5,10 +5,11 @@ import { X } from "lucide-react";
 
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import { DataTableViewOptions } from "../data-table/data-table-view-options";
 
-import { types, status } from "./data";
-import { DataTableFacetedFilter } from "../data-table/data-table-faceted-filter";
+import { types, status } from "@/components/email-app-data-table/data";
+import { AddEmailApp } from "@/components/email-app-data-table/add-email-app";
+import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
+import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -21,7 +22,7 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+      <div className="flex flex-1 items-center space-x-2 overflow-scroll">
         <Input
           placeholder="Filter templates..."
           value={[table.getColumn("name")?.getFilterValue() as string]}
@@ -56,6 +57,7 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <DataTableViewOptions table={table} />
+      <AddEmailApp />
     </div>
   );
 }
