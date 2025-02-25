@@ -18,7 +18,7 @@ import {
   DrawerTrigger,
 } from "@workspace/ui/components/drawer";
 
-export function DialogDrawer({
+export function ResponsiveDialog({
   title,
   trigger,
   children,
@@ -61,7 +61,7 @@ export function DialogDrawer({
           <DrawerTitle className="text-nowrap overflow-hidden text-ellipsis">
             {title}
           </DrawerTitle>
-          <DrawerDescription className="max-h-40 text-justify text-wrap overflow-scroll">
+          <DrawerDescription className="max-h-40 text-wrap overflow-scroll">
             {description}
           </DrawerDescription>
         </DrawerHeader>

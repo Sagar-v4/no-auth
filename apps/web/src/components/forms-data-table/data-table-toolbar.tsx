@@ -6,8 +6,8 @@ import { X } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 
-import { types, status } from "@/components/email-app-data-table/data";
-import { AddEmailApp } from "@/components/email-app-data-table/add-email-app";
+import { AddForm } from "@/components/forms-data-table/add-form";
+import { types, status } from "@/components/forms-data-table/data";
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
 
@@ -24,7 +24,7 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2 overflow-scroll p-1">
         <Input
-          placeholder="Filter apps..."
+          placeholder="Filter forms..."
           value={[table.getColumn("name")?.getFilterValue() as string]}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -57,7 +57,7 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <DataTableViewOptions table={table} />
-      <AddEmailApp />
+      <AddForm />
     </div>
   );
 }

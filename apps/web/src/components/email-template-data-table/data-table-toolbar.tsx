@@ -22,7 +22,7 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2 overflow-scroll">
+      <div className="flex flex-1 items-center space-x-2 overflow-scroll p-1">
         <Input
           placeholder="Filter templates..."
           value={[table.getColumn("name")?.getFilterValue() as string]}

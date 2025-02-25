@@ -39,12 +39,8 @@ export function NavHeader({
       list: [{ name: "Settings", value: "settings" }],
     },
     forms: {
-      default: "all",
-      list: [
-        { name: "All", value: "all" },
-        { name: "OTP", value: "otp" },
-        { name: "Magic Link", value: "magic_link" },
-      ],
+      default: "forms",
+      list: [{ name: "Forms", value: "forms" }],
     },
     sessions: {
       default: "user",
@@ -104,7 +100,9 @@ export function NavHeader({
           </TabsList>
         </div>
       </header>
-      <div className="p-2">{children}</div>
+      <div className="p-2" suppressHydrationWarning>
+        {children}
+      </div>
     </Tabs>
   );
 }

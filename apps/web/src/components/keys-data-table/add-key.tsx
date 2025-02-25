@@ -4,11 +4,12 @@ import { Plus } from "lucide-react";
 import { cn } from "@workspace/ui/lib/utils";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
+import { Textarea } from "@workspace/ui/components/textarea";
 import { Label } from "@workspace/ui/components/label";
 import { ResponsiveDialog } from "@workspace/ui/components/responsive-dialog";
 
-export function AddEmailApp() {
-  const title = "Email App";
+export function AddKey() {
+  const title = "API Key";
   const description = "";
   const trigger = (
     <Button variant="default" size="sm" className="ml-2 h-8">
@@ -28,32 +29,12 @@ function Form({ className }: React.ComponentProps<"form">) {
     <form className={cn("grid items-start gap-4", className)}>
       <div className="grid gap-2">
         <Label htmlFor="name">Name</Label>
-        <Input required type="text" id="name" placeholder="Unique app name" />
+        <Input required type="text" id="name" placeholder="Key name" />
       </div>
 
       <div className="grid gap-2">
         <Label htmlFor="description">Description</Label>
-        <Input type="text" id="description" placeholder="Describe the app" />
-      </div>
-
-      <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          required
-          type="email"
-          id="email"
-          placeholder="email@example.com"
-        />
-      </div>
-
-      <div className="grid gap-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          required
-          type="password"
-          id="password"
-          placeholder="Generated app password"
-        />
+        <Textarea id="description" placeholder="Describe the key" />
       </div>
 
       <Button type="submit" className="bg-green-600 hover:bg-green-700">

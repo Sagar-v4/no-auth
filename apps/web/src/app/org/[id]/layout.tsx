@@ -11,11 +11,11 @@ export default async function AppLayout({
   params,
   children,
 }: Readonly<{
-  params: Promise<{ name: string }>;
+  params: Promise<{ id: string }>;
   children: React.ReactNode;
 }>) {
-  const { name } = await params;
-  console.log("🚀 ~ organization name:", name);
+  const { id } = await params;
+  console.log("🚀 ~ organization id:", id);
 
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
