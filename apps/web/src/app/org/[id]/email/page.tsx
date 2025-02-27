@@ -1,3 +1,5 @@
+"use client";
+
 import { DataTable as TemplateDataTable } from "@/components/email-template-data-table/data-table";
 import { columns as templateColumns } from "@/components/email-template-data-table/columns";
 import { DataTable as AppDataTable } from "@/components/email-app-data-table/data-table";

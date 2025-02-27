@@ -4,11 +4,12 @@ import { useState } from "react";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import { env } from "@/env/client/env.schema";
 import { TRPCProvider } from "@/trpc/server";
 import type { AppRouter } from "@workspace/trpc/router";
 
 function getBaseUrl() {
-  if (typeof window !== "undefined") return `http://localhost:3001`;
+  if (typeof window !== "undefined") return env.APP_BASE_URL;
   // browser should use relative path
   if (process.env.VERCEL_URL)
     // reference for vercel.com
@@ -17,7 +18,7 @@ function getBaseUrl() {
     // reference for render.com
     return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
   // assume localhost
-  return `http://localhost:3001`;
+  return env.APP_BASE_URL;
 }
 
 function makeQueryClient() {
@@ -55,7 +56,7 @@ export function TrpcReactQueryProvider(
     createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: `${getBaseUrl()}/api/trpc`,
+          url: `${env.APP_BASE_URL}/trpc`,
         }),
       ],
     }),

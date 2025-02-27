@@ -1,4 +1,4 @@
-import { envSchema } from "@/env/zod/env.zod";
+import { envSchema } from "@/env/env.schema";
 
 export const envConfig = (config: Record<string, unknown>) => {
   return envSchema.parse(config);

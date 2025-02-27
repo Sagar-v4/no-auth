@@ -10,7 +10,7 @@ import { LoggerMiddleware } from "@/trpc/middleware/logger.midleware";
     TRPCModule.forRoot({
       context: AppContext,
       autoSchemaFile: "../../packages/trpc/src/@generated",
-      basePath: "/api/trpc",
+      basePath: "/trpc",
     }),
   ],
   controllers: [TrpcPanelController],

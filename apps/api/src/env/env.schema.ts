@@ -4,11 +4,11 @@ export const envSchema = z.object({
   PORT: z.coerce.number().optional().default(3001),
   NODE_ENV: z
     .union([
-      z.literal("DEVELOPMENT"),
-      z.literal("TESTING"),
-      z.literal("PRODUCTION"),
+      z.literal("development"),
+      z.literal("test"),
+      z.literal("production"),
     ])
-    .default("DEVELOPMENT"),
+    .default("development"),
   MONGO_URI: z.string().url(),
 });
 
