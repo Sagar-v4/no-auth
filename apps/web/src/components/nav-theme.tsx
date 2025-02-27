@@ -10,11 +10,11 @@ export function NavTheme() {
         <ModeSwitcher className="group-data-[collapsible=icon]:size-8" />
         <Separator
           orientation="vertical"
-          className="group-data-[collapsible=icon]:hidden mx-2"
+          className="mx-2 group-data-[collapsible=icon]:hidden"
         />
         <Button
           variant="ghost"
-          className="group-data-[collapsible=icon]:hidden w-full"
+          className="w-full group-data-[collapsible=icon]:hidden"
         >
           Customize theme
         </Button>

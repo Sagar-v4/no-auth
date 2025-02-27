@@ -38,14 +38,14 @@ export function ResponsiveDialog({
         <DialogTrigger asChild>{trigger}</DialogTrigger>
         <DialogContent className="w-fit min-w-md lg:min-w-lg">
           <DialogHeader>
-            <DialogTitle className="max-w-96 text-nowrap overflow-hidden text-ellipsis">
+            <DialogTitle className="max-w-96 overflow-hidden text-nowrap text-ellipsis">
               {title}
             </DialogTitle>
-            <DialogDescription className="max-h-20 text-justify text-wrap overflow-scroll">
+            <DialogDescription className="max-h-20 overflow-scroll text-justify text-wrap">
               {description}
             </DialogDescription>
           </DialogHeader>
-          <div className="p-1 pt-0 max-h-48 lg:max-h-96 overflow-auto">
+          <div className="max-h-48 overflow-auto p-1 pt-0 lg:max-h-96">
             {children}
           </div>
         </DialogContent>
@@ -58,14 +58,14 @@ export function ResponsiveDialog({
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
       <DrawerContent className="max-w-full">
         <DrawerHeader className="text-center">
-          <DrawerTitle className="text-nowrap overflow-hidden text-ellipsis">
+          <DrawerTitle className="overflow-hidden text-nowrap text-ellipsis">
             {title}
           </DrawerTitle>
-          <DrawerDescription className="max-h-40 text-wrap overflow-scroll">
+          <DrawerDescription className="max-h-40 overflow-scroll text-wrap">
             {description}
           </DrawerDescription>
         </DrawerHeader>
-        <div className="p-4 pt-0 overflow-scroll">{children}</div>
+        <div className="overflow-scroll p-4 pt-0">{children}</div>
       </DrawerContent>
     </Drawer>
   );

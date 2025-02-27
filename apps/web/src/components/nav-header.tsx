@@ -76,14 +76,14 @@ export function NavHeader({
       defaultValue={tabName || pages[pageName].default}
       value={tabName || pages[pageName].default}
     >
-      <header className="grid grid-cols-1 z-10 bg-background sticky inset-x-0 top-0 isolate shrink-0 items-center border-b">
+      <header className="bg-background sticky inset-x-0 top-0 isolate z-10 grid shrink-0 grid-cols-1 items-center border-b">
         <div className="flex items-center gap-2 px-2">
           <SidebarTrigger className="p-2" />
           <Separator
             orientation="vertical"
             className="data-[orientation=vertical]:h-6"
           />
-          <TabsList className="h-14 px-0 gap-2 justify-evenly bg-background overflow-scroll">
+          <TabsList className="bg-background h-14 justify-evenly gap-2 overflow-scroll px-0">
             {pages[pageName].list.map((tab, index) => {
               return (
                 <TabsTrigger

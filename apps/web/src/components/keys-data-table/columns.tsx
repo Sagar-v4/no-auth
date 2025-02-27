@@ -39,7 +39,7 @@ export const columns: ColumnDef<Key>[] = [
       <DataTableColumnHeader column={column} title="UUID" />
     ),
     cell: ({ row }) => (
-      <div className="w-[50px] text-ellipsis overflow-hidden text-nowrap">
+      <div className="w-[50px] overflow-hidden text-nowrap text-ellipsis">
         {row.getValue("uuid")}
       </div>
     ),
@@ -93,7 +93,7 @@ export const columns: ColumnDef<Key>[] = [
       return (
         <div className="flex w-[100px] items-center">
           {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+            <status.icon className="text-muted-foreground mr-2 h-4 w-4" />
           )}
           <span>{status.label}</span>
         </div>
