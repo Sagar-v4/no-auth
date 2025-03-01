@@ -2,8 +2,6 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 import { randomUUID } from "crypto";
 
-import { SESSION_SCHEMA_NAME } from "@/app/sessions/entities/session.entity";
-
 export enum STATUS {
   ACTIVE = "Active",
   BLOCKED = "Blocked",

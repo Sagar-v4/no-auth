@@ -17,7 +17,7 @@ export enum TYPES {
 @Schema({
   timestamps: true,
 })
-export class EmailApp {
+export class Email_App {
   @Prop({
     type: Types.UUID,
     required: true,
@@ -31,14 +31,14 @@ export class EmailApp {
     ref: CLIENT_SCHEMA_NAME,
     required: true,
   })
-  clientId!: string;
+  client_id!: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
   })
-  organizationId!: string;
+  organization_id!: string;
 
   @Prop({
     type: String,
@@ -49,9 +49,8 @@ export class EmailApp {
 
   @Prop({
     type: String,
-    required: true,
   })
-  description!: string;
+  description?: string;
 
   @Prop({
     type: String,
@@ -73,8 +72,8 @@ export class EmailApp {
   metadata?: object;
 }
 
-export const EMAIL_APP_SCHEMA_NAME: string = EmailApp.name;
+export const EMAIL_APP_SCHEMA_NAME: string = Email_App.name;
 
-export const EmailAppSchema = SchemaFactory.createForClass(EmailApp);
+export const EmailAppSchema = SchemaFactory.createForClass(Email_App);
 
-export type EmailAppDocument = HydratedDocument<EmailApp>;
+export type EmailAppDocument = HydratedDocument<Email_App>;

@@ -8,6 +8,12 @@ import {
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { OrganizationsController } from "@/app/organizations/organizations.controller";
+import { OrganizationsRouter } from "@/app/organizations/organizations.router";
+import {
+  CLIENT_SCHEMA_NAME,
+  ClientSchema,
+} from "@/app/clients/entities/client.entity";
+import { ClientsModule } from "@/app/clients/clients.module";
 
 @Module({
   imports: [
@@ -15,9 +21,14 @@ import { OrganizationsController } from "@/app/organizations/organizations.contr
       [{ name: ORGANIZATION_SCHEMA_NAME, schema: OrganizationSchema }],
       MONGOOSE_DB_CONNECTION.ORGANIZATION,
     ),
+    MongooseModule.forFeature(
+      [{ name: CLIENT_SCHEMA_NAME, schema: ClientSchema }],
+      MONGOOSE_DB_CONNECTION.ORGANIZATION,
+    ),
+    ClientsModule,
   ],
   controllers: [OrganizationsController],
-  providers: [OrganizationsService],
+  providers: [OrganizationsService, OrganizationsRouter],
   exports: [OrganizationsService],
 })
 export class OrganizationsModule {}

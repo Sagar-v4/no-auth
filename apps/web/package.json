@@ -21,6 +21,7 @@
     "nuqs": "^2.4.0"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.66.9",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*"
   }

@@ -1,9 +1,18 @@
-import { Model } from "mongoose";
+import {
+  DeleteResult,
+  InsertManyResult,
+  Model,
+  RootFilterQuery,
+  UpdateQuery,
+  UpdateWriteOpResult,
+} from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, Logger } from "@nestjs/common";
 
 import { KEY_SCHEMA_NAME, KeyDocument } from "@/app/keys/entities/key.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
+import { TRPCError } from "@trpc/server";
+import { ERROR } from "@/trpc/error";
 
 @Injectable()
 export class KeysService {
@@ -27,308 +36,303 @@ export class KeysService {
     }
   }
 
-  // POST
-  async insertOne(doc: {
-    clientId: string;
-    organizationId: string;
-    name: string;
-    description: string;
-    metadata: { [field: string]: unknown };
+  async insertOne(input: {
+    doc: {
+      client_id: string;
+      organization_id: string;
+      name: string;
+      description?: string;
+    };
   }): Promise<KeyDocument> {
     try {
       this.logger.debug({
         action: "Entry",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
-      const keyDocument: KeyDocument = await this.keyModel.insertOne(doc, {
+      const document: KeyDocument = await this.keyModel.insertOne(input.doc, {
         validateBeforeSave: true,
       });
 
-      this.logger.log({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          documentKeys: Object.keys(keyDocument),
-        },
-      });
-
-      this.logger.debug({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          keyDocument,
-        },
-      });
-
-      return keyDocument;
-    } catch (error) {
-      this.logger.error({
-        action: "Exit",
-        method: this.insertOne.name,
-        error: error,
-        metadata: {
-          ...doc,
-        },
-      });
-
-      throw new Error("Failed to insert key document");
-    }
-  }
-
-  // GET
-  async findOne({
-    filter,
-    projection,
-    conditions,
-  }: {
-    filter: { [field: string]: unknown };
-    projection: { [field: string]: number };
-    conditions?: { [field: string]: unknown };
-  }): Promise<KeyDocument> {
-    try {
-      this.logger.debug({
-        action: "Entry",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-        },
-      });
-
-      const keyDocument: KeyDocument | null | undefined = await this.keyModel
-        .findOne(filter, projection)
-        .where(conditions ?? {});
-
-      if (!keyDocument) {
-        throw new Error("Key Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.KEY.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.insertOne.name,
         metadata: {
-          filter,
-          projection,
-          conditions,
-          documentKeys: Object.keys(keyDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-          keyDocument,
-        },
-      });
-
-      return keyDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.insertOne.name,
         error: error,
         metadata: {
-          filter,
-          projection,
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to find key document by filter");
+      throw error;
     }
   }
 
-  // PATCH
-  async findOneAndUpdate({
-    conditions,
-    update,
-  }: {
-    conditions: { [field: string]: unknown };
-    update: { [field: string]: unknown };
-  }): Promise<KeyDocument> {
+  async insertMany(input: {
+    docs: {
+      client_id: string;
+      organization_id: string;
+      name: string;
+      description?: string;
+    }[];
+  }): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      const keyDocument: KeyDocument | null | undefined =
-        await this.keyModel.findOneAndUpdate(conditions, update, {
-          timestamps: true,
-          new: true,
+      const result: InsertManyResult<any> = await this.keyModel.insertMany(
+        input.docs,
+        {
+          includeResultMetadata: true,
+          rawResult: true,
+        },
+      );
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.KEY.NOT_FOUND);
+      }
+
+      if (
+        result.mongoose?.validationErrors &&
+        result.mongoose?.validationErrors?.length > 0
+      ) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Invalid data",
+          cause: result.mongoose?.validationErrors,
         });
-
-      if (!keyDocument) {
-        throw new Error("Key Document not found");
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         metadata: {
-          conditions,
-          update,
-          updatedKeys: Object.keys(update),
+          result,
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndUpdate.name,
-        metadata: {
-          conditions,
-          update,
-          keyDocument,
-        },
-      });
-
-      return keyDocument;
+      return result;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         error: error,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      throw new Error("Failed to update key document by conditions");
+      throw error;
     }
   }
 
-  // PUT
-  async findOneAndReplace({
-    filter,
-    replacement,
-  }: {
-    filter: { [field: string]: unknown };
-    replacement: { [field: string]: unknown };
+  async find(input: {
+    filter: RootFilterQuery<any>;
+    select: string[];
+    populate: string[];
+  }): Promise<KeyDocument[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.find.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const documents: KeyDocument[] | null = await this.keyModel
+        .find(input.filter)
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.KEY.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.find.name,
+        metadata: {
+          input,
+          documentKeys: documents.map((document) => Object.keys(document)),
+        },
+      });
+
+      return documents;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.find.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async findOneAndUpdate(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: string[];
   }): Promise<KeyDocument> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      const keyDocument: KeyDocument | null | undefined =
-        await this.keyModel.findOneAndReplace(filter, replacement, {
-          timestamps: true,
+      const document: KeyDocument | null = await this.keyModel
+        .findOneAndUpdate(input.filter, input.update, {
           new: true,
-        });
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!keyDocument) {
-        throw new Error("Key Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.KEY.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
-          replacedKeys: Object.keys(replacement),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndReplace.name,
-        metadata: {
-          filter,
-          replacement,
-          keyDocument,
-        },
-      });
-
-      return keyDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         error: error,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      throw new Error("Failed to replacement key document by filter");
+      throw error;
     }
   }
 
-  // DELETE
-  async findOneAndDelete({
-    conditions,
-  }: {
-    conditions: { [field: string]: unknown };
-  }): Promise<KeyDocument> {
+  async updateMany(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: string[];
+  }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      const keyDocument: KeyDocument | null | undefined =
-        await this.keyModel.findOneAndDelete(conditions);
+      const document: UpdateWriteOpResult = await this.keyModel
+        .updateMany(input.filter, input.update, {
+          new: true,
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!keyDocument) {
-        throw new Error("Key Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.KEY.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
-          documentKeys: Object.keys(keyDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndDelete.name,
-        metadata: {
-          conditions,
-          keyDocument,
-        },
-      });
-
-      return keyDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         error: error,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to delete key document by conditions");
+      throw error;
+    }
+  }
+
+  async delete(input: { filter: RootFilterQuery<any> }): Promise<Number> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.delete.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const result: DeleteResult = await this.keyModel.deleteMany(input.filter);
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.KEY.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.delete.name,
+        metadata: {
+          result,
+        },
+      });
+
+      return result.deletedCount;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.delete.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
     }
   }
 }

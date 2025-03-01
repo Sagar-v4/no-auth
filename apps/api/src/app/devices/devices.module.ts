@@ -8,6 +8,7 @@ import {
 import { DevicesService } from "@/app/devices/devices.service";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { DevicesController } from "@/app/devices/devices.controller";
+import { DevicesRouter } from "@/app/devices/devices.router";
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { DevicesController } from "@/app/devices/devices.controller";
     ),
   ],
   controllers: [DevicesController],
-  providers: [DevicesService],
+  providers: [DevicesService, DevicesRouter],
   exports: [DevicesService],
 })
 export class DevicesModule {}

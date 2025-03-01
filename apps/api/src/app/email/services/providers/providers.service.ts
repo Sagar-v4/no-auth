@@ -59,19 +59,19 @@ export class EmailServicesProvidersService {
 
       const { otp, formId, emailAppId, organizationId, ...metadata } = data;
 
-      const emailApp: any = await this.emailAppsService.findOne({
+      const emailApp: any = await this.emailAppsService.find({
         filter: { _id: emailAppId, organizationId: organizationId },
-        projection: { type: 1, metadata: 1 },
-        conditions: { status: EMAIL_APP_STATUS.ACTIVE },
+        populate: [],
+        select: ["domain"],
       });
       if (!emailApp) {
         throw new Error("Email App not found or not active");
       }
 
-      const organization: any = await this.organizationsService.findOne({
-        filter: { _id: organizationId },
-        projection: { domain: 1 },
-        conditions: { status: ORGANIZATION_STATUS.ACTIVE },
+      const organization: any = await this.organizationsService.find({
+        filter: { _id: organizationId, status: ORGANIZATION_STATUS.ACTIVE },
+        populate: [],
+        select: ["domain"],
       });
       if (!organization) {
         throw new Error("Organization not found or not active");

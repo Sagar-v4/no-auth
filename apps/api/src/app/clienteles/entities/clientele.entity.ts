@@ -26,7 +26,7 @@ export class Clientele {
     ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
   })
-  organizationId!: string;
+  organization_id!: string;
 
   @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
   status!: string;

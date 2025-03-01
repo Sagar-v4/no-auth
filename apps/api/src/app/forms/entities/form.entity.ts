@@ -33,21 +33,21 @@ export class Form {
     ref: CLIENT_SCHEMA_NAME,
     required: true,
   })
-  clientId!: string;
+  client_id!: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
   })
-  organizationId!: string;
+  organization_id!: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: EMAIL_APP_SCHEMA_NAME,
     required: true,
   })
-  emailAppId!: string;
+  email_app_id!: string;
 
   @Prop({ type: String, enum: TYPES, required: true, default: TYPES.OTP })
   type?: string;
@@ -56,7 +56,7 @@ export class Form {
   title!: string;
 
   @Prop({ type: String })
-  shortDescription?: string;
+  short_description?: string;
 
   @Prop({ type: String, required: true })
   name!: string;

@@ -7,7 +7,9 @@ import { Button } from "@workspace/ui/components/button";
 export default function Page() {
   const trpc = useTRPC();
   const user = useQuery(
-    trpc.clients.getClient.queryOptions({ id: "67b8e9b23f6a1ff8a83475e5" }),
+    trpc.clients.findById.queryOptions({
+      filter: { _id: "67b8e9b23f6a1ff8a83475e5" },
+    }),
   );
 
   return (

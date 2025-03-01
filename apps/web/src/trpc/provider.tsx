@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import {
+  isServer,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { env } from "@/env/client/env.schema";
 import { TRPCProvider } from "@/trpc/server";
@@ -27,14 +31,17 @@ function makeQueryClient() {
       queries: {
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
-        staleTime: 60 * 1000,
+        staleTime: 60 * 1000, // 1 min
+        retry: 3,
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+        networkMode: "always",
       },
     },
   });
 }
 let browserQueryClient: QueryClient | undefined = undefined;
 function getQueryClient() {
-  if (typeof window === "undefined") {
+  if (isServer) {
     // Server: always make a new query client
     return makeQueryClient();
   } else {
@@ -46,26 +53,35 @@ function getQueryClient() {
     return browserQueryClient;
   }
 }
-export function TrpcReactQueryProvider(
-  props: Readonly<{
-    children: React.ReactNode;
-  }>,
-) {
+export function TrpcReactQueryProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const queryClient = getQueryClient();
-  const [trpcClient] = useState(() =>
-    createTRPCClient<AppRouter>({
-      links: [
-        httpBatchLink({
-          url: `${env.APP_BASE_URL}/trpc`,
-        }),
-      ],
-    }),
-  );
+  // const [trpcClient] = useState(() =>
+  //   createTRPCClient<AppRouter>({
+  //     links: [
+  //       httpBatchLink({
+  //         url: `${env.APP_BASE_URL}/trpc`,
+  //       }),
+  //     ],
+  //   })
+  // );
+
+  const trpcClient = createTRPCClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url: `${env.APP_BASE_URL}/trpc`,
+      }),
+    ],
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-        {props.children}
+        {children}
+        <ReactQueryDevtools initialIsOpen={false} />
       </TRPCProvider>
     </QueryClientProvider>
   );

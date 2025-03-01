@@ -1,4 +1,11 @@
-import { Model } from "mongoose";
+import {
+  DeleteResult,
+  InsertManyResult,
+  Model,
+  RootFilterQuery,
+  UpdateQuery,
+  UpdateWriteOpResult,
+} from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, Logger } from "@nestjs/common";
 
@@ -7,6 +14,8 @@ import {
   FormDocument,
 } from "@/app/forms/entities/form.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
+import { TRPCError } from "@trpc/server";
+import { ERROR } from "@/trpc/error";
 
 @Injectable()
 export class FormsService {
@@ -30,28 +39,28 @@ export class FormsService {
     }
   }
 
-  // POST
-  async insertOne(doc: {
-    clientId: string;
-    organizationId: string;
-    emailAppId: string;
-    name: string;
-    description: string;
-    title: string;
-    shortDescription: string;
-    expiry: number;
-    metadata: { [field: string]: unknown };
+  async insertOne(input: {
+    doc: {
+      client_id: string;
+      organization_id: string;
+      email_app_id: string;
+      title: string;
+      short_description?: string;
+      name: string;
+      description?: string;
+      expiry?: number;
+    };
   }): Promise<FormDocument> {
     try {
       this.logger.debug({
         action: "Entry",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
-      const formDocument: FormDocument = await this.formModel.insertOne(doc, {
+      const document: FormDocument = await this.formModel.insertOne(input.doc, {
         validateBeforeSave: true,
       });
 
@@ -59,283 +68,280 @@ export class FormsService {
         action: "Exit",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
-          documentKeys: Object.keys(formDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          formDocument,
-        },
-      });
-
-      return formDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
         method: this.insertOne.name,
         error: error,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
-      throw new Error("Failed to insert form document");
+      throw error;
     }
   }
 
-  // GET
-  async findOne({
-    filter,
-    projection,
-    conditions,
-  }: {
-    filter: { [field: string]: unknown };
-    projection: { [field: string]: number };
-    conditions?: { [field: string]: unknown };
-  }): Promise<FormDocument> {
+  async insertMany(input: {
+    docs: {
+      client_id: string;
+      organization_id: string;
+      email_app_id: string;
+      title: string;
+      short_description?: string;
+      name: string;
+      description?: string;
+      expiry?: number;
+    }[];
+  }): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOne.name,
+        method: this.insertMany.name,
         metadata: {
-          filter,
-          projection,
-          conditions,
+          input,
         },
       });
 
-      const formDocument: FormDocument | null | undefined = await this.formModel
-        .findOne(filter, projection)
-        .where(conditions ?? {});
+      const result: InsertManyResult<any> = await this.formModel.insertMany(
+        input.docs,
+        {
+          includeResultMetadata: true,
+          rawResult: true,
+        },
+      );
 
-      if (!formDocument) {
-        throw new Error("Form Document not found");
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.FORM.NOT_FOUND);
       }
 
-      this.logger.log({
-        action: "Exit",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-          documentKeys: Object.keys(formDocument),
-        },
-      });
-
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-          formDocument,
-        },
-      });
-
-      return formDocument;
-    } catch (error) {
-      this.logger.error({
-        action: "Exit",
-        method: this.findOne.name,
-        error: error,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-        },
-      });
-
-      throw new Error("Failed to find form document by filter");
-    }
-  }
-
-  // PATCH
-  async findOneAndUpdate({
-    conditions,
-    update,
-  }: {
-    conditions: { [field: string]: unknown };
-    update: { [field: string]: unknown };
-  }): Promise<FormDocument> {
-    try {
-      this.logger.debug({
-        action: "Entry",
-        method: this.findOneAndUpdate.name,
-        metadata: {
-          conditions,
-          update,
-        },
-      });
-
-      const formDocument: FormDocument | null | undefined =
-        await this.formModel.findOneAndUpdate(conditions, update, {
-          timestamps: true,
-          new: true,
+      if (
+        result.mongoose?.validationErrors &&
+        result.mongoose?.validationErrors?.length > 0
+      ) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Invalid data",
+          cause: result.mongoose?.validationErrors,
         });
-
-      if (!formDocument) {
-        throw new Error("Form Document not found");
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         metadata: {
-          conditions,
-          update,
-          updatedKeys: Object.keys(update),
+          result,
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndUpdate.name,
-        metadata: {
-          conditions,
-          update,
-          formDocument,
-        },
-      });
-
-      return formDocument;
+      return result;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         error: error,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      throw new Error("Failed to update form document by conditions");
+      throw error;
     }
   }
 
-  // PUT
-  async findOneAndReplace({
-    filter,
-    replacement,
-  }: {
-    filter: { [field: string]: unknown };
-    replacement: { [field: string]: unknown };
+  async find(input: {
+    filter: RootFilterQuery<any>;
+    select: string[];
+    populate: string[];
+  }): Promise<FormDocument[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.find.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const documents: FormDocument[] | null = await this.formModel
+        .find(input.filter)
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.FORM.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.find.name,
+        metadata: {
+          input,
+          documentKeys: documents.map((document) => Object.keys(document)),
+        },
+      });
+
+      return documents;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.find.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async findOneAndUpdate(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: string[];
   }): Promise<FormDocument> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      const formDocument: FormDocument | null | undefined =
-        await this.formModel.findOneAndReplace(filter, replacement, {
-          timestamps: true,
+      const document: FormDocument | null = await this.formModel
+        .findOneAndUpdate(input.filter, input.update, {
           new: true,
-        });
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!formDocument) {
-        throw new Error("Form Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.FORM.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
-          replacedKeys: Object.keys(replacement),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndReplace.name,
-        metadata: {
-          filter,
-          replacement,
-          formDocument,
-        },
-      });
-
-      return formDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         error: error,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      throw new Error("Failed to replacement form document by filter");
+      throw error;
     }
   }
 
-  // DELETE
-  async findOneAndDelete({
-    conditions,
-  }: {
-    conditions: { [field: string]: unknown };
-  }): Promise<FormDocument> {
+  async updateMany(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: string[];
+  }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      const formDocument: FormDocument | null | undefined =
-        await this.formModel.findOneAndDelete(conditions);
+      const document: UpdateWriteOpResult = await this.formModel
+        .updateMany(input.filter, input.update, {
+          new: true,
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!formDocument) {
-        throw new Error("Form Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.FORM.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
-          documentKeys: Object.keys(formDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndDelete.name,
-        metadata: {
-          conditions,
-          formDocument,
-        },
-      });
-
-      return formDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         error: error,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to delete form document by conditions");
+      throw error;
+    }
+  }
+
+  async delete(input: { filter: RootFilterQuery<any> }): Promise<Number> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.delete.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const result: DeleteResult = await this.formModel.deleteMany(
+        input.filter,
+      );
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.FORM.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.delete.name,
+        metadata: {
+          result,
+        },
+      });
+
+      return result.deletedCount;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.delete.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
     }
   }
 }

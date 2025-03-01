@@ -1,4 +1,11 @@
-import { Model } from "mongoose";
+import {
+  DeleteResult,
+  InsertManyResult,
+  Model,
+  RootFilterQuery,
+  UpdateQuery,
+  UpdateWriteOpResult,
+} from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, Logger } from "@nestjs/common";
 
@@ -7,6 +14,8 @@ import {
   DeviceDocument,
 } from "@/app/devices/entities/device.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
+import { TRPCError } from "@trpc/server";
+import { ERROR } from "@/trpc/error";
 
 @Injectable()
 export class DevicesService {
@@ -20,6 +29,7 @@ export class DevicesService {
       this.logger.log({
         action: "Construct",
       });
+      console.log("🚀 ~ DEVICE_SCHEMA_NAME:", DEVICE_SCHEMA_NAME);
     } catch (error) {
       this.logger.error({
         action: "Construct",
@@ -30,309 +40,293 @@ export class DevicesService {
     }
   }
 
-  // POST
-  async insertOne(doc: {
-    sessionIds: string[];
-    metadata: { [field: string]: unknown };
-  }): Promise<DeviceDocument> {
+  async insertOne(input: { doc: {} }): Promise<DeviceDocument> {
     try {
       this.logger.debug({
         action: "Entry",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
-      const deviceDocument: DeviceDocument = await this.deviceModel.insertOne(
-        doc,
+      const document: DeviceDocument = await this.deviceModel.insertOne(
+        input.doc,
         {
           validateBeforeSave: true,
         },
       );
 
-      this.logger.log({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          documentKeys: Object.keys(deviceDocument),
-        },
-      });
-
-      this.logger.debug({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          deviceDocument,
-        },
-      });
-
-      return deviceDocument;
-    } catch (error) {
-      this.logger.error({
-        action: "Exit",
-        method: this.insertOne.name,
-        error: error,
-        metadata: {
-          ...doc,
-        },
-      });
-
-      throw new Error("Failed to insert device document");
-    }
-  }
-
-  // GET
-  async findOne({
-    filter,
-    projection,
-    conditions,
-  }: {
-    filter: { [field: string]: unknown };
-    projection: { [field: string]: number };
-    conditions?: { [field: string]: unknown };
-  }): Promise<DeviceDocument> {
-    try {
-      this.logger.debug({
-        action: "Entry",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-        },
-      });
-
-      const deviceDocument: DeviceDocument | null | undefined =
-        await this.deviceModel
-          .findOne(filter, projection)
-          .where(conditions ?? {});
-
-      if (!deviceDocument) {
-        throw new Error("Device Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.DEVICE.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.insertOne.name,
         metadata: {
-          filter,
-          projection,
-          conditions,
-          documentKeys: Object.keys(deviceDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-          deviceDocument,
-        },
-      });
-
-      return deviceDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.insertOne.name,
         error: error,
         metadata: {
-          filter,
-          projection,
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to find device document by filter");
+      throw error;
     }
   }
 
-  // PATCH
-  async findOneAndUpdate({
-    conditions,
-    update,
-  }: {
-    conditions: { [field: string]: unknown };
-    update: { [field: string]: unknown };
-  }): Promise<DeviceDocument> {
+  async insertMany(input: { docs: {}[] }): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      const deviceDocument: DeviceDocument | null | undefined =
-        await this.deviceModel.findOneAndUpdate(conditions, update, {
-          timestamps: true,
-          new: true,
+      const result: InsertManyResult<any> = await this.deviceModel.insertMany(
+        input.docs,
+        {
+          includeResultMetadata: true,
+          rawResult: true,
+        },
+      );
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.DEVICE.NOT_FOUND);
+      }
+
+      if (
+        result.mongoose?.validationErrors &&
+        result.mongoose?.validationErrors?.length > 0
+      ) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Invalid data",
+          cause: result.mongoose?.validationErrors,
         });
-
-      if (!deviceDocument) {
-        throw new Error("Device Document not found");
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         metadata: {
-          conditions,
-          update,
-          updatedKeys: Object.keys(update),
+          result,
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndUpdate.name,
-        metadata: {
-          conditions,
-          update,
-          deviceDocument,
-        },
-      });
-
-      return deviceDocument;
+      return result;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         error: error,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      throw new Error("Failed to update device document by conditions");
+      throw error;
     }
   }
 
-  // PUT
-  async findOneAndReplace({
-    filter,
-    replacement,
-  }: {
-    filter: { [field: string]: unknown };
-    replacement: { [field: string]: unknown };
+  async find(input: {
+    filter: RootFilterQuery<any>;
+    select: string[];
+    populate: string[];
+  }): Promise<DeviceDocument[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.find.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const documents: DeviceDocument[] | null = await this.deviceModel
+        .find(input.filter)
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.DEVICE.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.find.name,
+        metadata: {
+          input,
+          documentKeys: documents.map((document) => Object.keys(document)),
+        },
+      });
+
+      return documents;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.find.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async findOneAndUpdate(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: string[];
   }): Promise<DeviceDocument> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      const deviceDocument: DeviceDocument | null | undefined =
-        await this.deviceModel.findOneAndReplace(filter, replacement, {
-          timestamps: true,
+      const document: DeviceDocument | null = await this.deviceModel
+        .findOneAndUpdate(input.filter, input.update, {
           new: true,
-        });
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!deviceDocument) {
-        throw new Error("Device Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.DEVICE.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
-          replacedKeys: Object.keys(replacement),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndReplace.name,
-        metadata: {
-          filter,
-          replacement,
-          deviceDocument,
-        },
-      });
-
-      return deviceDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         error: error,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      throw new Error("Failed to replacement device document by filter");
+      throw error;
     }
   }
-
-  // DELETE
-  async findOneAndDelete({
-    conditions,
-  }: {
-    conditions: { [field: string]: unknown };
-  }): Promise<DeviceDocument> {
+  async updateMany(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: string[];
+  }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      const deviceDocument: DeviceDocument | null | undefined =
-        await this.deviceModel.findOneAndDelete(conditions);
+      const document: UpdateWriteOpResult = await this.deviceModel
+        .updateMany(input.filter, input.update, {
+          new: true,
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!deviceDocument) {
-        throw new Error("Device Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.DEVICE.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
-          documentKeys: Object.keys(deviceDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndDelete.name,
-        metadata: {
-          conditions,
-          deviceDocument,
-        },
-      });
-
-      return deviceDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         error: error,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to delete device document by conditions");
+      throw error;
+    }
+  }
+
+  async delete(input: { filter: RootFilterQuery<any> }): Promise<Number> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.delete.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const result: DeleteResult = await this.deviceModel.deleteMany(
+        input.filter,
+      );
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.DEVICE.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.delete.name,
+        metadata: {
+          result,
+        },
+      });
+
+      return result.deletedCount;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.delete.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
     }
   }
 }
