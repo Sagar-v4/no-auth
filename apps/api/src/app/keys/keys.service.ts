@@ -2,6 +2,7 @@ import {
   DeleteResult,
   InsertManyResult,
   Model,
+  PopulateOptions,
   RootFilterQuery,
   UpdateQuery,
   UpdateWriteOpResult,
@@ -150,7 +151,7 @@ export class KeysService {
   async find(input: {
     filter: RootFilterQuery<any>;
     select: string[];
-    populate: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<KeyDocument[]> {
     try {
       this.logger.debug({
@@ -199,7 +200,7 @@ export class KeysService {
     filter: RootFilterQuery<any>;
     update: UpdateQuery<any>;
     select: string[];
-    populate: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<KeyDocument> {
     try {
       this.logger.debug({
@@ -250,7 +251,7 @@ export class KeysService {
     filter: RootFilterQuery<any>;
     update: UpdateQuery<any>;
     select: string[];
-    populate: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
@@ -329,6 +330,62 @@ export class KeysService {
         error: error,
         metadata: {
           input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async getIds(filter: RootFilterQuery<any>): Promise<string[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+        },
+      });
+
+      if (Object.keys(filter).length === 0) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.getIds.name,
+          metadata: {
+            filter,
+          },
+        });
+        return [];
+      }
+
+      const documents: KeyDocument[] | null = await this.keyModel
+        .find(filter)
+        .select("_id")
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.KEY.NOT_FOUND);
+      }
+
+      const documentIds = documents.map((document) => document._id.toString());
+
+      this.logger.log({
+        action: "Exit",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+          documentIds,
+        },
+      });
+
+      return documentIds;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.getIds.name,
+        error: error,
+        metadata: {
+          filter,
         },
       });
 

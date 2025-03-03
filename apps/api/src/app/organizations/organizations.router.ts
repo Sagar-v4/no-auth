@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult } from "mongoose";
+import { InsertManyResult, PopulateOptions } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import {
@@ -64,6 +64,8 @@ import {
 } from "./schemas/delete-by-ref.schema";
 import { ClientsService } from "@/app/clients/clients.service";
 import { ClientDocument } from "@/app/clients/entities/client.entity";
+import { query$or } from "@/utils/query-builder";
+import { concatIds } from "@/utils/query-filter";
 
 @Router({
   alias: "organizations",
@@ -233,18 +235,7 @@ export class OrganizationsRouter {
         },
       });
 
-      const filter = findByOrganizationDataInputData.filter.reduce(
-        (acc, obj) => {
-          Object.keys(obj).forEach((key) => {
-            if (!acc[key]) {
-              acc[key] = { $in: [] };
-            }
-            acc[key]["$in"].push(obj[key]);
-          });
-          return acc;
-        },
-        {},
-      );
+      const filter = query$or(findByOrganizationDataInputData.filter);
 
       const organizations: OrganizationDocument[] =
         await this.organizationsService.find({
@@ -290,24 +281,43 @@ export class OrganizationsRouter {
         },
       });
 
-      const clients: ClientDocument[] = await this.clientsService.find({
-        filter: findByOrganizationRefInputData.filter.client,
-        select: [],
-        populate: [],
-      });
+      const client_ids = concatIds(
+        [findByOrganizationRefInputData.filter.organization.client_id],
+        await this.clientsService.getIds(
+          findByOrganizationRefInputData.filter.client,
+        ),
+      );
 
-      const client_ids = clients.map((client) => client._id.toString());
-      if (findByOrganizationRefInputData.filter.organization.client_id) {
-        client_ids.push(
-          findByOrganizationRefInputData.filter.organization.client_id,
-        );
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (client_ids.length > 0) {
+        references_ids.set("client_id", {
+          $in: client_ids,
+        });
+      }
+
+      if (
+        references_ids.size === 0 &&
+        Object.keys(findByOrganizationRefInputData.filter.organization)
+          .length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.findByRef.name,
+          metadata: {
+            references_ids,
+            organization: Object.keys(
+              findByOrganizationRefInputData.filter.organization,
+            ),
+          },
+        });
+        return [];
       }
 
       const organizations: OrganizationDocument[] =
         await this.organizationsService.find({
           filter: {
             ...findByOrganizationRefInputData.filter.organization,
-            client_id: { $in: client_ids },
+            ...Object.fromEntries(references_ids),
           },
           select: [],
           populate: ["client_id"],
@@ -321,7 +331,9 @@ export class OrganizationsRouter {
         },
       });
 
-      return findByOrganizationRefOutputSchema.parse(organizations);
+      return findByOrganizationRefOutputSchema.parse(
+        organizations.filter((o) => o.client_id),
+      );
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -395,18 +407,7 @@ export class OrganizationsRouter {
         },
       });
 
-      const filter = updateByOrganizationDataInputData.filter.reduce(
-        (acc, obj) => {
-          Object.keys(obj).forEach((key) => {
-            if (!acc[key]) {
-              acc[key] = { $in: [] };
-            }
-            acc[key]["$in"].push(obj[key]);
-          });
-          return acc;
-        },
-        {},
-      );
+      const filter = query$or(updateByOrganizationDataInputData.filter);
 
       const organization = await this.organizationsService.updateMany({
         filter: filter,
@@ -453,18 +454,7 @@ export class OrganizationsRouter {
         },
       });
 
-      const filter = deleteByOrganizationDataInputData.filter.reduce(
-        (acc, obj) => {
-          Object.keys(obj).forEach((key) => {
-            if (!acc[key]) {
-              acc[key] = { $in: [] };
-            }
-            acc[key]["$in"].push(obj[key]);
-          });
-          return acc;
-        },
-        {},
-      );
+      const filter = query$or(deleteByOrganizationDataInputData.filter);
 
       const delete_count: Number = await this.organizationsService.delete({
         filter: filter,
@@ -508,23 +498,42 @@ export class OrganizationsRouter {
         },
       });
 
-      const clients: ClientDocument[] = await this.clientsService.find({
-        filter: deleteByOrganizationRefInputData.filter.client,
-        select: [],
-        populate: [],
-      });
+      const client_ids = concatIds(
+        [deleteByOrganizationRefInputData.filter.organization.client_id],
+        await this.clientsService.getIds(
+          deleteByOrganizationRefInputData.filter.client,
+        ),
+      );
 
-      const client_ids = clients.map((client) => client._id.toString());
-      if (deleteByOrganizationRefInputData.filter.organization.client_id) {
-        client_ids.push(
-          deleteByOrganizationRefInputData.filter.organization.client_id,
-        );
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (client_ids.length > 0) {
+        references_ids.set("client_id", {
+          $in: client_ids,
+        });
+      }
+
+      if (
+        references_ids.size === 0 &&
+        Object.keys(deleteByOrganizationRefInputData.filter.organization)
+          .length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.deleteByRef.name,
+          metadata: {
+            references_ids,
+            organization: Object.keys(
+              deleteByOrganizationRefInputData.filter.organization,
+            ),
+          },
+        });
+        return { delete_count: 0 };
       }
 
       const delete_count: Number = await this.organizationsService.delete({
         filter: {
           ...deleteByOrganizationRefInputData.filter.organization,
-          client_id: { $in: client_ids },
+          ...Object.fromEntries(references_ids),
         },
       });
 

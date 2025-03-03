@@ -22,9 +22,9 @@ export class LoggerMiddleware implements TRPCMiddleware {
       headers: req.headers,
     };
 
-    result.ok
-      ? this.logger.log("Success", meta)
-      : this.logger.error("Error", meta);
+    // result.ok
+    //   ? this.logger.log("Success", meta)
+    //   : this.logger.error("Error", meta);
 
     return result;
   }

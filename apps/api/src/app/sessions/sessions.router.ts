@@ -74,6 +74,8 @@ import {
 } from "@/app/clienteles/entities/clientele.entity";
 import { DevicesService } from "@/app/devices/devices.service";
 import { DeviceDocument } from "@/app/devices/entities/device.entity";
+import { query$or } from "@/utils/query-builder";
+import { concatIds } from "@/utils/query-filter";
 
 @Router({
   alias: "sessions",
@@ -244,15 +246,7 @@ export class SessionsRouter {
         },
       });
 
-      const filter = findBySessionDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(findBySessionDataInputData.filter);
 
       const sessions: SessionDocument[] = await this.sessionsService.find({
         filter: filter,
@@ -297,21 +291,108 @@ export class SessionsRouter {
         },
       });
 
-      const devices: DeviceDocument[] = await this.devicesService.find({
-        filter: findBySessionRefInputData.filter.device,
-        select: [],
-        populate: [],
-      });
+      const device_ids = concatIds(
+        [findBySessionRefInputData.filter.session.device_id],
+        await this.devicesService.getIds(
+          findBySessionRefInputData.filter.device,
+        ),
+      );
+      const client_ids = await this.clientsService.getIds(
+        findBySessionRefInputData.filter.client,
+      );
+      const clientele_ids = await this.clientelesService.getIds(
+        findBySessionRefInputData.filter.clientele,
+      );
+      const user_ids = concatIds(
+        [findBySessionRefInputData.filter.session.user_id],
+        [...client_ids, ...clientele_ids],
+      );
 
-      const device_ids = devices.map((device) => device._id.toString());
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (device_ids.length > 0) {
+        references_ids.set("device_id", {
+          $in: device_ids,
+        });
+      }
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
+        });
+      }
+
+      if (
+        references_ids.size === 0 &&
+        Object.keys(findBySessionRefInputData.filter.session).length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.findByRef.name,
+          metadata: {
+            references_ids,
+            session: Object.keys(findBySessionRefInputData.filter.session),
+          },
+        });
+        return [];
+      }
+
+      if (Object.keys(findBySessionRefInputData.filter.client).length > 0) {
+        const clients: ClientDocument[] = await this.clientsService.find({
+          filter: findBySessionRefInputData.filter.client,
+          select: ["_id"],
+          populate: [],
+        });
+        const client_ids = clients.map((client) => client._id.toString());
+        const entry = references_ids.get("user_id") || { $in: [] };
+        references_ids.set("user_id", {
+          $in: [...entry.$in, ...client_ids],
+        });
+      }
+
+      if (Object.keys(findBySessionRefInputData.filter.clientele).length > 0) {
+        const clienteles: ClienteleDocument[] =
+          await this.clientelesService.find({
+            filter: findBySessionRefInputData.filter.clientele,
+            select: ["_id"],
+            populate: [],
+          });
+
+        const clientele_ids = clienteles.map((clientele) =>
+          clientele._id.toString(),
+        );
+        const entry = references_ids.get("user_id") || { $in: [] };
+        references_ids.set("user_id", {
+          $in: [...entry.$in, ...clientele_ids],
+        });
+      }
+
+      if (Object.keys(findBySessionRefInputData.filter.device).length > 0) {
+        const devices: DeviceDocument[] = await this.devicesService.find({
+          filter: findBySessionRefInputData.filter.device,
+          select: ["_id"],
+          populate: [],
+        });
+
+        references_ids.set("device_id", {
+          $in: devices.map((device) => device._id.toString()),
+        });
+      }
+
+      if (findBySessionRefInputData.filter.session.user_id) {
+        const entry = references_ids.get("user_id") || { $in: [] };
+        entry.$in.push(findBySessionRefInputData.filter.session.user_id);
+        references_ids.set("user_id", entry);
+      }
+
       if (findBySessionRefInputData.filter.session.device_id) {
-        device_ids.push(findBySessionRefInputData.filter.session.device_id);
+        const entry = references_ids.get("device_id") || { $in: [] };
+        entry.$in.push(findBySessionRefInputData.filter.session.device_id);
+        references_ids.set("device_id", entry);
       }
 
       const sessions: SessionDocument[] = await this.sessionsService.find({
         filter: {
           ...findBySessionRefInputData.filter.session,
-          device_id: { $in: device_ids },
+          ...Object.fromEntries(references_ids),
         },
         select: [],
         populate: ["user_id", "device_id"],
@@ -399,15 +480,7 @@ export class SessionsRouter {
         },
       });
 
-      const filter = updateBySessionDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(updateBySessionDataInputData.filter);
 
       const session = await this.sessionsService.updateMany({
         filter: filter,
@@ -454,15 +527,7 @@ export class SessionsRouter {
         },
       });
 
-      const filter = deleteBySessionDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(deleteBySessionDataInputData.filter);
 
       const delete_count: Number = await this.sessionsService.delete({
         filter: filter,
@@ -506,21 +571,54 @@ export class SessionsRouter {
         },
       });
 
-      const devices: DeviceDocument[] = await this.devicesService.find({
-        filter: deleteBySessionRefInputData.filter.device,
-        select: [],
-        populate: [],
-      });
+      const device_ids = concatIds(
+        [deleteBySessionRefInputData.filter.session.device_id],
+        await this.devicesService.getIds(
+          deleteBySessionRefInputData.filter.device,
+        ),
+      );
+      const client_ids = await this.clientsService.getIds(
+        deleteBySessionRefInputData.filter.client,
+      );
+      const clientele_ids = await this.clientelesService.getIds(
+        deleteBySessionRefInputData.filter.clientele,
+      );
+      const user_ids = concatIds(
+        [deleteBySessionRefInputData.filter.session.user_id],
+        [...client_ids, ...clientele_ids],
+      );
 
-      const device_ids = devices.map((device) => device._id.toString());
-      if (deleteBySessionRefInputData.filter.session.device_id) {
-        device_ids.push(deleteBySessionRefInputData.filter.session.device_id);
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (device_ids.length > 0) {
+        references_ids.set("device_id", {
+          $in: device_ids,
+        });
+      }
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
+        });
+      }
+
+      if (
+        references_ids.size === 0 &&
+        Object.keys(deleteBySessionRefInputData.filter.session).length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.deleteByRef.name,
+          metadata: {
+            references_ids,
+            session: Object.keys(deleteBySessionRefInputData.filter.session),
+          },
+        });
+        return { delete_count: 0 };
       }
 
       const delete_count: Number = await this.sessionsService.delete({
         filter: {
           ...deleteBySessionRefInputData.filter.session,
-          device_id: { $in: device_ids },
+          ...Object.fromEntries(references_ids),
         },
       });
 

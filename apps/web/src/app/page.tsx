@@ -17,7 +17,7 @@ export default function Page() {
     isStale,
     isError,
     error,
-  } = getOrganizationsById("67c175d3439421bcbfe484d8");
+  } = getOrganizationsById("67c3351735d35d798b8aa54b");
   console.log("🚀 ~ Page ~ error:", error);
 
   if (isError) {
@@ -39,7 +39,7 @@ export default function Page() {
   return (
     <div className="flex min-h-svh items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold">{data.client_id}</h1>
+        <h1 className="text-2xl font-bold">{data.uuid}</h1>
         <Button size="sm" onClick={() => refetch()}>
           Refetch
         </Button>

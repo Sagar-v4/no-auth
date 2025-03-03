@@ -11,6 +11,7 @@ import {
   Clientele,
   CLIENTELE_SCHEMA_NAME,
 } from "@/app/clienteles/entities/clientele.entity";
+import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
 
 export enum STATUS {
   ACTIVE = "Active",

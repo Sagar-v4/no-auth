@@ -47,6 +47,7 @@ import {
   deleteByClientDataOutputSchema,
   DeleteByClientDataOutputType,
 } from "./schemas/delete-by-data.schema";
+import { query$or } from "@/utils/query-builder";
 
 @Router({
   alias: "clients",
@@ -212,15 +213,7 @@ export class ClientsRouter {
         },
       });
 
-      const filter = findByClientDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(findByClientDataInputData.filter);
 
       const clients: ClientDocument[] = await this.clientsService.find({
         filter: filter,
@@ -309,15 +302,7 @@ export class ClientsRouter {
         },
       });
 
-      const filter = updateByClientDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(updateByClientDataInputData.filter);
 
       const client = await this.clientsService.updateMany({
         filter: filter,
@@ -363,15 +348,7 @@ export class ClientsRouter {
         },
       });
 
-      const filter = deleteByClientDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(deleteByClientDataInputData.filter);
 
       const delete_count: Number = await this.clientsService.delete({
         filter: filter,

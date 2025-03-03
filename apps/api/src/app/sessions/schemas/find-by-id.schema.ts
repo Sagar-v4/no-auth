@@ -8,7 +8,9 @@ export type FindBySessionIdInputType = z.infer<
   typeof findBySessionIdInputSchema
 >;
 
-export const findBySessionIdOutputSchema = sessionOutputSchema;
+export const findBySessionIdOutputSchema = sessionOutputSchema.or(
+  z.undefined(),
+);
 export type FindBySessionIdOutputType = z.infer<
   typeof findBySessionIdOutputSchema
 >;

@@ -2,6 +2,7 @@ import {
   DeleteResult,
   InsertManyResult,
   Model,
+  PopulateOptions,
   RootFilterQuery,
   UpdateQuery,
   UpdateWriteOpResult,
@@ -29,7 +30,6 @@ export class DevicesService {
       this.logger.log({
         action: "Construct",
       });
-      console.log("🚀 ~ DEVICE_SCHEMA_NAME:", DEVICE_SCHEMA_NAME);
     } catch (error) {
       this.logger.error({
         action: "Construct",
@@ -143,7 +143,7 @@ export class DevicesService {
   async find(input: {
     filter: RootFilterQuery<any>;
     select: string[];
-    populate: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<DeviceDocument[]> {
     try {
       this.logger.debug({
@@ -192,7 +192,7 @@ export class DevicesService {
     filter: RootFilterQuery<any>;
     update: UpdateQuery<any>;
     select: string[];
-    populate: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<DeviceDocument> {
     try {
       this.logger.debug({
@@ -242,7 +242,7 @@ export class DevicesService {
     filter: RootFilterQuery<any>;
     update: UpdateQuery<any>;
     select: string[];
-    populate: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
@@ -323,6 +323,62 @@ export class DevicesService {
         error: error,
         metadata: {
           input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async getIds(filter: RootFilterQuery<any>): Promise<string[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+        },
+      });
+
+      if (Object.keys(filter).length === 0) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.getIds.name,
+          metadata: {
+            filter,
+          },
+        });
+        return [];
+      }
+
+      const documents: DeviceDocument[] | null = await this.deviceModel
+        .find(filter)
+        .select("_id")
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.DEVICE.NOT_FOUND);
+      }
+
+      const documentIds = documents.map((document) => document._id.toString());
+
+      this.logger.log({
+        action: "Exit",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+          documentIds,
+        },
+      });
+
+      return documentIds;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.getIds.name,
+        error: error,
+        metadata: {
+          filter,
         },
       });
 

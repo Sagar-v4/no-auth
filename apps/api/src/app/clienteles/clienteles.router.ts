@@ -64,6 +64,8 @@ import {
 } from "./schemas/delete-by-ref.schema";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
+import { query$or } from "@/utils/query-builder";
+import { concatIds } from "@/utils/query-filter";
 
 @Router({
   alias: "clienteles",
@@ -234,15 +236,7 @@ export class ClientelesRouter {
         },
       });
 
-      const filter = findByClienteleDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(findByClienteleDataInputData.filter);
 
       const clienteles: ClienteleDocument[] = await this.clientelesService.find(
         {
@@ -289,27 +283,42 @@ export class ClientelesRouter {
         },
       });
 
-      const organizations: OrganizationDocument[] =
-        await this.organizationsService.find({
-          filter: findByClienteleRefInputData.filter.organization,
-          select: [],
-          populate: [],
-        });
-
-      const organization_ids = organizations.map((organization) =>
-        organization._id.toString(),
+      const organization_ids = concatIds(
+        [findByClienteleRefInputData.filter.clientele.organization_id],
+        await this.organizationsService.getIds(
+          findByClienteleRefInputData.filter.organization,
+        ),
       );
-      if (findByClienteleRefInputData.filter.clientele.organization_id) {
-        organization_ids.push(
-          findByClienteleRefInputData.filter.clientele.organization_id,
-        );
+
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (organization_ids.length > 0) {
+        references_ids.set("organization_id", {
+          $in: organization_ids,
+        });
+      }
+
+      if (
+        references_ids.size === 0 &&
+        Object.keys(findByClienteleRefInputData.filter.clientele).length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.findByRef.name,
+          metadata: {
+            references_ids,
+            clientele: Object.keys(
+              findByClienteleRefInputData.filter.clientele,
+            ),
+          },
+        });
+        return [];
       }
 
       const clienteles: ClienteleDocument[] = await this.clientelesService.find(
         {
           filter: {
             ...findByClienteleRefInputData.filter.clientele,
-            organization_id: { $in: organization_ids },
+            ...Object.fromEntries(references_ids),
           },
           select: [],
           populate: ["organization_id"],
@@ -397,18 +406,7 @@ export class ClientelesRouter {
         },
       });
 
-      const filter = updateByClienteleDataInputData.filter.reduce(
-        (acc, obj) => {
-          Object.keys(obj).forEach((key) => {
-            if (!acc[key]) {
-              acc[key] = { $in: [] };
-            }
-            acc[key]["$in"].push(obj[key]);
-          });
-          return acc;
-        },
-        {},
-      );
+      const filter = query$or(updateByClienteleDataInputData.filter);
 
       const clientele = await this.clientelesService.updateMany({
         filter: filter,
@@ -454,18 +452,7 @@ export class ClientelesRouter {
         },
       });
 
-      const filter = deleteByClienteleDataInputData.filter.reduce(
-        (acc, obj) => {
-          Object.keys(obj).forEach((key) => {
-            if (!acc[key]) {
-              acc[key] = { $in: [] };
-            }
-            acc[key]["$in"].push(obj[key]);
-          });
-          return acc;
-        },
-        {},
-      );
+      const filter = query$or(deleteByClienteleDataInputData.filter);
 
       const delete_count: Number = await this.clientelesService.delete({
         filter: filter,
@@ -509,26 +496,41 @@ export class ClientelesRouter {
         },
       });
 
-      const organizations: OrganizationDocument[] =
-        await this.organizationsService.find({
-          filter: deleteByClienteleRefInputData.filter.organization,
-          select: [],
-          populate: [],
-        });
-
-      const organization_ids = organizations.map((organization) =>
-        organization._id.toString(),
+      const organization_ids = concatIds(
+        [deleteByClienteleRefInputData.filter.clientele.organization_id],
+        await this.organizationsService.getIds(
+          deleteByClienteleRefInputData.filter.organization,
+        ),
       );
-      if (deleteByClienteleRefInputData.filter.clientele.organization_id) {
-        organization_ids.push(
-          deleteByClienteleRefInputData.filter.clientele.organization_id,
-        );
+
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (organization_ids.length > 0) {
+        references_ids.set("organization_id", {
+          $in: organization_ids,
+        });
+      }
+
+      if (
+        references_ids.size === 0 &&
+        Object.keys(deleteByClienteleRefInputData.filter.clientele).length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.deleteByRef.name,
+          metadata: {
+            references_ids,
+            clientele: Object.keys(
+              deleteByClienteleRefInputData.filter.clientele,
+            ),
+          },
+        });
+        return { delete_count: 0 };
       }
 
       const delete_count: Number = await this.clientelesService.delete({
         filter: {
           ...deleteByClienteleRefInputData.filter.clientele,
-          organization_id: { $in: organization_ids },
+          ...Object.fromEntries(references_ids),
         },
       });
 

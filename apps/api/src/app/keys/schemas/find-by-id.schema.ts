@@ -6,5 +6,5 @@ export const findByKeyIdInputSchema = z.object({
 });
 export type FindByKeyIdInputType = z.infer<typeof findByKeyIdInputSchema>;
 
-export const findByKeyIdOutputSchema = keyOutputSchema;
+export const findByKeyIdOutputSchema = keyOutputSchema.or(z.undefined());
 export type FindByKeyIdOutputType = z.infer<typeof findByKeyIdOutputSchema>;

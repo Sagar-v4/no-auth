@@ -2,6 +2,7 @@ import {
   DeleteResult,
   InsertManyResult,
   Model,
+  PopulateOptions,
   RootFilterQuery,
   UpdateQuery,
   UpdateWriteOpResult,
@@ -61,7 +62,6 @@ export class SessionsService {
           validateBeforeSave: true,
         },
       );
-      console.log("🚀 ~ SessionsService ~ sessionDocument:", document);
 
       if (!document) {
         throw new TRPCError(ERROR.SESSIOIN.NOT_FOUND);
@@ -155,7 +155,7 @@ export class SessionsService {
   async find(input: {
     filter: RootFilterQuery<any>;
     select: string[];
-    populate: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<SessionDocument[]> {
     try {
       this.logger.debug({
@@ -204,7 +204,7 @@ export class SessionsService {
     filter: RootFilterQuery<any>;
     update: UpdateQuery<any>;
     select: string[];
-    populate: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<SessionDocument> {
     try {
       this.logger.debug({
@@ -255,7 +255,7 @@ export class SessionsService {
     filter: RootFilterQuery<any>;
     update: UpdateQuery<any>;
     select: string[];
-    populate: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
@@ -336,6 +336,62 @@ export class SessionsService {
         error: error,
         metadata: {
           input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async getIds(filter: RootFilterQuery<any>): Promise<string[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+        },
+      });
+
+      if (Object.keys(filter).length === 0) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.getIds.name,
+          metadata: {
+            filter,
+          },
+        });
+        return [];
+      }
+
+      const documents: SessionDocument[] | null = await this.sessionModel
+        .find(filter)
+        .select("_id")
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.SESSION.NOT_FOUND);
+      }
+
+      const documentIds = documents.map((document) => document._id.toString());
+
+      this.logger.log({
+        action: "Exit",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+          documentIds,
+        },
+      });
+
+      return documentIds;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.getIds.name,
+        error: error,
+        metadata: {
+          filter,
         },
       });
 

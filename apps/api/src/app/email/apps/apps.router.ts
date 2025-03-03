@@ -63,6 +63,8 @@ import { ClientsService } from "@/app/clients/clients.service";
 import { ClientDocument } from "@/app/clients/entities/client.entity";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
+import { query$or } from "@/utils/query-builder";
+import { concatIds } from "@/utils/query-filter";
 
 @Router({
   alias: "emailApps",
@@ -234,15 +236,7 @@ export class EmailAppRouter {
         },
       });
 
-      const filter = findByEmailAppDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(findByEmailAppDataInputData.filter);
 
       const email_apps: EmailAppDocument[] = await this.emailAppsService.find({
         filter: filter,
@@ -287,38 +281,50 @@ export class EmailAppRouter {
         },
       });
 
-      const clients: ClientDocument[] = await this.clientsService.find({
-        filter: findByEmailAppRefInputData.filter.client,
-        select: [],
-        populate: [],
-      });
+      const client_ids = concatIds(
+        [findByEmailAppRefInputData.filter.email_app.client_id],
+        await this.clientsService.getIds(
+          findByEmailAppRefInputData.filter.client,
+        ),
+      );
+      const organization_ids = concatIds(
+        [findByEmailAppRefInputData.filter.email_app.organization_id],
+        await this.organizationsService.getIds(
+          findByEmailAppRefInputData.filter.organization,
+        ),
+      );
 
-      const client_ids = clients.map((client) => client._id.toString());
-      if (findByEmailAppRefInputData.filter.email_app.client_id) {
-        client_ids.push(findByEmailAppRefInputData.filter.email_app.client_id);
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (client_ids.length > 0) {
+        references_ids.set("client_id", {
+          $in: client_ids,
+        });
+      }
+      if (organization_ids.length > 0) {
+        references_ids.set("organization_id", {
+          $in: organization_ids,
+        });
       }
 
-      const organizations: OrganizationDocument[] =
-        await this.organizationsService.find({
-          filter: findByEmailAppRefInputData.filter.organization,
-          select: [],
-          populate: [],
+      if (
+        references_ids.size === 0 &&
+        Object.keys(findByEmailAppRefInputData.filter.email_app).length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.findByRef.name,
+          metadata: {
+            references_ids,
+            email_app: Object.keys(findByEmailAppRefInputData.filter.email_app),
+          },
         });
-
-      const organization_ids = organizations.map((organization) =>
-        organization._id.toString(),
-      );
-      if (findByEmailAppRefInputData.filter.email_app.organization_id) {
-        organization_ids.push(
-          findByEmailAppRefInputData.filter.email_app.organization_id,
-        );
+        return [];
       }
 
       const email_apps: EmailAppDocument[] = await this.emailAppsService.find({
         filter: {
           ...findByEmailAppRefInputData.filter.email_app,
-          client_id: { $in: client_ids },
-          organization_id: { $in: organization_ids },
+          ...Object.fromEntries(references_ids),
         },
         select: [],
         populate: ["client_id", "organization_id"],
@@ -328,7 +334,7 @@ export class EmailAppRouter {
         action: "Exit",
         method: this.findByRef.name,
         metadata: {
-          email_apps,
+          // email_apps,
         },
       });
 
@@ -406,15 +412,7 @@ export class EmailAppRouter {
         },
       });
 
-      const filter = updateByEmailAppDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(updateByEmailAppDataInputData.filter);
 
       const key = await this.emailAppsService.updateMany({
         filter: filter,
@@ -461,15 +459,7 @@ export class EmailAppRouter {
         },
       });
 
-      const filter = deleteByEmailAppDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(deleteByEmailAppDataInputData.filter);
 
       const delete_count: Number = await this.emailAppsService.delete({
         filter: filter,
@@ -513,40 +503,52 @@ export class EmailAppRouter {
         },
       });
 
-      const clients: ClientDocument[] = await this.clientsService.find({
-        filter: deleteByEmailAppRefInputData.filter.client,
-        select: [],
-        populate: [],
-      });
+      const client_ids = concatIds(
+        [deleteByEmailAppRefInputData.filter.email_app.client_id],
+        await this.clientsService.getIds(
+          deleteByEmailAppRefInputData.filter.client,
+        ),
+      );
+      const organization_ids = concatIds(
+        [deleteByEmailAppRefInputData.filter.email_app.organization_id],
+        await this.organizationsService.getIds(
+          deleteByEmailAppRefInputData.filter.organization,
+        ),
+      );
 
-      const client_ids = clients.map((client) => client._id.toString());
-      if (deleteByEmailAppRefInputData.filter.email_app.client_id) {
-        client_ids.push(
-          deleteByEmailAppRefInputData.filter.email_app.client_id,
-        );
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (client_ids.length > 0) {
+        references_ids.set("client_id", {
+          $in: client_ids,
+        });
+      }
+      if (organization_ids.length > 0) {
+        references_ids.set("organization_id", {
+          $in: organization_ids,
+        });
       }
 
-      const organizations: OrganizationDocument[] =
-        await this.organizationsService.find({
-          filter: deleteByEmailAppRefInputData.filter.organization,
-          select: [],
-          populate: [],
+      if (
+        references_ids.size === 0 &&
+        Object.keys(deleteByEmailAppRefInputData.filter.email_app).length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.deleteByRef.name,
+          metadata: {
+            references_ids,
+            email_app: Object.keys(
+              deleteByEmailAppRefInputData.filter.email_app,
+            ),
+          },
         });
-
-      const organization_ids = organizations.map((organization) =>
-        organization._id.toString(),
-      );
-      if (deleteByEmailAppRefInputData.filter.email_app.organization_id) {
-        organization_ids.push(
-          deleteByEmailAppRefInputData.filter.email_app.organization_id,
-        );
+        return { delete_count: 0 };
       }
 
       const delete_count: Number = await this.emailAppsService.delete({
         filter: {
           ...deleteByEmailAppRefInputData.filter.email_app,
-          client_id: { $in: client_ids },
-          organization_id: { $in: organization_ids },
+          ...Object.fromEntries(references_ids),
         },
       });
 

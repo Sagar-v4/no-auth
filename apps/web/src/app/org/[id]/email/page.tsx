@@ -6,9 +6,19 @@ import { DataTable as AppDataTable } from "@/components/email-app-data-table/dat
 import { columns as appColumns } from "@/components/email-app-data-table/columns";
 import { TabsContent } from "@workspace/ui/components/tabs";
 import { getApps, getTemplates } from "@/registry/fake-data";
+import { getEmailAppsByData } from "@/trpc/query/email";
+import { z } from "zod";
+import { appSchema } from "@/components/email-app-data-table/schema";
 
 export default function Page() {
-  const apps = getApps();
+  // const apps = getApps();
+  const { data, isLoading } = getEmailAppsByData();
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  console.log("🚀 ~ Page ~ data:", data);
+  const apps = z.array(appSchema).parse(data);
+
   const templates = getTemplates();
   return (
     <>

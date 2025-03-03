@@ -8,7 +8,9 @@ export type FindByOrganizationIdInputType = z.infer<
   typeof findByOrganizationIdInputSchema
 >;
 
-export const findByOrganizationIdOutputSchema = organizationOutputSchema;
+export const findByOrganizationIdOutputSchema = organizationOutputSchema.or(
+  z.undefined(),
+);
 export type FindByOrganizationIdOutputType = z.infer<
   typeof findByOrganizationIdOutputSchema
 >;

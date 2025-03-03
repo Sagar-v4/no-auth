@@ -8,7 +8,9 @@ export type FindByEmailAppIdInputType = z.infer<
   typeof findByEmailAppIdInputSchema
 >;
 
-export const findByEmailAppIdOutputSchema = emailAppOutputSchema;
+export const findByEmailAppIdOutputSchema = emailAppOutputSchema.or(
+  z.undefined(),
+);
 export type FindByEmailAppIdOutputType = z.infer<
   typeof findByEmailAppIdOutputSchema
 >;

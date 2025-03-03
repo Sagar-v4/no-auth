@@ -6,7 +6,7 @@ export const findByClientIdInputSchema = z.object({
 });
 export type FindByClientIdInputType = z.infer<typeof findByClientIdInputSchema>;
 
-export const findByClientIdOutputSchema = clientOutputSchema;
+export const findByClientIdOutputSchema = clientOutputSchema.or(z.undefined());
 export type FindByClientIdOutputType = z.infer<
   typeof findByClientIdOutputSchema
 >;

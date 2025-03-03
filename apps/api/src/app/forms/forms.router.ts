@@ -65,6 +65,8 @@ import { OrganizationsService } from "@/app/organizations/organizations.service"
 import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
 import { EmailAppsService } from "@/app/email/apps/apps.service";
 import { EmailAppDocument } from "@/app/email/apps/entities/app.entity";
+import { query$or } from "@/utils/query-builder";
+import { concatIds } from "@/utils/query-filter";
 
 @Router({
   alias: "forms",
@@ -234,15 +236,7 @@ export class FormRouter {
         },
       });
 
-      const filter = findByFormDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(findByFormDataInputData.filter);
 
       const forms: FormDocument[] = await this.formsService.find({
         filter: filter,
@@ -287,52 +281,59 @@ export class FormRouter {
         },
       });
 
-      const clients: ClientDocument[] = await this.clientsService.find({
-        filter: findByFormRefInputData.filter.client,
-        select: [],
-        populate: [],
-      });
+      const client_ids = concatIds(
+        [findByFormRefInputData.filter.form.client_id],
+        await this.clientsService.getIds(findByFormRefInputData.filter.client),
+      );
+      const organization_ids = concatIds(
+        [findByFormRefInputData.filter.form.organization_id],
+        await this.organizationsService.getIds(
+          findByFormRefInputData.filter.organization,
+        ),
+      );
+      const email_app_ids = concatIds(
+        [findByFormRefInputData.filter.form.email_app_id],
+        await this.emailAppsService.getIds(
+          findByFormRefInputData.filter.email_app,
+        ),
+      );
 
-      const client_ids = clients.map((client) => client._id.toString());
-      if (findByFormRefInputData.filter.form.client_id) {
-        client_ids.push(findByFormRefInputData.filter.form.client_id);
-      }
-
-      const organizations: OrganizationDocument[] =
-        await this.organizationsService.find({
-          filter: findByFormRefInputData.filter.organization,
-          select: [],
-          populate: [],
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (client_ids.length > 0) {
+        references_ids.set("client_id", {
+          $in: client_ids,
         });
-
-      const organization_ids = organizations.map((organization) =>
-        organization._id.toString(),
-      );
-      if (findByFormRefInputData.filter.form.organization_id) {
-        organization_ids.push(
-          findByFormRefInputData.filter.form.organization_id,
-        );
+      }
+      if (organization_ids.length > 0) {
+        references_ids.set("organization_id", {
+          $in: organization_ids,
+        });
+      }
+      if (email_app_ids.length > 0) {
+        references_ids.set("email_app_id", {
+          $in: email_app_ids,
+        });
       }
 
-      const email_apps: EmailAppDocument[] = await this.emailAppsService.find({
-        filter: findByFormRefInputData.filter.email_app,
-        select: [],
-        populate: [],
-      });
-
-      const email_app_ids = email_apps.map((email_app) =>
-        email_app._id.toString(),
-      );
-      if (findByFormRefInputData.filter.form.email_app_id) {
-        email_app_ids.push(findByFormRefInputData.filter.form.email_app_id);
+      if (
+        references_ids.size === 0 &&
+        Object.keys(findByFormRefInputData.filter.form).length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.findByRef.name,
+          metadata: {
+            references_ids,
+            form: Object.keys(findByFormRefInputData.filter.form),
+          },
+        });
+        return [];
       }
 
       const forms: FormDocument[] = await this.formsService.find({
         filter: {
           ...findByFormRefInputData.filter.form,
-          client_id: { $in: client_ids },
-          organization_id: { $in: organization_ids },
-          email_app_id: { $in: email_app_ids },
+          ...Object.fromEntries(references_ids),
         },
         select: [],
         populate: ["client_id", "organization_id", "email_app_id"],
@@ -420,15 +421,7 @@ export class FormRouter {
         },
       });
 
-      const filter = updateByFormDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(updateByFormDataInputData.filter);
 
       const key = await this.formsService.updateMany({
         filter: filter,
@@ -475,15 +468,7 @@ export class FormRouter {
         },
       });
 
-      const filter = deleteByFormDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(deleteByFormDataInputData.filter);
 
       const delete_count: Number = await this.formsService.delete({
         filter: filter,
@@ -527,52 +512,61 @@ export class FormRouter {
         },
       });
 
-      const clients: ClientDocument[] = await this.clientsService.find({
-        filter: deleteByFormRefInputData.filter.client,
-        select: [],
-        populate: [],
-      });
+      const client_ids = concatIds(
+        [deleteByFormRefInputData.filter.form.client_id],
+        await this.clientsService.getIds(
+          deleteByFormRefInputData.filter.client,
+        ),
+      );
+      const organization_ids = concatIds(
+        [deleteByFormRefInputData.filter.form.organization_id],
+        await this.organizationsService.getIds(
+          deleteByFormRefInputData.filter.organization,
+        ),
+      );
+      const email_app_ids = concatIds(
+        [deleteByFormRefInputData.filter.form.email_app_id],
+        await this.emailAppsService.getIds(
+          deleteByFormRefInputData.filter.email_app,
+        ),
+      );
 
-      const client_ids = clients.map((client) => client._id.toString());
-      if (deleteByFormRefInputData.filter.form.client_id) {
-        client_ids.push(deleteByFormRefInputData.filter.form.client_id);
-      }
-
-      const organizations: OrganizationDocument[] =
-        await this.organizationsService.find({
-          filter: deleteByFormRefInputData.filter.organization,
-          select: [],
-          populate: [],
+      const references_ids = new Map<string, { $in: string[] }>();
+      if (client_ids.length > 0) {
+        references_ids.set("client_id", {
+          $in: client_ids,
         });
-
-      const organization_ids = organizations.map((organization) =>
-        organization._id.toString(),
-      );
-      if (deleteByFormRefInputData.filter.form.organization_id) {
-        organization_ids.push(
-          deleteByFormRefInputData.filter.form.organization_id,
-        );
+      }
+      if (organization_ids.length > 0) {
+        references_ids.set("organization_id", {
+          $in: organization_ids,
+        });
+      }
+      if (email_app_ids.length > 0) {
+        references_ids.set("email_app_id", {
+          $in: email_app_ids,
+        });
       }
 
-      const email_apps: EmailAppDocument[] = await this.emailAppsService.find({
-        filter: deleteByFormRefInputData.filter.email_app,
-        select: [],
-        populate: [],
-      });
-
-      const email_app_ids = email_apps.map((email_app) =>
-        email_app._id.toString(),
-      );
-      if (deleteByFormRefInputData.filter.form.email_app_id) {
-        email_app_ids.push(deleteByFormRefInputData.filter.form.email_app_id);
+      if (
+        references_ids.size === 0 &&
+        Object.keys(deleteByFormRefInputData.filter.form).length === 0
+      ) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.deleteByRef.name,
+          metadata: {
+            references_ids,
+            form: Object.keys(deleteByFormRefInputData.filter.form),
+          },
+        });
+        return { delete_count: 0 };
       }
 
       const delete_count: Number = await this.formsService.delete({
         filter: {
           ...deleteByFormRefInputData.filter.form,
-          client_id: { $in: client_ids },
-          organization_id: { $in: organization_ids },
-          email_app_id: { $in: email_app_ids },
+          ...Object.fromEntries(references_ids),
         },
       });
 

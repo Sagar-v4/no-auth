@@ -1,9 +1,13 @@
 import { z } from "zod";
-import { sessionInputSchema } from ".";
 import { deviceInputSchema } from "../../devices/schemas";
+import { clientInputSchema } from "../../clients/schemas";
+import { clienteleInputSchema } from "../../clienteles/schemas";
+import { sessionInputSchema } from ".";
 
 export const deleteBySessionRefInputSchema = z.object({
   filter: z.object({
+    client: clientInputSchema,
+    clientele: clienteleInputSchema,
     device: deviceInputSchema,
     session: sessionInputSchema,
   }),

@@ -47,6 +47,7 @@ import {
   deleteByDeviceDataOutputSchema,
   DeleteByDeviceDataOutputType,
 } from "./schemas/delete-by-data.schema";
+import { query$or } from "@/utils/query-builder";
 
 @Router({
   alias: "devices",
@@ -212,15 +213,7 @@ export class DevicesRouter {
         },
       });
 
-      const filter = findByDeviceDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(findByDeviceDataInputData.filter);
 
       const devices: DeviceDocument[] = await this.devicesService.find({
         filter: filter,
@@ -309,15 +302,7 @@ export class DevicesRouter {
         },
       });
 
-      const filter = updateByDeviceDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(updateByDeviceDataInputData.filter);
 
       const device = await this.devicesService.updateMany({
         filter: filter,
@@ -363,15 +348,7 @@ export class DevicesRouter {
         },
       });
 
-      const filter = deleteByDeviceDataInputData.filter.reduce((acc, obj) => {
-        Object.keys(obj).forEach((key) => {
-          if (!acc[key]) {
-            acc[key] = { $in: [] };
-          }
-          acc[key]["$in"].push(obj[key]);
-        });
-        return acc;
-      }, {});
+      const filter = query$or(deleteByDeviceDataInputData.filter);
 
       const delete_count: Number = await this.devicesService.delete({
         filter: filter,

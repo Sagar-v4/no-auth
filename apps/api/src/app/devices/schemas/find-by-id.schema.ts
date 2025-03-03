@@ -6,7 +6,7 @@ export const findByDeviceIdInputSchema = z.object({
 });
 export type FindByDeviceIdInputType = z.infer<typeof findByDeviceIdInputSchema>;
 
-export const findByDeviceIdOutputSchema = deviceOutputSchema;
+export const findByDeviceIdOutputSchema = deviceOutputSchema.or(z.undefined());
 export type FindByDeviceIdOutputType = z.infer<
   typeof findByDeviceIdOutputSchema
 >;
