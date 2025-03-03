@@ -2,6 +2,8 @@
 
 import {
   isServer,
+  dehydrate,
+  HydrationBoundary,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
@@ -79,10 +81,12 @@ export function TrpcReactQueryProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-        {children}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </TRPCProvider>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </TRPCProvider>
+      </HydrationBoundary>
     </QueryClientProvider>
   );
 }

@@ -1,21 +1,21 @@
-import { MoonIcon, SunIcon, SunMoonIcon } from "lucide-react";
+import { Monitor, Sun, Moon } from "lucide-react";
 
 export const modes = [
   {
     name: "light",
     label: "Light",
-    icon: SunIcon,
+    icon: Sun,
   },
   {
     name: "dark",
     label: "Dark",
-    icon: MoonIcon,
+    icon: Moon,
   },
   {
     name: "system",
     label: "System",
-    icon: SunMoonIcon,
+    icon: Monitor,
   },
 ] as const;
 
-export type Mode = (typeof modes)[number];
+export type Modes = (typeof modes)[number];

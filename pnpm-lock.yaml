@@ -25,6 +25,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
+      usehooks-ts:
+        specifier: ^3.1.1
+        version: 3.1.1(react@19.0.0)
       zod:
         specifier: ^3.24.1
         version: 3.24.2
@@ -8093,6 +8096,12 @@ packages:
         integrity: sha512-kZzYOKspf8XVX5AvmQF94gQW0lejFVgb80G85bU4ZWzoJ6C03PQg3coYAUpSTpQWelrZELd3XWgHzw4Ck5kaIw==,
       }
 
+  lodash.debounce@4.0.8:
+    resolution:
+      {
+        integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==,
+      }
+
   lodash.escaperegexp@4.1.2:
     resolution:
       {
@@ -11236,6 +11245,15 @@ packages:
       }
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  usehooks-ts@3.1.1:
+    resolution:
+      {
+        integrity: sha512-I4diPp9Cq6ieSUH2wu+fDAVQO43xwtulo+fKEidHUwZPnYImbtkTjzIJYcDcJqxgmX31GVqNFURodvcgHcW0pA==,
+      }
+    engines: { node: ">=16.15.0" }
+    peerDependencies:
+      react: ^16.8.0  || ^17 || ^18 || ^19 || ^19.0.0-rc
 
   util-deprecate@1.0.2:
     resolution:
@@ -17051,6 +17069,8 @@ snapshots:
 
   lodash.capitalize@4.2.1: {}
 
+  lodash.debounce@4.0.8: {}
+
   lodash.escaperegexp@4.1.2: {}
 
   lodash.get@4.4.2: {}
@@ -18908,6 +18928,11 @@ snapshots:
 
   use-sync-external-store@1.4.0(react@19.0.0):
     dependencies:
+      react: 19.0.0
+
+  usehooks-ts@3.1.1(react@19.0.0):
+    dependencies:
+      lodash.debounce: 4.0.8
       react: 19.0.0
 
   util-deprecate@1.0.2: {}

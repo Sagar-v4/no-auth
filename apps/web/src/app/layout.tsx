@@ -1,10 +1,13 @@
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "@workspace/ui/globals.css";
+import "@workspace/ui/themes.css";
+// import "@workspace/ui/mdx.css";
 import { Provider as ThemeProvider } from "@workspace/ui/theme/provider.tsx";
 import { TrpcReactQueryProvider } from "@/trpc/provider";
 import { cn } from "@workspace/ui/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Wrapper as ThemeWrapper } from "@workspace/ui/theme/wrapper.tsx";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -50,6 +53,7 @@ export default function RootLayout({
       >
         <NuqsAdapter>
           <TrpcReactQueryProvider>
+            {/* <ThemeWrapper> */}
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -58,6 +62,7 @@ export default function RootLayout({
             >
               {children}
             </ThemeProvider>
+            {/* </ThemeWrapper> */}
           </TrpcReactQueryProvider>
         </NuqsAdapter>
       </body>

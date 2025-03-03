@@ -50,6 +50,8 @@
   },
   "exports": {
     "./globals.css": "./src/styles/globals.css",
+    "./themes.css": "./src/styles/themes.css",
+    "./mdx.css": "./src/styles/mdx.css",
     "./postcss.config": "./postcss.config.mjs",
     "./tailwind.config": "./tailwind.config.ts",
     "./lib/*": "./src/lib/*.ts",
