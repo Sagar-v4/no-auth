@@ -1,4 +1,4 @@
-import { TRPC_ERROR_CODE_KEY } from "@trpc/server/dist/rpc";
+import { TRPC_ERROR_CODE_KEY } from "@trpc/server/rpc";
 
 export const ERROR: {
   [key: string]: {

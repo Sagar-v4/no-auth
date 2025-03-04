@@ -6,22 +6,18 @@ export function getEmailAppsByData() {
 
   const queryOptions = emailApps.findByData.queryOptions(
     {
-      filter: [
-        {
-          organization_id: "67c3351735d35d798b8aa54b",
-        },
-      ],
+      filter: [],
     },
     {
       staleTime: 60 * 1000, // 1 min
       refetchInterval: 60 * 1000, // 1 min
-      // select: (data) => {
-      //   const { _id, ...rest } = data;
-      //   return {
-      //     ...rest,
-      //     id: _id,
-      //   };
-      // },
+      select: (arr) => {
+        return arr.map((data) => ({
+          ...data,
+          updatedAt: new Date(data.updatedAt),
+          createdAt: new Date(data.createdAt),
+        }));
+      },
       trpc: {
         abortOnUnmount: true,
         ssr: true,

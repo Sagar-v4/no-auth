@@ -91,7 +91,7 @@ export function NavHeader({
                   value={tab.value}
                   onClick={() => setTabName(tab.value)}
                   className={cn(
-                    "hover:bg-accent bg-sidebar data-[state=active]:bg-primary data-[state=active]:text-primary-foreground !px-4 data-[state=active]:shadow-none",
+                    "hover:bg-accent hover:text-primary bg-sidebar data-[state=active]:bg-primary data-[state=active]:text-primary-foreground !px-4 data-[state=active]:shadow-none",
                   )}
                 >
                   {tab.name}

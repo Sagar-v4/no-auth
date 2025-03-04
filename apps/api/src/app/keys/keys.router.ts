@@ -10,59 +10,57 @@ import {
   InsertOneKeyInputType,
   insertOneKeyOutputSchema,
   InsertOneKeyOutputType,
-} from "./schemas/insert-one.schema";
+} from "../../../../../libs/trpc/schemas/keys/insert-one.schema";
 import {
   insertManyKeyInputSchema,
   InsertManyKeyInputType,
   insertManyKeyOutputSchema,
   InsertManyKeyOutputType,
-} from "./schemas/insert-many.schema";
+} from "../../../../../libs/trpc/schemas/keys/insert-many.schema";
 import {
   findByKeyDataInputSchema,
   FindByKeyDataInputType,
   findByKeyDataOutputSchema,
   FindByKeyDataOutputType,
-} from "./schemas/find-by-data.schema";
+} from "../../../../../libs/trpc/schemas/keys/find-by-data.schema";
 import {
   findByKeyIdInputSchema,
   FindByKeyIdInputType,
   findByKeyIdOutputSchema,
   FindByKeyIdOutputType,
-} from "./schemas/find-by-id.schema";
+} from "../../../../../libs/trpc/schemas/keys/find-by-id.schema";
 import {
   findByKeyRefInputSchema,
   FindByKeyRefInputType,
   findByKeyRefOutputSchema,
   FindByKeyRefOutputType,
-} from "./schemas/find-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/keys/find-by-ref.schema";
 import {
   updateByKeyIdInputSchema,
   UpdateByKeyIdInputType,
   updateByKeyIdOutputSchema,
   UpdateByKeyIdOutputType,
-} from "./schemas/update-by-id.schema";
+} from "../../../../../libs/trpc/schemas/keys/update-by-id.schema";
 import {
   updateByKeyDataInputSchema,
   UpdateByKeyDataInputType,
   updateByKeyDataOutputSchema,
   UpdateByKeyDataOutputType,
-} from "./schemas/update-by-data.schema";
+} from "../../../../../libs/trpc/schemas/keys/update-by-data.schema";
 import {
   deleteByKeyDataInputSchema,
   DeleteByKeyDataInputType,
   deleteByKeyDataOutputSchema,
   DeleteByKeyDataOutputType,
-} from "./schemas/delete-by-data.schema";
+} from "../../../../../libs/trpc/schemas/keys/delete-by-data.schema";
 import {
   deleteByKeyRefInputSchema,
   DeleteByKeyRefInputType,
   deleteByKeyRefOutputSchema,
   DeleteByKeyRefOutputType,
-} from "./schemas/delete-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/keys/delete-by-ref.schema";
 import { ClientsService } from "@/app/clients/clients.service";
-import { ClientDocument } from "@/app/clients/entities/client.entity";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
-import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
 

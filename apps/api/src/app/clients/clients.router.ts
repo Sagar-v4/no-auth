@@ -10,43 +10,43 @@ import {
   InsertOneClientInputType,
   insertOneClientOutputSchema,
   InsertOneClientOutputType,
-} from "./schemas/insert-one.schema";
+} from "../../../../../libs/trpc/schemas/clients/insert-one.schema";
 import {
   insertManyClientInputSchema,
   InsertManyClientInputType,
   insertManyClientOutputSchema,
   InsertManyClientOutputType,
-} from "./schemas/insert-many.schema";
+} from "../../../../../libs/trpc/schemas/clients/insert-many.schema";
 import {
   findByClientIdInputSchema,
   FindByClientIdInputType,
   findByClientIdOutputSchema,
   FindByClientIdOutputType,
-} from "./schemas/find-by-id.schema";
+} from "../../../../../libs/trpc/schemas/clients/find-by-id.schema";
 import {
   findByClientDataInputSchema,
   FindByClientDataInputType,
   findByClientDataOutputSchema,
   FindByClientDataOutputType,
-} from "./schemas/find-by-data.schema";
+} from "../../../../../libs/trpc/schemas/clients/find-by-data.schema";
 import {
   updateByClientIdInputSchema,
   UpdateByClientIdInputType,
   updateByClientIdOutputSchema,
   UpdateByClientIdOutputType,
-} from "./schemas/update-by-id.schema";
+} from "../../../../../libs/trpc/schemas/clients/update-by-id.schema";
 import {
   updateByClientDataInputSchema,
   UpdateByClientDataInputType,
   updateByClientDataOutputSchema,
   UpdateByClientDataOutputType,
-} from "./schemas/update-by-data.schema";
+} from "../../../../../libs/trpc/schemas/clients/update-by-data.schema";
 import {
   deleteByClientDataInputSchema,
   DeleteByClientDataInputType,
   deleteByClientDataOutputSchema,
   DeleteByClientDataOutputType,
-} from "./schemas/delete-by-data.schema";
+} from "../../../../../libs/trpc/schemas/clients/delete-by-data.schema";
 import { query$or } from "@/utils/query-builder";
 
 @Router({

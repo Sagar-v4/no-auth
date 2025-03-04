@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { deviceInputSchema } from "../../devices/schemas";
-import { clientInputSchema } from "../../clients/schemas";
-import { clienteleInputSchema } from "../../clienteles/schemas";
+import { deviceInputSchema } from "../devices";
+import { clientInputSchema } from "../clients";
+import { clienteleInputSchema } from "../clienteles";
 import { sessionInputSchema } from ".";
 
 export const deleteBySessionRefInputSchema = z.object({

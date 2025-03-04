@@ -13,57 +13,56 @@ import {
   InsertOneClienteleInputType,
   insertOneClienteleOutputSchema,
   InsertOneClienteleOutputType,
-} from "./schemas/insert-one.schema";
+} from "../../../../../libs/trpc/schemas/clienteles/insert-one.schema";
 import {
   insertManyClienteleInputSchema,
   InsertManyClienteleInputType,
   insertManyClienteleOutputSchema,
   InsertManyClienteleOutputType,
-} from "./schemas/insert-many.schema";
+} from "../../../../../libs/trpc/schemas/clienteles/insert-many.schema";
 import {
   findByClienteleIdInputSchema,
   FindByClienteleIdInputType,
   findByClienteleIdOutputSchema,
   FindByClienteleIdOutputType,
-} from "./schemas/find-by-id.schema";
+} from "../../../../../libs/trpc/schemas/clienteles/find-by-id.schema";
 import {
   findByClienteleDataInputSchema,
   FindByClienteleDataInputType,
   findByClienteleDataOutputSchema,
   FindByClienteleDataOutputType,
-} from "./schemas/find-by-data.schema";
+} from "../../../../../libs/trpc/schemas/clienteles/find-by-data.schema";
 import {
   findByClienteleRefInputSchema,
   FindByClienteleRefInputType,
   findByClienteleRefOutputSchema,
   FindByClienteleRefOutputType,
-} from "./schemas/find-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/clienteles/find-by-ref.schema";
 import {
   updateByClienteleIdInputSchema,
   UpdateByClienteleIdInputType,
   updateByClienteleIdOutputSchema,
   UpdateByClienteleIdOutputType,
-} from "./schemas/update-by-id.schema";
+} from "../../../../../libs/trpc/schemas/clienteles/update-by-id.schema";
 import {
   updateByClienteleDataInputSchema,
   UpdateByClienteleDataInputType,
   updateByClienteleDataOutputSchema,
   UpdateByClienteleDataOutputType,
-} from "./schemas/update-by-data.schema";
+} from "../../../../../libs/trpc/schemas/clienteles/update-by-data.schema";
 import {
   deleteByClienteleDataInputSchema,
   DeleteByClienteleDataInputType,
   deleteByClienteleDataOutputSchema,
   DeleteByClienteleDataOutputType,
-} from "./schemas/delete-by-data.schema";
+} from "../../../../../libs/trpc/schemas/clienteles/delete-by-data.schema";
 import {
   deleteByClienteleRefInputSchema,
   DeleteByClienteleRefInputType,
   deleteByClienteleRefOutputSchema,
   DeleteByClienteleRefOutputType,
-} from "./schemas/delete-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/clienteles/delete-by-ref.schema";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
-import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
 

@@ -1,12 +1,9 @@
 import { z } from "zod";
 import {
-  clientInputSchema,
-  clientOutputSchema,
-} from "../../../clients/schemas";
-import {
   organizationInputSchema,
   organizationOutputSchema,
-} from "../../../organizations/schemas";
+} from "../../organizations";
+import { clientInputSchema, clientOutputSchema } from "../../clients";
 import { emailAppInputSchema, emailAppOutputSchema } from ".";
 
 export const findByEmailAppRefInputSchema = z.object({

@@ -20,6 +20,7 @@ import {
 
 import { status } from "@/components/email-app-data-table/data";
 import { appSchema } from "@/components/email-app-data-table/schema";
+import { emailAppOutputSchema } from "@/lib/trpc/schemas/email/apps";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -28,7 +29,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const app = appSchema.parse(row.original);
+  const app = emailAppOutputSchema.parse(row.original);
 
   return (
     <DropdownMenu>

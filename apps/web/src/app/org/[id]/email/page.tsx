@@ -8,16 +8,19 @@ import { TabsContent } from "@workspace/ui/components/tabs";
 import { getApps, getTemplates } from "@/registry/fake-data";
 import { getEmailAppsByData } from "@/trpc/query/email";
 import { z } from "zod";
-import { appSchema } from "@/components/email-app-data-table/schema";
+import { emailAppOutputSchema } from "@/lib/trpc/schemas/email/apps";
 
 export default function Page() {
   // const apps = getApps();
-  const { data, isLoading } = getEmailAppsByData();
+  const { data, isLoading, isError } = getEmailAppsByData();
   if (isLoading) {
     return <div>Loading...</div>;
   }
+  if (isError) {
+    return <div>Error...</div>;
+  }
   console.log("🚀 ~ Page ~ data:", data);
-  const apps = z.array(appSchema).parse(data);
+  const apps = z.array(emailAppOutputSchema).parse(data);
 
   const templates = getTemplates();
   return (

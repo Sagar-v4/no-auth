@@ -4,7 +4,8 @@
     "strict": true,
     "strictNullChecks": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/lib/trpc/*": ["../../libs/trpc/*"]
     }
   },
   "include": [

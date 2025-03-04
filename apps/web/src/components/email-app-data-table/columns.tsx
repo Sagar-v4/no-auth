@@ -10,8 +10,9 @@ import {
 import { App } from "@/components/email-app-data-table/schema";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableRowActions } from "@/components/email-app-data-table/data-table-row-actions";
+import { EmailAppOutputSchema } from "@/lib/trpc/schemas/email/apps";
 
-export const columns: ColumnDef<App>[] = [
+export const columns: ColumnDef<EmailAppOutputSchema>[] = [
   {
     id: "select",
     header: ({ table }) => (

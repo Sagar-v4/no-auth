@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { organizationInputSchema } from ".";
-import { clientInputSchema } from "../../clients/schemas";
+import { clientInputSchema } from "../clients";
 
 export const deleteByOrganizationRefInputSchema = z.object({
   filter: z.object({

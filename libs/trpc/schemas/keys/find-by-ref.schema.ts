@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { clientInputSchema, clientOutputSchema } from "../../clients/schemas";
 import {
   organizationInputSchema,
   organizationOutputSchema,
-} from "../../organizations/schemas";
+} from "../organizations";
+import { clientInputSchema, clientOutputSchema } from "../clients";
 import { keyInputSchema, keyOutputSchema } from ".";
 
 export const findByKeyRefInputSchema = z.object({

@@ -1,4 +1,4 @@
-import { clientInputSchema, clientOutputSchema } from "../../clients/schemas";
+import { clientInputSchema, clientOutputSchema } from "../clients";
 import { z } from "zod";
 import { organizationInputSchema, organizationOutputSchema } from ".";
 

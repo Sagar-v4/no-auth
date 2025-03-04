@@ -1,8 +1,8 @@
+import { z } from "zod";
 import {
   organizationInputSchema,
   organizationOutputSchema,
-} from "../../organizations/schemas";
-import { z } from "zod";
+} from "../organizations";
 import { clienteleInputSchema, clienteleOutputSchema } from ".";
 
 export const findByClienteleRefInputSchema = z.object({

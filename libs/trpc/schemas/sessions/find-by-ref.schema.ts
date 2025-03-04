@@ -1,10 +1,7 @@
 import { z } from "zod";
-import {
-  clienteleInputSchema,
-  clienteleOutputSchema,
-} from "../../clienteles/schemas";
-import { clientInputSchema, clientOutputSchema } from "../../clients/schemas";
-import { deviceInputSchema, deviceOutputSchema } from "../../devices/schemas";
+import { clienteleInputSchema, clienteleOutputSchema } from "../clienteles";
+import { clientInputSchema, clientOutputSchema } from "../clients";
+import { deviceInputSchema, deviceOutputSchema } from "../devices";
 import { sessionInputSchema, sessionOutputSchema } from ".";
 
 export const findBySessionRefInputSchema = z.object({

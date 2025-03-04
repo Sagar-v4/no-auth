@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { clientInputSchema } from "../../../clients/schemas";
-import { organizationInputSchema } from "../../../organizations/schemas";
+import { clientInputSchema } from "../../clients";
+import { organizationInputSchema } from "../../organizations";
 import { emailAppInputSchema } from ".";
 
 export const deleteByEmailAppRefInputSchema = z.object({

@@ -10,59 +10,57 @@ import {
   InsertOneEmailAppInputType,
   insertOneEmailAppOutputSchema,
   InsertOneEmailAppOutputType,
-} from "./schemas/insert-one.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps/insert-one.schema";
 import {
   insertManyEmailAppInputSchema,
   InsertManyEmailAppInputType,
   insertManyEmailAppOutputSchema,
   InsertManyEmailAppOutputType,
-} from "./schemas/insert-many.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps/insert-many.schema";
 import {
   findByEmailAppDataInputSchema,
   FindByEmailAppDataInputType,
   findByEmailAppDataOutputSchema,
   FindByEmailAppDataOutputType,
-} from "./schemas/find-by-data.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps/find-by-data.schema";
 import {
   findByEmailAppIdInputSchema,
   FindByEmailAppIdInputType,
   findByEmailAppIdOutputSchema,
   FindByEmailAppIdOutputType,
-} from "./schemas/find-by-id.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps/find-by-id.schema";
 import {
   findByEmailAppRefInputSchema,
   FindByEmailAppRefInputType,
   findByEmailAppRefOutputSchema,
   FindByEmailAppRefOutputType,
-} from "./schemas/find-by-ref.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps/find-by-ref.schema";
 import {
   updateByEmailAppIdInputSchema,
   UpdateByEmailAppIdInputType,
   updateByEmailAppIdOutputSchema,
   UpdateByEmailAppIdOutputType,
-} from "./schemas/update-by-id.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps/update-by-id.schema";
 import {
   updateByEmailAppDataInputSchema,
   UpdateByEmailAppDataInputType,
   updateByEmailAppDataOutputSchema,
   UpdateByEmailAppDataOutputType,
-} from "./schemas/update-by-data.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps/update-by-data.schema";
 import {
   deleteByEmailAppDataInputSchema,
   DeleteByEmailAppDataInputType,
   deleteByEmailAppDataOutputSchema,
   DeleteByEmailAppDataOutputType,
-} from "./schemas/delete-by-data.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps/delete-by-data.schema";
 import {
   deleteByEmailAppRefInputSchema,
   DeleteByEmailAppRefInputType,
   deleteByEmailAppRefOutputSchema,
   DeleteByEmailAppRefOutputType,
-} from "./schemas/delete-by-ref.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps/delete-by-ref.schema";
 import { ClientsService } from "@/app/clients/clients.service";
-import { ClientDocument } from "@/app/clients/entities/client.entity";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
-import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
 

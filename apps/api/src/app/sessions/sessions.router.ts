@@ -13,65 +13,59 @@ import {
   InsertOneSessionInputType,
   insertOneSessionOutputSchema,
   InsertOneSessionOutputType,
-} from "./schemas/insert-one.schema";
+} from "../../../../../libs/trpc/schemas/sessions/insert-one.schema";
 import {
   insertManySessionInputSchema,
   InsertManySessionInputType,
   insertManySessionOutputSchema,
   InsertManySessionOutputType,
-} from "./schemas/insert-many.schema";
+} from "../../../../../libs/trpc/schemas/sessions/insert-many.schema";
 import {
   findBySessionDataInputSchema,
   FindBySessionDataInputType,
   findBySessionDataOutputSchema,
   FindBySessionDataOutputType,
-} from "./schemas/find-by-data.schema";
+} from "../../../../../libs/trpc/schemas/sessions/find-by-data.schema";
 import {
   findBySessionIdInputSchema,
   FindBySessionIdInputType,
   findBySessionIdOutputSchema,
   FindBySessionIdOutputType,
-} from "./schemas/find-by-id.schema";
+} from "../../../../../libs/trpc/schemas/sessions/find-by-id.schema";
 import {
   findBySessionRefInputSchema,
   FindBySessionRefInputType,
   findBySessionRefOutputSchema,
   FindBySessionRefOutputType,
-} from "./schemas/find-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/sessions/find-by-ref.schema";
 import {
   updateBySessionIdInputSchema,
   UpdateBySessionIdInputType,
   updateBySessionIdOutputSchema,
   UpdateBySessionIdOutputType,
-} from "./schemas/update-by-id.schema";
+} from "../../../../../libs/trpc/schemas/sessions/update-by-id.schema";
 import {
   updateBySessionDataInputSchema,
   UpdateBySessionDataInputType,
   updateBySessionDataOutputSchema,
   UpdateBySessionDataOutputType,
-} from "./schemas/update-by-data.schema";
+} from "../../../../../libs/trpc/schemas/sessions/update-by-data.schema";
 import {
   deleteBySessionDataInputSchema,
   DeleteBySessionDataInputType,
   deleteBySessionDataOutputSchema,
   DeleteBySessionDataOutputType,
-} from "./schemas/delete-by-data.schema";
+} from "../../../../../libs/trpc/schemas/sessions/delete-by-data.schema";
 import {
   deleteBySessionRefInputSchema,
   DeleteBySessionRefInputType,
   deleteBySessionRefOutputSchema,
   DeleteBySessionRefOutputType,
-} from "./schemas/delete-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/sessions/delete-by-ref.schema";
 import { ClientsService } from "@/app/clients/clients.service";
-import {
-  CLIENT_SCHEMA_NAME,
-  ClientDocument,
-} from "@/app/clients/entities/client.entity";
+import { ClientDocument } from "@/app/clients/entities/client.entity";
 import { ClientelesService } from "@/app/clienteles/clienteles.service";
-import {
-  CLIENTELE_SCHEMA_NAME,
-  ClienteleDocument,
-} from "@/app/clienteles/entities/clientele.entity";
+import { ClienteleDocument } from "@/app/clienteles/entities/clientele.entity";
 import { DevicesService } from "@/app/devices/devices.service";
 import { DeviceDocument } from "@/app/devices/entities/device.entity";
 import { query$or } from "@/utils/query-builder";

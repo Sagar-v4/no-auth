@@ -3,18 +3,18 @@ import { AppModule } from "@/app.module";
 import { Logger } from "@nestjs/common";
 import { EnvService } from "@/env/env.service";
 import {
-  ExpressAdapter,
-  NestExpressApplication,
-} from "@nestjs/platform-express";
+  FastifyAdapter,
+  NestFastifyApplication,
+} from "@nestjs/platform-fastify";
 
 const globalPrefix = "api";
 
 async function bootstrap() {
   const logger: Logger = new Logger("Main");
 
-  const app = await NestFactory.create<NestExpressApplication>(
+  const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new ExpressAdapter(),
+    new FastifyAdapter(),
   );
   app.enableCors();
   // app.setGlobalPrefix(globalPrefix);

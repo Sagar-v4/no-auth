@@ -12,7 +12,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { env } from "@/env/client/env.schema";
 import { TRPCProvider } from "@/trpc/server";
-import type { AppRouter } from "@workspace/trpc/router";
+import type { AppRouter } from "@/lib/trpc/@generated/server";
 
 function getBaseUrl() {
   if (typeof window !== "undefined") return env.APP_BASE_URL;
