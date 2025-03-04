@@ -14,7 +14,7 @@ import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organizat
 @Schema({
   timestamps: true,
 })
-export class EmailService {
+export class Email_Service {
   @Prop({
     type: Types.UUID,
     required: true,
@@ -28,31 +28,31 @@ export class EmailService {
     ref: FORM_SCHEMA_NAME,
     required: true,
   })
-  formId!: string;
+  form_id!: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: EMAIL_APP_SCHEMA_NAME,
     required: true,
   })
-  emailAppId!: string;
+  email_app_id!: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
   })
-  organizationId!: string;
+  organization_id!: string;
 
   @Prop({ type: Object })
   metadata?: object;
 }
 
-export const EMAIL_SERVICE_SCHEMA_NAME: string = EmailService.name;
+export const EMAIL_SERVICE_SCHEMA_NAME: string = Email_Service.name;
 
-export const EmailServiceSchema = SchemaFactory.createForClass(EmailService);
+export const EmailServiceSchema = SchemaFactory.createForClass(Email_Service);
 
-export type EmailServiceDocument = HydratedDocument<EmailService>;
+export type EmailServiceDocument = HydratedDocument<Email_Service>;
 
 const INDEXES = [
   {

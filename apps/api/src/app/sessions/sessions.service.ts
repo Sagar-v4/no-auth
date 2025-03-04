@@ -1,4 +1,12 @@
-import { Model } from "mongoose";
+import {
+  DeleteResult,
+  InsertManyResult,
+  Model,
+  PopulateOptions,
+  RootFilterQuery,
+  UpdateQuery,
+  UpdateWriteOpResult,
+} from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, Logger } from "@nestjs/common";
 
@@ -7,6 +15,8 @@ import {
   SessionDocument,
 } from "@/app/sessions/entities/session.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
+import { TRPCError } from "@trpc/server";
+import { ERROR } from "@/trpc/error";
 
 @Injectable()
 export class SessionsService {
@@ -30,53 +40,49 @@ export class SessionsService {
     }
   }
 
-  // POST
-  async insertOne(doc: {
-    userId: string;
-    userType: string;
-    deviceId: string;
-    metadata: { [field: string]: unknown };
+  async insertOne(input: {
+    doc: {
+      user_id: string;
+      user_type: string;
+      device_id: string;
+    };
   }): Promise<SessionDocument> {
     try {
       this.logger.debug({
         action: "Entry",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
-      const sessionDocument: SessionDocument =
-        await this.sessionModel.insertOne(doc, {
+      const document: SessionDocument = await this.sessionModel.insertOne(
+        input.doc,
+        {
           validateBeforeSave: true,
-        });
+        },
+      );
+
+      if (!document) {
+        throw new TRPCError(ERROR.SESSIOIN.NOT_FOUND);
+      }
 
       this.logger.log({
         action: "Exit",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
-          documentKeys: Object.keys(sessionDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          sessionDocument,
-        },
-      });
-
-      return sessionDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
         method: this.insertOne.name,
         error: error,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
@@ -84,255 +90,312 @@ export class SessionsService {
     }
   }
 
-  // GET
-  async findOne({
-    filter,
-    projection,
-    conditions,
-  }: {
-    filter: { [field: string]: unknown };
-    projection: { [field: string]: number };
-    conditions?: { [field: string]: unknown };
-  }): Promise<SessionDocument> {
+  async insertMany(input: {
+    docs: {
+      user_id: string;
+      user_type: string;
+      device_id: string;
+    }[];
+  }): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOne.name,
+        method: this.insertMany.name,
         metadata: {
-          filter,
-          projection,
-          conditions,
+          input,
         },
       });
 
-      const sessionDocument: SessionDocument | null | undefined =
-        await this.sessionModel
-          .findOne(filter, projection)
-          .where(conditions ?? {});
+      const result: InsertManyResult<any> = await this.sessionModel.insertMany(
+        input.docs,
+        {
+          includeResultMetadata: true,
+          rawResult: true,
+        },
+      );
 
-      if (!sessionDocument) {
-        throw new Error("Session Document not found");
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.SESSION.NOT_FOUND);
       }
 
-      this.logger.log({
-        action: "Exit",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-          documentKeys: Object.keys(sessionDocument),
-        },
-      });
-
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-          sessionDocument,
-        },
-      });
-
-      return sessionDocument;
-    } catch (error) {
-      this.logger.error({
-        action: "Exit",
-        method: this.findOne.name,
-        error: error,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-        },
-      });
-
-      throw new Error("Failed to find session document by filter");
-    }
-  }
-
-  // PATCH
-  async findOneAndUpdate({
-    conditions,
-    update,
-  }: {
-    conditions: { [field: string]: unknown };
-    update: { [field: string]: unknown };
-  }): Promise<SessionDocument> {
-    try {
-      this.logger.debug({
-        action: "Entry",
-        method: this.findOneAndUpdate.name,
-        metadata: {
-          conditions,
-          update,
-        },
-      });
-
-      const sessionDocument: SessionDocument | null | undefined =
-        await this.sessionModel.findOneAndUpdate(conditions, update, {
-          timestamps: true,
-          new: true,
+      if (
+        result.mongoose?.validationErrors &&
+        result.mongoose?.validationErrors?.length > 0
+      ) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Invalid data",
+          cause: result.mongoose?.validationErrors,
         });
-
-      if (!sessionDocument) {
-        throw new Error("Session Document not found");
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         metadata: {
-          conditions,
-          update,
-          updatedKeys: Object.keys(update),
+          result,
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndUpdate.name,
-        metadata: {
-          conditions,
-          update,
-          sessionDocument,
-        },
-      });
-
-      return sessionDocument;
+      return result;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         error: error,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      throw new Error("Failed to update session document by conditions");
+      throw error;
     }
   }
 
-  // PUT
-  async findOneAndReplace({
-    filter,
-    replacement,
-  }: {
-    filter: { [field: string]: unknown };
-    replacement: { [field: string]: unknown };
+  async find(input: {
+    filter: RootFilterQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
+  }): Promise<SessionDocument[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.find.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const documents: SessionDocument[] | null = await this.sessionModel
+        .find(input.filter)
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.SESSION.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.find.name,
+        metadata: {
+          input,
+          documentKeys: documents.map((document) => Object.keys(document)),
+        },
+      });
+
+      return documents;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.find.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async findOneAndUpdate(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<SessionDocument> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      const sessionDocument: SessionDocument | null | undefined =
-        await this.sessionModel.findOneAndReplace(filter, replacement, {
-          timestamps: true,
+      const document: SessionDocument | null = await this.sessionModel
+        .findOneAndUpdate(input.filter, input.update, {
           new: true,
-        });
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!sessionDocument) {
-        throw new Error("Session Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.SESSION.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
-          replacedKeys: Object.keys(replacement),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndReplace.name,
-        metadata: {
-          filter,
-          replacement,
-          sessionDocument,
-        },
-      });
-
-      return sessionDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         error: error,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      throw new Error("Failed to replacement session document by filter");
+      throw error;
     }
   }
 
-  // DELETE
-  async findOneAndDelete({
-    conditions,
-  }: {
-    conditions: { [field: string]: unknown };
-  }): Promise<SessionDocument> {
+  async updateMany(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
+  }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      const sessionDocument: SessionDocument | null | undefined =
-        await this.sessionModel.findOneAndDelete(conditions);
+      const document: UpdateWriteOpResult = await this.sessionModel
+        .updateMany(input.filter, input.update, {
+          new: true,
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!sessionDocument) {
-        throw new Error("Session Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.SESSION.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
-          documentKeys: Object.keys(sessionDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndDelete.name,
-        metadata: {
-          conditions,
-          sessionDocument,
-        },
-      });
-
-      return sessionDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         error: error,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to delete session document by conditions");
+      throw error;
+    }
+  }
+
+  async delete(input: { filter: RootFilterQuery<any> }): Promise<Number> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.delete.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const result: DeleteResult = await this.sessionModel.deleteMany(
+        input.filter,
+      );
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.SESSION.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.delete.name,
+        metadata: {
+          result,
+        },
+      });
+
+      return result.deletedCount;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.delete.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async getIds(filter: RootFilterQuery<any>): Promise<string[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+        },
+      });
+
+      if (Object.keys(filter).length === 0) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.getIds.name,
+          metadata: {
+            filter,
+          },
+        });
+        return [];
+      }
+
+      const documents: SessionDocument[] | null = await this.sessionModel
+        .find(filter)
+        .select("_id")
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.SESSION.NOT_FOUND);
+      }
+
+      const documentIds = documents.map((document) => document._id.toString());
+
+      this.logger.log({
+        action: "Exit",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+          documentIds,
+        },
+      });
+
+      return documentIds;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.getIds.name,
+        error: error,
+        metadata: {
+          filter,
+        },
+      });
+
+      throw error;
     }
   }
 }

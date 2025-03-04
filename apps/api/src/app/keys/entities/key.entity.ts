@@ -7,7 +7,8 @@ import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organizat
 
 export enum STATUS {
   ACTIVE = "Active",
-  INACTIVE = "Inactive",
+  DEACTIVATED = "Deactivated",
+  EXPIRED = "Expired",
 }
 
 @Schema({
@@ -20,21 +21,21 @@ export class Key {
     unique: true,
     default: () => randomUUID(),
   })
-  key!: string;
+  uuid!: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: CLIENT_SCHEMA_NAME,
     required: true,
   })
-  clientId!: string;
+  client_id!: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
   })
-  organizationId!: string;
+  organization_id!: string;
 
   @Prop({
     type: String,
@@ -44,9 +45,11 @@ export class Key {
 
   @Prop({
     type: String,
-    required: true,
   })
-  description!: string;
+  description?: string;
+
+  @Prop({ type: Number, required: true, default: -1 })
+  expiry!: number; // Ex: new Date().getTime()
 
   @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
   status!: string;

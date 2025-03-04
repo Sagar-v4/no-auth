@@ -3,10 +3,10 @@ import { ContextOptions, TRPCContext } from "nestjs-trpc";
 
 @Injectable()
 export class AppContext implements TRPCContext {
-  async create(opt: ContextOptions) {
+  async create(opts: ContextOptions) {
     return {
-      req: opt.req,
-      res: opt.res,
+      req: opts.req,
+      res: opts.res,
     };
   }
 }

@@ -3,13 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/lib/trpc/*": ["../../libs/trpc/*"]
     }
   },
   "include": [

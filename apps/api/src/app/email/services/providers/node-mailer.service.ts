@@ -207,7 +207,7 @@ export class NodeMailer {
         action: "Exit",
         method: this.sendEmail.name,
         metadata: {
-          result: result,
+          result,
         },
       });
 
@@ -215,7 +215,7 @@ export class NodeMailer {
         action: "Exit",
         method: this.sendEmail.name,
         metadata: {
-          result: result,
+          result,
         },
       });
 
