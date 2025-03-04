@@ -8,6 +8,7 @@ import { TrpcReactQueryProvider } from "@/trpc/provider";
 import { cn } from "@workspace/ui/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Wrapper as ThemeWrapper } from "@workspace/ui/theme/wrapper.tsx";
+import { Toaster } from "@workspace/ui/components/sonner";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -61,6 +62,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               {children}
+              <Toaster />
             </ThemeProvider>
             {/* </ThemeWrapper> */}
           </TrpcReactQueryProvider>

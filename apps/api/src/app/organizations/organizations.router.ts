@@ -13,55 +13,39 @@ import {
   InsertOneOrganizationInputType,
   insertOneOrganizationOutputSchema,
   InsertOneOrganizationOutputType,
-} from "../../../../../libs/trpc/schemas/organizations/insert-one.schema";
-import {
   insertManyOrganizationInputSchema,
   InsertManyOrganizationInputType,
   insertManyOrganizationOutputSchema,
   InsertManyOrganizationOutputType,
-} from "../../../../../libs/trpc/schemas/organizations/insert-many.schema";
-import {
   findByOrganizationDataInputSchema,
   FindByOrganizationDataInputType,
   findByOrganizationDataOutputSchema,
   FindByOrganizationDataOutputType,
-} from "../../../../../libs/trpc/schemas/organizations/find-by-data.schema";
-import {
   findByOrganizationIdInputSchema,
   FindByOrganizationIdInputType,
   findByOrganizationIdOutputSchema,
   FindByOrganizationIdOutputType,
-} from "../../../../../libs/trpc/schemas/organizations/find-by-id.schema";
-import {
   findByOrganizationRefInputSchema,
   FindByOrganizationRefInputType,
   findByOrganizationRefOutputSchema,
   FindByOrganizationRefOutputType,
-} from "../../../../../libs/trpc/schemas/organizations/find-by-ref.schema";
-import {
   updateByOrganizationIdInputSchema,
   UpdateByOrganizationIdInputType,
   updateByOrganizationIdOutputSchema,
   UpdateByOrganizationIdOutputType,
-} from "../../../../../libs/trpc/schemas/organizations/update-by-id.schema";
-import {
   updateByOrganizationDataInputSchema,
   UpdateByOrganizationDataInputType,
   updateByOrganizationDataOutputSchema,
   UpdateByOrganizationDataOutputType,
-} from "../../../../../libs/trpc/schemas/organizations/update-by-data.schema";
-import {
   deleteByOrganizationDataInputSchema,
   DeleteByOrganizationDataInputType,
   deleteByOrganizationDataOutputSchema,
   DeleteByOrganizationDataOutputType,
-} from "../../../../../libs/trpc/schemas/organizations/delete-by-data.schema";
-import {
   deleteByOrganizationRefInputSchema,
   DeleteByOrganizationRefInputType,
   deleteByOrganizationRefOutputSchema,
   DeleteByOrganizationRefOutputType,
-} from "../../../../../libs/trpc/schemas/organizations/delete-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/organizations";
 import { ClientsService } from "@/app/clients/clients.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";

@@ -10,55 +10,39 @@ import {
   InsertOneEmailAppInputType,
   insertOneEmailAppOutputSchema,
   InsertOneEmailAppOutputType,
-} from "../../../../../../libs/trpc/schemas/email/apps/insert-one.schema";
-import {
   insertManyEmailAppInputSchema,
   InsertManyEmailAppInputType,
   insertManyEmailAppOutputSchema,
   InsertManyEmailAppOutputType,
-} from "../../../../../../libs/trpc/schemas/email/apps/insert-many.schema";
-import {
   findByEmailAppDataInputSchema,
   FindByEmailAppDataInputType,
   findByEmailAppDataOutputSchema,
   FindByEmailAppDataOutputType,
-} from "../../../../../../libs/trpc/schemas/email/apps/find-by-data.schema";
-import {
   findByEmailAppIdInputSchema,
   FindByEmailAppIdInputType,
   findByEmailAppIdOutputSchema,
   FindByEmailAppIdOutputType,
-} from "../../../../../../libs/trpc/schemas/email/apps/find-by-id.schema";
-import {
   findByEmailAppRefInputSchema,
   FindByEmailAppRefInputType,
   findByEmailAppRefOutputSchema,
   FindByEmailAppRefOutputType,
-} from "../../../../../../libs/trpc/schemas/email/apps/find-by-ref.schema";
-import {
   updateByEmailAppIdInputSchema,
   UpdateByEmailAppIdInputType,
   updateByEmailAppIdOutputSchema,
   UpdateByEmailAppIdOutputType,
-} from "../../../../../../libs/trpc/schemas/email/apps/update-by-id.schema";
-import {
   updateByEmailAppDataInputSchema,
   UpdateByEmailAppDataInputType,
   updateByEmailAppDataOutputSchema,
   UpdateByEmailAppDataOutputType,
-} from "../../../../../../libs/trpc/schemas/email/apps/update-by-data.schema";
-import {
   deleteByEmailAppDataInputSchema,
   DeleteByEmailAppDataInputType,
   deleteByEmailAppDataOutputSchema,
   DeleteByEmailAppDataOutputType,
-} from "../../../../../../libs/trpc/schemas/email/apps/delete-by-data.schema";
-import {
   deleteByEmailAppRefInputSchema,
   DeleteByEmailAppRefInputType,
   deleteByEmailAppRefOutputSchema,
   DeleteByEmailAppRefOutputType,
-} from "../../../../../../libs/trpc/schemas/email/apps/delete-by-ref.schema";
+} from "../../../../../../libs/trpc/schemas/email/apps";
 import { ClientsService } from "@/app/clients/clients.service";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";

@@ -1,7 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Building2, ChevronsUpDown, Plus } from "lucide-react";
+import Link from "next/link";
+import { redirect, usePathname } from "next/navigation";
+import { Building, ChevronsUpDown, Plus } from "lucide-react";
+import { useIsMounted } from "usehooks-ts";
 
 import {
   DropdownMenu,
@@ -18,22 +21,33 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar";
+import { getOrganizationsByData } from "@/trpc/routers/organizations";
 
 export function OrganizationSwitcher({
-  organizations,
-}: {
-  organizations: {
-    name: string;
-    logo: React.ElementType;
-    plan: string;
-  }[];
-}) {
+  active_org_id,
+}: Readonly<{
+  active_org_id: string;
+}>) {
+  if (!useIsMounted()) return <p>non mounted</p>;
   const { isMobile } = useSidebar();
-  const [activeOrganization, setActiveOrganization] = React.useState(
-    organizations[0],
-  );
+  const page = usePathname().valueOf().split("/").at(3);
 
-  if (!activeOrganization) return;
+  const { data, isError, isLoading } = getOrganizationsByData({
+    filter: [
+      {
+        client_id: "67c4331ebae09b4bce26a661",
+      },
+    ],
+  });
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error...</p>;
+  if (!data) return <p>no org</p>;
+
+  const activeOrganization = data.filter((o) => o.uuid === active_org_id);
+  if (data.length === 0 || activeOrganization.length !== 1) {
+    return redirect("/client/organizations");
+  }
 
   return (
     <SidebarMenu>
@@ -45,15 +59,15 @@ export function OrganizationSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <Building2 className="size-4" />
+                <Building className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">
-                  {activeOrganization.name}
+                  {activeOrganization[0]?.name}
                 </span>
-                <span className="truncate text-xs">
+                {/* <span className="truncate text-xs">
                   {activeOrganization.plan}
-                </span>
+                </span> */}
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -67,25 +81,26 @@ export function OrganizationSwitcher({
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Organizations
             </DropdownMenuLabel>
-            {organizations.map((organization, index) => (
-              <DropdownMenuItem
+            {data.map((organization, index) => (
+              <Link
+                href={`/org/${organization.uuid}/${page}`}
                 key={organization.name}
-                onClick={() => setActiveOrganization(organization)}
-                className="gap-2 p-2"
               >
-                <div className="flex size-6 items-center justify-center rounded-xs border">
-                  <organization.logo className="size-4 shrink-0" />
-                </div>
-                {organization.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
+                <DropdownMenuItem className="gap-2 p-2">
+                  {/* <div className="flex size-6 items-center justify-center rounded-xs border">
+                    <Building className="size-4 shrink-0" />
+                  </div> */}
+                  {organization.name}
+                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </Link>
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="bg-background flex size-6 items-center justify-center rounded-md border">
                 <Plus className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">Add team</div>
+              <div className="text-muted-foreground font-medium">Add</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

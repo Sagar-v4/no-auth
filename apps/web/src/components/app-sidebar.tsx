@@ -33,13 +33,15 @@ import { NavUser } from "@/components/nav-user";
 import { NavTheme } from "@/components/nav-theme";
 import { OrganizationSwitcher } from "@/components/organization-switcher";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { active_org_id: string }) {
   const pageName = usePathname().valueOf().split("/").at(-1);
 
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>
       <SidebarHeader>
-        <OrganizationSwitcher organizations={organizations} />
+        <OrganizationSwitcher active_org_id={props.active_org_id} />
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupContent>
             <form className="relative">

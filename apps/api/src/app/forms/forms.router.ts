@@ -10,55 +10,39 @@ import {
   InsertOneFormInputType,
   insertOneFormOutputSchema,
   InsertOneFormOutputType,
-} from "../../../../../libs/trpc/schemas/forms/insert-one.schema";
-import {
   insertManyFormInputSchema,
   InsertManyFormInputType,
   insertManyFormOutputSchema,
   InsertManyFormOutputType,
-} from "../../../../../libs/trpc/schemas/forms/insert-many.schema";
-import {
   findByFormDataInputSchema,
   FindByFormDataInputType,
   findByFormDataOutputSchema,
   FindByFormDataOutputType,
-} from "../../../../../libs/trpc/schemas/forms/find-by-data.schema";
-import {
   findByFormIdInputSchema,
   FindByFormIdInputType,
   findByFormIdOutputSchema,
   FindByFormIdOutputType,
-} from "../../../../../libs/trpc/schemas/forms/find-by-id.schema";
-import {
   findByFormRefInputSchema,
   FindByFormRefInputType,
   findByFormRefOutputSchema,
   FindByFormRefOutputType,
-} from "../../../../../libs/trpc/schemas/forms/find-by-ref.schema";
-import {
   updateByFormIdInputSchema,
   UpdateByFormIdInputType,
   updateByFormIdOutputSchema,
   UpdateByFormIdOutputType,
-} from "../../../../../libs/trpc/schemas/forms/update-by-id.schema";
-import {
   updateByFormDataInputSchema,
   UpdateByFormDataInputType,
   updateByFormDataOutputSchema,
   UpdateByFormDataOutputType,
-} from "../../../../../libs/trpc/schemas/forms/update-by-data.schema";
-import {
   deleteByFormDataInputSchema,
   DeleteByFormDataInputType,
   deleteByFormDataOutputSchema,
   DeleteByFormDataOutputType,
-} from "../../../../../libs/trpc/schemas/forms/delete-by-data.schema";
-import {
   deleteByFormRefInputSchema,
   DeleteByFormRefInputType,
   deleteByFormRefOutputSchema,
   DeleteByFormRefOutputType,
-} from "../../../../../libs/trpc/schemas/forms/delete-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/forms";
 import { ClientsService } from "@/app/clients/clients.service";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { EmailAppsService } from "@/app/email/apps/apps.service";

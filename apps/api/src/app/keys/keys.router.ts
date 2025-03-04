@@ -10,55 +10,39 @@ import {
   InsertOneKeyInputType,
   insertOneKeyOutputSchema,
   InsertOneKeyOutputType,
-} from "../../../../../libs/trpc/schemas/keys/insert-one.schema";
-import {
   insertManyKeyInputSchema,
   InsertManyKeyInputType,
   insertManyKeyOutputSchema,
   InsertManyKeyOutputType,
-} from "../../../../../libs/trpc/schemas/keys/insert-many.schema";
-import {
   findByKeyDataInputSchema,
   FindByKeyDataInputType,
   findByKeyDataOutputSchema,
   FindByKeyDataOutputType,
-} from "../../../../../libs/trpc/schemas/keys/find-by-data.schema";
-import {
   findByKeyIdInputSchema,
   FindByKeyIdInputType,
   findByKeyIdOutputSchema,
   FindByKeyIdOutputType,
-} from "../../../../../libs/trpc/schemas/keys/find-by-id.schema";
-import {
   findByKeyRefInputSchema,
   FindByKeyRefInputType,
   findByKeyRefOutputSchema,
   FindByKeyRefOutputType,
-} from "../../../../../libs/trpc/schemas/keys/find-by-ref.schema";
-import {
   updateByKeyIdInputSchema,
   UpdateByKeyIdInputType,
   updateByKeyIdOutputSchema,
   UpdateByKeyIdOutputType,
-} from "../../../../../libs/trpc/schemas/keys/update-by-id.schema";
-import {
   updateByKeyDataInputSchema,
   UpdateByKeyDataInputType,
   updateByKeyDataOutputSchema,
   UpdateByKeyDataOutputType,
-} from "../../../../../libs/trpc/schemas/keys/update-by-data.schema";
-import {
   deleteByKeyDataInputSchema,
   DeleteByKeyDataInputType,
   deleteByKeyDataOutputSchema,
   DeleteByKeyDataOutputType,
-} from "../../../../../libs/trpc/schemas/keys/delete-by-data.schema";
-import {
   deleteByKeyRefInputSchema,
   DeleteByKeyRefInputType,
   deleteByKeyRefOutputSchema,
   DeleteByKeyRefOutputType,
-} from "../../../../../libs/trpc/schemas/keys/delete-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/keys";
 import { ClientsService } from "@/app/clients/clients.service";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";

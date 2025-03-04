@@ -22,7 +22,7 @@ export default async function AppLayout({
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <AppSidebar />
+      <AppSidebar active_org_id={id} />
       <SidebarInset>
         <NavHeader>{children}</NavHeader>
       </SidebarInset>

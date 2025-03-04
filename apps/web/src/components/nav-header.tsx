@@ -53,7 +53,7 @@ export function NavHeader({
       default: "app",
       list: [
         { name: "App", value: "app" },
-        { name: "Template", value: "template" },
+        // { name: "Template", value: "template" },
       ],
     },
     roles: {
@@ -78,7 +78,7 @@ export function NavHeader({
     >
       <header className="bg-background sticky inset-x-0 top-0 isolate z-10 grid shrink-0 grid-cols-1 items-center border-b">
         <div className="flex items-center gap-2 px-2">
-          <SidebarTrigger className="bg-sidebar-accent hover:text-sidebar-primary-foreground hover:bg-sidebar-primary p-2" />
+          <SidebarTrigger className="bg-sidebar-primary sm:bg-sidebar-accent text-sidebar-primary-foreground sm:text-sidebar-accent-foreground hover:text-sidebar-primary-foreground hover:bg-sidebar-primary p-2" />
           <Separator
             orientation="vertical"
             className="data-[orientation=vertical]:h-6"

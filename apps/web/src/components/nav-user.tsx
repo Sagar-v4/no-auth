@@ -2,19 +2,11 @@
 
 import {
   ArrowRightLeft,
-  BadgeCheck,
-  Bell,
   Bolt,
-  Building,
+  Building2,
   ChevronsUpDown,
-  CreditCard,
   ExternalLink,
-  LogOut,
-  Settings2,
-  Sparkles,
   SquareUser,
-  SquareUserRound,
-  Users,
 } from "lucide-react";
 
 import {
@@ -37,6 +29,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar";
+import Link from "next/link";
+import { useIsMounted } from "usehooks-ts";
+import { getClientById } from "@/trpc/routers/clients";
+import { redirect } from "next/navigation";
 
 export function NavUser({
   user,
@@ -47,7 +43,18 @@ export function NavUser({
     avatar: string;
   };
 }) {
+  if (!useIsMounted()) return <p>non mounted</p>;
   const { isMobile } = useSidebar();
+
+  const { data, isError, isLoading } = getClientById({
+    filter: {
+      _id: "67c4331ebae09b4bce26a661",
+    },
+  });
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error...</p>;
+  if (!data) return redirect("/");
 
   return (
     <SidebarMenu>
@@ -61,12 +68,12 @@ export function NavUser({
               <Avatar className="h-8 w-8 rounded-lg">
                 {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
                 <AvatarFallback className="rounded-lg">
-                  {user.name.toUpperCase()[0]}
+                  {data.name.toUpperCase()[0]}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-medium">{data.name}</span>
+                <span className="truncate text-xs">{data.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -80,12 +87,14 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
+                  <AvatarFallback className="rounded-lg">
+                    {data.name.toUpperCase()[0]}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-medium">{data.name}</span>
+                  <span className="truncate text-xs">{data.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -98,18 +107,24 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <SquareUser />
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Building />
-                Organizations
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bolt />
-                Settings
-              </DropdownMenuItem>
+              <Link href={"/client/profile"}>
+                <DropdownMenuItem>
+                  <SquareUser />
+                  Profile
+                </DropdownMenuItem>
+              </Link>
+              <Link href={"/client/organizations"}>
+                <DropdownMenuItem>
+                  <Building2 />
+                  Organizations
+                </DropdownMenuItem>
+              </Link>
+              <Link href={"/client/settings"}>
+                <DropdownMenuItem>
+                  <Bolt />
+                  Settings
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>

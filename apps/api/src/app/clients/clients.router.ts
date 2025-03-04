@@ -10,43 +10,31 @@ import {
   InsertOneClientInputType,
   insertOneClientOutputSchema,
   InsertOneClientOutputType,
-} from "../../../../../libs/trpc/schemas/clients/insert-one.schema";
-import {
   insertManyClientInputSchema,
   InsertManyClientInputType,
   insertManyClientOutputSchema,
   InsertManyClientOutputType,
-} from "../../../../../libs/trpc/schemas/clients/insert-many.schema";
-import {
   findByClientIdInputSchema,
   FindByClientIdInputType,
   findByClientIdOutputSchema,
   FindByClientIdOutputType,
-} from "../../../../../libs/trpc/schemas/clients/find-by-id.schema";
-import {
   findByClientDataInputSchema,
   FindByClientDataInputType,
   findByClientDataOutputSchema,
   FindByClientDataOutputType,
-} from "../../../../../libs/trpc/schemas/clients/find-by-data.schema";
-import {
   updateByClientIdInputSchema,
   UpdateByClientIdInputType,
   updateByClientIdOutputSchema,
   UpdateByClientIdOutputType,
-} from "../../../../../libs/trpc/schemas/clients/update-by-id.schema";
-import {
   updateByClientDataInputSchema,
   UpdateByClientDataInputType,
   updateByClientDataOutputSchema,
   UpdateByClientDataOutputType,
-} from "../../../../../libs/trpc/schemas/clients/update-by-data.schema";
-import {
   deleteByClientDataInputSchema,
   DeleteByClientDataInputType,
   deleteByClientDataOutputSchema,
   DeleteByClientDataOutputType,
-} from "../../../../../libs/trpc/schemas/clients/delete-by-data.schema";
+} from "../../../../../libs/trpc/schemas/clients";
 import { query$or } from "@/utils/query-builder";
 
 @Router({

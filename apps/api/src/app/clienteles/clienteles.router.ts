@@ -13,55 +13,39 @@ import {
   InsertOneClienteleInputType,
   insertOneClienteleOutputSchema,
   InsertOneClienteleOutputType,
-} from "../../../../../libs/trpc/schemas/clienteles/insert-one.schema";
-import {
   insertManyClienteleInputSchema,
   InsertManyClienteleInputType,
   insertManyClienteleOutputSchema,
   InsertManyClienteleOutputType,
-} from "../../../../../libs/trpc/schemas/clienteles/insert-many.schema";
-import {
   findByClienteleIdInputSchema,
   FindByClienteleIdInputType,
   findByClienteleIdOutputSchema,
   FindByClienteleIdOutputType,
-} from "../../../../../libs/trpc/schemas/clienteles/find-by-id.schema";
-import {
   findByClienteleDataInputSchema,
   FindByClienteleDataInputType,
   findByClienteleDataOutputSchema,
   FindByClienteleDataOutputType,
-} from "../../../../../libs/trpc/schemas/clienteles/find-by-data.schema";
-import {
   findByClienteleRefInputSchema,
   FindByClienteleRefInputType,
   findByClienteleRefOutputSchema,
   FindByClienteleRefOutputType,
-} from "../../../../../libs/trpc/schemas/clienteles/find-by-ref.schema";
-import {
   updateByClienteleIdInputSchema,
   UpdateByClienteleIdInputType,
   updateByClienteleIdOutputSchema,
   UpdateByClienteleIdOutputType,
-} from "../../../../../libs/trpc/schemas/clienteles/update-by-id.schema";
-import {
   updateByClienteleDataInputSchema,
   UpdateByClienteleDataInputType,
   updateByClienteleDataOutputSchema,
   UpdateByClienteleDataOutputType,
-} from "../../../../../libs/trpc/schemas/clienteles/update-by-data.schema";
-import {
   deleteByClienteleDataInputSchema,
   DeleteByClienteleDataInputType,
   deleteByClienteleDataOutputSchema,
   DeleteByClienteleDataOutputType,
-} from "../../../../../libs/trpc/schemas/clienteles/delete-by-data.schema";
-import {
   deleteByClienteleRefInputSchema,
   DeleteByClienteleRefInputType,
   deleteByClienteleRefOutputSchema,
   DeleteByClienteleRefOutputType,
-} from "../../../../../libs/trpc/schemas/clienteles/delete-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/clienteles";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";

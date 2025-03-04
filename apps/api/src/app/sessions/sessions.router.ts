@@ -13,55 +13,39 @@ import {
   InsertOneSessionInputType,
   insertOneSessionOutputSchema,
   InsertOneSessionOutputType,
-} from "../../../../../libs/trpc/schemas/sessions/insert-one.schema";
-import {
   insertManySessionInputSchema,
   InsertManySessionInputType,
   insertManySessionOutputSchema,
   InsertManySessionOutputType,
-} from "../../../../../libs/trpc/schemas/sessions/insert-many.schema";
-import {
   findBySessionDataInputSchema,
   FindBySessionDataInputType,
   findBySessionDataOutputSchema,
   FindBySessionDataOutputType,
-} from "../../../../../libs/trpc/schemas/sessions/find-by-data.schema";
-import {
   findBySessionIdInputSchema,
   FindBySessionIdInputType,
   findBySessionIdOutputSchema,
   FindBySessionIdOutputType,
-} from "../../../../../libs/trpc/schemas/sessions/find-by-id.schema";
-import {
   findBySessionRefInputSchema,
   FindBySessionRefInputType,
   findBySessionRefOutputSchema,
   FindBySessionRefOutputType,
-} from "../../../../../libs/trpc/schemas/sessions/find-by-ref.schema";
-import {
   updateBySessionIdInputSchema,
   UpdateBySessionIdInputType,
   updateBySessionIdOutputSchema,
   UpdateBySessionIdOutputType,
-} from "../../../../../libs/trpc/schemas/sessions/update-by-id.schema";
-import {
   updateBySessionDataInputSchema,
   UpdateBySessionDataInputType,
   updateBySessionDataOutputSchema,
   UpdateBySessionDataOutputType,
-} from "../../../../../libs/trpc/schemas/sessions/update-by-data.schema";
-import {
   deleteBySessionDataInputSchema,
   DeleteBySessionDataInputType,
   deleteBySessionDataOutputSchema,
   DeleteBySessionDataOutputType,
-} from "../../../../../libs/trpc/schemas/sessions/delete-by-data.schema";
-import {
   deleteBySessionRefInputSchema,
   DeleteBySessionRefInputType,
   deleteBySessionRefOutputSchema,
   DeleteBySessionRefOutputType,
-} from "../../../../../libs/trpc/schemas/sessions/delete-by-ref.schema";
+} from "../../../../../libs/trpc/schemas/sessions";
 import { ClientsService } from "@/app/clients/clients.service";
 import { ClientDocument } from "@/app/clients/entities/client.entity";
 import { ClientelesService } from "@/app/clienteles/clienteles.service";

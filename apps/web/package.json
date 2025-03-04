@@ -22,6 +22,7 @@
   "devDependencies": {
     "@tanstack/react-query-devtools": "^5.66.9",
     "@workspace/eslint-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*"
+    "@workspace/typescript-config": "workspace:*",
+    "sonner": "^2.0.1"
   }
 }

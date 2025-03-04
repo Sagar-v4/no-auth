@@ -10,43 +10,31 @@ import {
   InsertOneDeviceInputType,
   insertOneDeviceOutputSchema,
   InsertOneDeviceOutputType,
-} from "../../../../../libs/trpc/schemas/devices/insert-one.schema";
-import {
   insertManyDeviceInputSchema,
   InsertManyDeviceInputType,
   insertManyDeviceOutputSchema,
   InsertManyDeviceOutputType,
-} from "../../../../../libs/trpc/schemas/devices/insert-many.schema";
-import {
   findByDeviceIdInputSchema,
   FindByDeviceIdInputType,
   findByDeviceIdOutputSchema,
   FindByDeviceIdOutputType,
-} from "../../../../../libs/trpc/schemas/devices/find-by-id.schema";
-import {
   findByDeviceDataInputSchema,
   FindByDeviceDataInputType,
   findByDeviceDataOutputSchema,
   FindByDeviceDataOutputType,
-} from "../../../../../libs/trpc/schemas/devices/find-by-data.schema";
-import {
   updateByDeviceIdInputSchema,
   UpdateByDeviceIdInputType,
   updateByDeviceIdOutputSchema,
   UpdateByDeviceIdOutputType,
-} from "../../../../../libs/trpc/schemas/devices/update-by-id.schema";
-import {
   updateByDeviceDataInputSchema,
   UpdateByDeviceDataInputType,
   updateByDeviceDataOutputSchema,
   UpdateByDeviceDataOutputType,
-} from "../../../../../libs/trpc/schemas/devices/update-by-data.schema";
-import {
   deleteByDeviceDataInputSchema,
   DeleteByDeviceDataInputType,
   deleteByDeviceDataOutputSchema,
   DeleteByDeviceDataOutputType,
-} from "../../../../../libs/trpc/schemas/devices/delete-by-data.schema";
+} from "../../../../../libs/trpc/schemas/devices";
 import { query$or } from "@/utils/query-builder";
 
 @Router({

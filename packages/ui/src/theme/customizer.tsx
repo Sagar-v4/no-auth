@@ -42,8 +42,6 @@ export function ThemeCustomizer() {
 
 function Customizer() {
   const { setTheme: setMode, resolvedTheme, theme: mode } = useTheme();
-  console.log("🚀 ~ Customizer ~ resolvedTheme:", resolvedTheme);
-  console.log("🚀 ~ Customizer ~ mode:", mode);
   const [config, setConfig] = useThemeConfig();
   if (!useIsMounted()) return null;
 
@@ -62,7 +60,7 @@ function Customizer() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="ghost"
+                variant="default"
                 size="icon"
                 className="ml-auto"
                 onClick={() => {
@@ -71,6 +69,7 @@ function Customizer() {
                     theme: "zinc",
                     radius: 0.5,
                   });
+                  setMode("system");
                 }}
               >
                 <RefreshCw className="size-4" />
