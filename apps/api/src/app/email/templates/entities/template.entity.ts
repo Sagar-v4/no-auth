@@ -18,7 +18,7 @@ export enum TYPES {
 @Schema({
   timestamps: true,
 })
-export class EmailTemplate {
+export class Email_Template {
   @Prop({
     type: Types.UUID,
     required: true,
@@ -32,14 +32,14 @@ export class EmailTemplate {
     ref: CLIENT_SCHEMA_NAME,
     required: true,
   })
-  clientId!: string;
+  client_id!: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
   })
-  organizationId!: string;
+  organization_id!: string;
 
   @Prop({
     type: String,
@@ -69,8 +69,8 @@ export class EmailTemplate {
   metadata?: object;
 }
 
-export const EMAIL_TEMPLATE_SCHEMA_NAME: string = EmailTemplate.name;
+export const EMAIL_TEMPLATE_SCHEMA_NAME: string = Email_Template.name;
 
-export const EmailTemplateSchema = SchemaFactory.createForClass(EmailTemplate);
+export const EmailTemplateSchema = SchemaFactory.createForClass(Email_Template);
 
-export type EmailTemplateDocument = HydratedDocument<EmailTemplate>;
+export type EmailTemplateDocument = HydratedDocument<Email_Template>;

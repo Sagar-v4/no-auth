@@ -10,15 +10,19 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@tanstack/react-form": "^1.0.0",
     "@tanstack/react-query": "^5.66.9",
+    "@tanstack/react-table": "^8.21.2",
     "@trpc/client": "11.0.0-rc.802",
     "@trpc/next": "11.0.0-rc.802",
     "@trpc/tanstack-react-query": "11.0.0-rc.802",
-    "@workspace/trpc": "workspace:*",
-    "@workspace/ui": "workspace:*"
+    "@workspace/ui": "workspace:*",
+    "nuqs": "^2.4.0"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.66.9",
     "@workspace/eslint-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*"
+    "@workspace/typescript-config": "workspace:*",
+    "sonner": "^2.0.1"
   }
 }

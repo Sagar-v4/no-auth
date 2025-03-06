@@ -1,14 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import {
+  isServer,
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+import { env } from "@/env/client/env.schema";
 import { TRPCProvider } from "@/trpc/server";
-import type { AppRouter } from "@workspace/trpc/router";
+import type { AppRouter } from "@/lib/trpc/@generated/server";
 
 function getBaseUrl() {
-  if (typeof window !== "undefined") return `http://localhost:3001`;
+  if (typeof window !== "undefined") return env.APP_BASE_URL;
   // browser should use relative path
   if (process.env.VERCEL_URL)
     // reference for vercel.com
@@ -17,7 +24,7 @@ function getBaseUrl() {
     // reference for render.com
     return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
   // assume localhost
-  return `http://localhost:3001`;
+  return env.APP_BASE_URL;
 }
 
 function makeQueryClient() {
@@ -26,14 +33,17 @@ function makeQueryClient() {
       queries: {
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
-        staleTime: 60 * 1000,
+        staleTime: 60 * 1000, // 1 min
+        retry: 3,
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+        networkMode: "always",
       },
     },
   });
 }
 let browserQueryClient: QueryClient | undefined = undefined;
 function getQueryClient() {
-  if (typeof window === "undefined") {
+  if (isServer) {
     // Server: always make a new query client
     return makeQueryClient();
   } else {
@@ -45,27 +55,41 @@ function getQueryClient() {
     return browserQueryClient;
   }
 }
-export function TrpcReactQueryProvider(
-  props: Readonly<{
-    children: React.ReactNode;
-  }>,
-) {
+
+export const queryClient = getQueryClient();
+
+export function TrpcReactQueryProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // const [trpcClient] = useState(() =>
+  //   createTRPCClient<AppRouter>({
+  //     links: [
+  //       httpBatchLink({
+  //         url: `${env.APP_BASE_URL}/trpc`,
+  //       }),
+  //     ],
+  //   })
+  // );
+
   const queryClient = getQueryClient();
-  const [trpcClient] = useState(() =>
-    createTRPCClient<AppRouter>({
-      links: [
-        httpBatchLink({
-          url: `${getBaseUrl()}/api/trpc`,
-        }),
-      ],
-    }),
-  );
+  const trpcClient = createTRPCClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url: `${env.APP_BASE_URL}/trpc`,
+      }),
+    ],
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-        {props.children}
-      </TRPCProvider>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </TRPCProvider>
+      </HydrationBoundary>
     </QueryClientProvider>
   );
 }

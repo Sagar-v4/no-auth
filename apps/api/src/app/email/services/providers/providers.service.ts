@@ -1,16 +1,13 @@
 import { Injectable, Logger } from "@nestjs/common";
 
-import {
-  STATUS as EMAIL_APP_STATUS,
-  TYPES as EMAIL_APP_TYPES,
-} from "@/app/email/apps/entities/app.entity";
+import { TYPES_ENUM as EMAIL_APP_TYPES } from "@/lib/trpc/schemas/email/apps";
 import { NodeMailer } from "@/app/email/services/providers";
 import { EmailAppsService } from "@/app/email/apps/apps.service";
 import { EmailServicesService } from "@/app/email/services/services.service";
 import { EmailTemplatesService } from "@/app/email/templates/templates.service";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { EmailServiceDocument } from "@/app/email/services/entities/service.entity";
-import { STATUS as ORGANIZATION_STATUS } from "@/app/organizations/entities/organization.entity";
+import { STATUS_ENUM as ORGANIZATION_STATUS } from "@/lib/trpc/schemas/organizations";
 
 @Injectable()
 export class EmailServicesProvidersService {
@@ -59,19 +56,22 @@ export class EmailServicesProvidersService {
 
       const { otp, formId, emailAppId, organizationId, ...metadata } = data;
 
-      const emailApp: any = await this.emailAppsService.findOne({
+      const emailApp: any = await this.emailAppsService.find({
         filter: { _id: emailAppId, organizationId: organizationId },
-        projection: { type: 1, metadata: 1 },
-        conditions: { status: EMAIL_APP_STATUS.ACTIVE },
+        populate: [],
+        select: ["domain"],
       });
       if (!emailApp) {
         throw new Error("Email App not found or not active");
       }
 
-      const organization: any = await this.organizationsService.findOne({
-        filter: { _id: organizationId },
-        projection: { domain: 1 },
-        conditions: { status: ORGANIZATION_STATUS.ACTIVE },
+      const organization: any = await this.organizationsService.find({
+        filter: {
+          _id: organizationId,
+          status: ORGANIZATION_STATUS.enum.ACTIVE,
+        },
+        populate: [],
+        select: ["domain"],
       });
       if (!organization) {
         throw new Error("Organization not found or not active");
@@ -92,7 +92,7 @@ export class EmailServicesProvidersService {
 
       let messageId: string;
       switch (emailApp.type) {
-        case EMAIL_APP_TYPES.NODE_MAILER:
+        case EMAIL_APP_TYPES.enum.NODE_MAILER:
           messageId = await this.handleNodeMailer({
             ...metadata,
             otp: finalOTP,

@@ -1,4 +1,12 @@
-import { Model } from "mongoose";
+import {
+  DeleteResult,
+  InsertManyResult,
+  Model,
+  PopulateOptions,
+  RootFilterQuery,
+  UpdateQuery,
+  UpdateWriteOpResult,
+} from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, Logger } from "@nestjs/common";
 
@@ -7,6 +15,8 @@ import {
   OrganizationDocument,
 } from "@/app/organizations/entities/organization.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
+import { TRPCError } from "@trpc/server";
+import { ERROR } from "@/trpc/error";
 
 @Injectable()
 export class OrganizationsService {
@@ -30,310 +40,357 @@ export class OrganizationsService {
     }
   }
 
-  // POST
-  async insertOne(doc: {
-    domain: string;
-    clientId: string;
-    name: string;
-    description: string;
-    metadata: { [field: string]: unknown };
+  async insertOne(input: {
+    doc: {
+      client_id: string;
+      name: string;
+      description?: string;
+    };
   }): Promise<OrganizationDocument> {
     try {
       this.logger.debug({
         action: "Entry",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
-      const organizationDocument: OrganizationDocument =
-        await this.organizationModel.insertOne(doc, {
+      const document: OrganizationDocument =
+        await this.organizationModel.insertOne(input.doc, {
           validateBeforeSave: true,
         });
 
+      if (!document) {
+        throw new TRPCError(ERROR.ORGANIZATION.NOT_FOUND);
+      }
+
       this.logger.log({
         action: "Exit",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
-          documentKeys: Object.keys(organizationDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          organizationDocument,
-        },
-      });
-
-      return organizationDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
         method: this.insertOne.name,
         error: error,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
-      throw new Error("Failed to insert organization document");
+      throw error;
     }
   }
 
-  // GET
-  async findOne({
-    filter,
-    projection,
-    conditions,
-  }: {
-    filter: { [field: string]: unknown };
-    projection: { [field: string]: number };
-    conditions?: { [field: string]: unknown };
-  }): Promise<OrganizationDocument> {
+  async insertMany(input: {
+    docs: {
+      client_id: string;
+      name: string;
+      description?: string;
+    }[];
+  }): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOne.name,
+        method: this.insertMany.name,
         metadata: {
-          filter,
-          projection,
-          conditions,
+          input,
         },
       });
 
-      const organizationDocument: OrganizationDocument | null | undefined =
+      const result: InsertManyResult<any> =
+        await this.organizationModel.insertMany(input.docs, {
+          includeResultMetadata: true,
+          rawResult: true,
+        });
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.ORGANIZATION.NOT_FOUND);
+      }
+
+      if (
+        result.mongoose?.validationErrors &&
+        result.mongoose?.validationErrors?.length > 0
+      ) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Invalid data",
+          cause: result.mongoose?.validationErrors,
+        });
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.insertMany.name,
+        metadata: {
+          result,
+        },
+      });
+
+      return result;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.insertMany.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async find(input: {
+    filter: RootFilterQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
+  }): Promise<OrganizationDocument[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.find.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const documents: OrganizationDocument[] | null =
         await this.organizationModel
-          .findOne(filter, projection)
-          .where(conditions ?? {});
+          .find(input.filter)
+          .select(input.select)
+          .populate(input.populate)
+          .exec();
 
-      if (!organizationDocument) {
-        throw new Error("Organization Document not found");
+      if (!documents) {
+        throw new TRPCError(ERROR.ORGANIZATION.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.find.name,
         metadata: {
-          filter,
-          projection,
-          conditions,
-          documentKeys: Object.keys(organizationDocument),
+          input,
+          documentKeys: documents.map((document) => Object.keys(document)),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-          organizationDocument,
-        },
-      });
-
-      return organizationDocument;
+      return documents;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.find.name,
         error: error,
         metadata: {
-          filter,
-          projection,
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to find organization document by filter");
+      throw error;
     }
   }
 
-  // PATCH
-  async findOneAndUpdate({
-    conditions,
-    update,
-  }: {
-    conditions: { [field: string]: unknown };
-    update: { [field: string]: unknown };
+  async findOneAndUpdate(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<OrganizationDocument> {
     try {
       this.logger.debug({
         action: "Entry",
         method: this.findOneAndUpdate.name,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      const organizationDocument: OrganizationDocument | null | undefined =
-        await this.organizationModel.findOneAndUpdate(conditions, update, {
-          timestamps: true,
+      const document: OrganizationDocument | null = await this.organizationModel
+        .findOneAndUpdate(input.filter, input.update, {
           new: true,
-        });
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!organizationDocument) {
-        throw new Error("Organization Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.ORGANIZATION.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
         method: this.findOneAndUpdate.name,
         metadata: {
-          conditions,
-          update,
-          updatedKeys: Object.keys(update),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndUpdate.name,
-        metadata: {
-          conditions,
-          update,
-          organizationDocument,
-        },
-      });
-
-      return organizationDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
         method: this.findOneAndUpdate.name,
         error: error,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      throw new Error("Failed to update organization document by conditions");
+      throw error;
     }
   }
 
-  // PUT
-  async findOneAndReplace({
-    filter,
-    replacement,
-  }: {
-    filter: { [field: string]: unknown };
-    replacement: { [field: string]: unknown };
-  }): Promise<OrganizationDocument> {
+  async updateMany(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
+  }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndReplace.name,
+        method: this.updateMany.name,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      const organizationDocument: OrganizationDocument | null | undefined =
-        await this.organizationModel.findOneAndReplace(filter, replacement, {
-          timestamps: true,
+      const document: UpdateWriteOpResult = await this.organizationModel
+        .updateMany(input.filter, input.update, {
           new: true,
-        });
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!organizationDocument) {
-        throw new Error("Organization Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.ORGANIZATION.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.updateMany.name,
         metadata: {
-          filter,
-          replacement,
-          replacedKeys: Object.keys(replacement),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndReplace.name,
-        metadata: {
-          filter,
-          replacement,
-          organizationDocument,
-        },
-      });
-
-      return organizationDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.updateMany.name,
         error: error,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      throw new Error("Failed to replacement organization document by filter");
+      throw error;
     }
   }
 
-  // DELETE
-  async findOneAndDelete({
-    conditions,
-  }: {
-    conditions: { [field: string]: unknown };
-  }): Promise<OrganizationDocument> {
+  async delete(input: { filter: RootFilterQuery<any> }): Promise<Number> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndDelete.name,
+        method: this.delete.name,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      const organizationDocument: OrganizationDocument | null | undefined =
-        await this.organizationModel.findOneAndDelete(conditions);
+      const result: DeleteResult = await this.organizationModel.deleteMany(
+        input.filter,
+      );
 
-      if (!organizationDocument) {
-        throw new Error("Organization Document not found");
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.ORGANIZATION.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.delete.name,
         metadata: {
-          conditions,
-          documentKeys: Object.keys(organizationDocument),
+          result,
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndDelete.name,
-        metadata: {
-          conditions,
-          organizationDocument,
-        },
-      });
-
-      return organizationDocument;
+      return result.deletedCount;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.delete.name,
         error: error,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to delete organization document by conditions");
+      throw error;
+    }
+  }
+
+  async getIds(filter: RootFilterQuery<any>): Promise<string[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+        },
+      });
+
+      if (Object.keys(filter).length === 0) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.getIds.name,
+          metadata: {
+            filter,
+          },
+        });
+        return [];
+      }
+
+      const documents: OrganizationDocument[] | null =
+        await this.organizationModel.find(filter).select("_id").exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.ORGANIZATION.NOT_FOUND);
+      }
+
+      const documentIds = documents.map((document) => document._id.toString());
+
+      this.logger.log({
+        action: "Exit",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+          documentIds,
+        },
+      });
+
+      return documentIds;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.getIds.name,
+        error: error,
+        metadata: {
+          filter,
+        },
+      });
+
+      throw error;
     }
   }
 }

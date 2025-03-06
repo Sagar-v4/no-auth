@@ -3,13 +3,15 @@ import { HydratedDocument, Types } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import { DEVICE_SCHEMA_NAME } from "@/app/devices/entities/device.entity";
-import { CLIENT_SCHEMA_NAME } from "@/app/clients/entities/client.entity";
-import { CLIENTELE_SCHEMA_NAME } from "@/app/clienteles/entities/clientele.entity";
-
-export enum STATUS {
-  ACTIVE = "Active",
-  EXPIRED = "Expired",
-}
+import {
+  Client,
+  CLIENT_SCHEMA_NAME,
+} from "@/app/clients/entities/client.entity";
+import {
+  Clientele,
+  CLIENTELE_SCHEMA_NAME,
+} from "@/app/clienteles/entities/clientele.entity";
+import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/sessions";
 
 @Schema({
   timestamps: true,
@@ -25,26 +27,31 @@ export class Session {
 
   @Prop({
     type: Types.ObjectId,
-    ref: "userType",
+    refPath: "user_type",
     required: true,
   })
-  userId!: string;
+  user_id!: Client | Clientele;
 
   @Prop({
     type: String,
     required: true,
     enum: [CLIENT_SCHEMA_NAME, CLIENTELE_SCHEMA_NAME],
   })
-  userType!: string;
+  user_type!: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: DEVICE_SCHEMA_NAME,
     required: true,
   })
-  deviceId!: string;
+  device_id!: string;
 
-  @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
+  @Prop({
+    type: String,
+    enum: STATUS,
+    required: true,
+    default: STATUS_ENUM.enum.ACTIVE,
+  })
   status!: string;
 
   @Prop({ type: Object })

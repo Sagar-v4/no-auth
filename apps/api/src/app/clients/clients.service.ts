@@ -1,4 +1,12 @@
-import { Model } from "mongoose";
+import {
+  DeleteResult,
+  InsertManyResult,
+  Model,
+  PopulateOptions,
+  RootFilterQuery,
+  UpdateQuery,
+  UpdateWriteOpResult,
+} from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, Logger } from "@nestjs/common";
 
@@ -7,6 +15,8 @@ import {
   ClientDocument,
 } from "@/app/clients/entities/client.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
+import { TRPCError } from "@trpc/server";
+import { ERROR } from "@/trpc/error";
 
 @Injectable()
 export class ClientsService {
@@ -30,310 +40,360 @@ export class ClientsService {
     }
   }
 
-  // POST
-  async insertOne(doc: {
-    name: string;
-    email: string;
-    metadata: { [field: string]: unknown };
+  async insertOne(input: {
+    doc: {
+      name: string;
+      email: string;
+    };
   }): Promise<ClientDocument> {
     try {
       this.logger.debug({
         action: "Entry",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
-      const clientDocument: ClientDocument = await this.clientModel.insertOne(
-        doc,
+      const document: ClientDocument = await this.clientModel.insertOne(
+        input.doc,
         {
           validateBeforeSave: true,
         },
       );
 
-      this.logger.log({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          documentKeys: Object.keys(clientDocument),
-        },
-      });
-
-      this.logger.debug({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          clientDocument,
-        },
-      });
-
-      return clientDocument;
-    } catch (error) {
-      this.logger.error({
-        action: "Exit",
-        method: this.insertOne.name,
-        error: error,
-        metadata: {
-          ...doc,
-        },
-      });
-
-      throw new Error("Failed to insert client document");
-    }
-  }
-
-  // GET
-  async findOne({
-    filter,
-    projection,
-    conditions,
-  }: {
-    filter: { [field: string]: unknown };
-    projection: { [field: string]: number };
-    conditions?: { [field: string]: unknown };
-  }): Promise<ClientDocument> {
-    try {
-      this.logger.debug({
-        action: "Entry",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-        },
-      });
-
-      const clientDocument: ClientDocument | null | undefined =
-        await this.clientModel
-          .findOne(filter, projection)
-          .where(conditions ?? {});
-
-      if (!clientDocument) {
-        throw new Error("Client Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.CLIENT.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.insertOne.name,
         metadata: {
-          filter,
-          projection,
-          conditions,
-          documentKeys: Object.keys(clientDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-          clientDocument,
-        },
-      });
-
-      return clientDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.insertOne.name,
         error: error,
         metadata: {
-          filter,
-          projection,
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to find client document by filter");
+      throw error;
     }
   }
 
-  // PATCH
-  async findOneAndUpdate({
-    conditions,
-    update,
-  }: {
-    conditions: { [field: string]: unknown };
-    update: { [field: string]: unknown };
-  }): Promise<ClientDocument> {
+  async insertMany(input: {
+    docs: {
+      name: string;
+      email: string;
+    }[];
+  }): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      const clientDocument: ClientDocument | null | undefined =
-        await this.clientModel.findOneAndUpdate(conditions, update, {
-          timestamps: true,
-          new: true,
+      const result: InsertManyResult<any> = await this.clientModel.insertMany(
+        input.docs,
+        {
+          includeResultMetadata: true,
+          rawResult: true,
+        },
+      );
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.CLIENT.NOT_FOUND);
+      }
+
+      if (
+        result.mongoose?.validationErrors &&
+        result.mongoose?.validationErrors?.length > 0
+      ) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Invalid data",
+          cause: result.mongoose?.validationErrors,
         });
-
-      if (!clientDocument) {
-        throw new Error("Client Document not found");
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         metadata: {
-          conditions,
-          update,
-          updatedKeys: Object.keys(update),
+          result,
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndUpdate.name,
-        metadata: {
-          conditions,
-          update,
-          clientDocument,
-        },
-      });
-
-      return clientDocument;
+      return result;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndUpdate.name,
+        method: this.insertMany.name,
         error: error,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      throw new Error("Failed to update client document by conditions");
+      throw error;
     }
   }
 
-  // PUT
-  async findOneAndReplace({
-    filter,
-    replacement,
-  }: {
-    filter: { [field: string]: unknown };
-    replacement: { [field: string]: unknown };
+  async find(input: {
+    filter: RootFilterQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
+  }): Promise<ClientDocument[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.find.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const documents: ClientDocument[] | null = await this.clientModel
+        .find(input.filter)
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.CLIENT.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.find.name,
+        metadata: {
+          input,
+          documentKeys: documents.map((document) => Object.keys(document)),
+        },
+      });
+
+      return documents;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.find.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async findOneAndUpdate(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<ClientDocument> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      const clientDocument: ClientDocument | null | undefined =
-        await this.clientModel.findOneAndReplace(filter, replacement, {
-          timestamps: true,
+      const document: ClientDocument | null = await this.clientModel
+        .findOneAndUpdate(input.filter, input.update, {
           new: true,
-        });
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!clientDocument) {
-        throw new Error("Client Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.CLIENT.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         metadata: {
-          filter,
-          replacement,
-          replacedKeys: Object.keys(replacement),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndReplace.name,
-        metadata: {
-          filter,
-          replacement,
-          clientDocument,
-        },
-      });
-
-      return clientDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.findOneAndUpdate.name,
         error: error,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      throw new Error("Failed to replacement client document by filter");
+      throw error;
     }
   }
 
-  // DELETE
-  async findOneAndDelete({
-    conditions,
-  }: {
-    conditions: { [field: string]: unknown };
-  }): Promise<ClientDocument> {
+  async updateMany(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
+  }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      const clientDocument: ClientDocument | null | undefined =
-        await this.clientModel.findOneAndDelete(conditions);
+      const document: UpdateWriteOpResult = await this.clientModel
+        .updateMany(input.filter, input.update, {
+          new: true,
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!clientDocument) {
-        throw new Error("Client Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.CLIENT.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         metadata: {
-          conditions,
-          documentKeys: Object.keys(clientDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndDelete.name,
-        metadata: {
-          conditions,
-          clientDocument,
-        },
-      });
-
-      return clientDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.updateMany.name,
         error: error,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to delete client document by conditions");
+      throw error;
+    }
+  }
+
+  async delete(input: { filter: RootFilterQuery<any> }): Promise<Number> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.delete.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const result: DeleteResult = await this.clientModel.deleteMany(
+        input.filter,
+      );
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.CLIENT.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.delete.name,
+        metadata: {
+          result,
+        },
+      });
+
+      return result.deletedCount;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.delete.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async getIds(filter: RootFilterQuery<any>): Promise<string[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+        },
+      });
+
+      if (Object.keys(filter).length === 0) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.getIds.name,
+          metadata: {
+            filter,
+          },
+        });
+        return [];
+      }
+
+      const documents: ClientDocument[] | null = await this.clientModel
+        .find(filter)
+        .select("_id")
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.CLIENT.NOT_FOUND);
+      }
+
+      const documentIds = documents.map((document) => document._id.toString());
+
+      this.logger.log({
+        action: "Exit",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+          documentIds,
+        },
+      });
+
+      return documentIds;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.getIds.name,
+        error: error,
+        metadata: {
+          filter,
+        },
+      });
+
+      throw error;
     }
   }
 }

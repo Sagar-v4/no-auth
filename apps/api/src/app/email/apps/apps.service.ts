@@ -1,13 +1,22 @@
-import { Model } from "mongoose";
+import {
+  DeleteResult,
+  InsertManyResult,
+  Model,
+  PopulateOptions,
+  RootFilterQuery,
+  UpdateQuery,
+  UpdateWriteOpResult,
+} from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, Logger } from "@nestjs/common";
 
 import {
   EMAIL_APP_SCHEMA_NAME,
   EmailAppDocument,
-  TYPES as EMAIL_APP_TYPES,
 } from "@/app/email/apps/entities/app.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
+import { TRPCError } from "@trpc/server";
+import { ERROR } from "@/trpc/error";
 
 @Injectable()
 export class EmailAppsService {
@@ -31,311 +40,364 @@ export class EmailAppsService {
     }
   }
 
-  // POST
-  async insertOne(doc: {
-    clientId: string;
-    organizationId: string;
-    name: string;
-    description: string;
-    type: EMAIL_APP_TYPES;
-    metadata: { [field: string]: unknown };
+  async insertOne(input: {
+    doc: {
+      client_id: string;
+      organization_id: string;
+      name: string;
+      description?: string;
+    };
   }): Promise<EmailAppDocument> {
     try {
       this.logger.debug({
         action: "Entry",
         method: this.insertOne.name,
         metadata: {
-          ...doc,
+          input,
         },
       });
 
-      const emailAppDocument: EmailAppDocument =
-        await this.emailAppModel.insertOne(doc, {
+      const document: EmailAppDocument = await this.emailAppModel.insertOne(
+        input.doc,
+        {
           validateBeforeSave: true,
-        });
-
-      this.logger.log({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          documentKeys: Object.keys(emailAppDocument),
         },
-      });
+      );
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.insertOne.name,
-        metadata: {
-          ...doc,
-          emailAppDocument,
-        },
-      });
-
-      return emailAppDocument;
-    } catch (error) {
-      this.logger.error({
-        action: "Exit",
-        method: this.insertOne.name,
-        error: error,
-        metadata: {
-          ...doc,
-        },
-      });
-
-      throw new Error("Failed to insert email app document");
-    }
-  }
-
-  // GET
-  async findOne({
-    filter,
-    projection,
-    conditions,
-  }: {
-    filter: { [field: string]: unknown };
-    projection: { [field: string]: number };
-    conditions?: { [field: string]: unknown };
-  }): Promise<EmailAppDocument> {
-    try {
-      this.logger.debug({
-        action: "Entry",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-        },
-      });
-
-      const emailAppDocument: EmailAppDocument | null | undefined =
-        await this.emailAppModel
-          .findOne(filter, projection)
-          .where(conditions ?? {});
-
-      if (!emailAppDocument) {
-        throw new Error("Email App Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.EMAIL_APP.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.insertOne.name,
         metadata: {
-          filter,
-          projection,
-          conditions,
-          documentKeys: Object.keys(emailAppDocument),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOne.name,
-        metadata: {
-          filter,
-          projection,
-          conditions,
-          emailAppDocument,
-        },
-      });
-
-      return emailAppDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOne.name,
+        method: this.insertOne.name,
         error: error,
         metadata: {
-          filter,
-          projection,
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to find email app document by filter");
+      throw error;
     }
   }
 
-  // PATCH
-  async findOneAndUpdate({
-    conditions,
-    update,
-  }: {
-    conditions: { [field: string]: unknown };
-    update: { [field: string]: unknown };
+  async insertMany(input: {
+    docs: {
+      client_id: string;
+      organization_id: string;
+      name: string;
+      description?: string;
+    }[];
+  }): Promise<InsertManyResult<any>> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.insertMany.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const result: InsertManyResult<any> = await this.emailAppModel.insertMany(
+        input.docs,
+        {
+          includeResultMetadata: true,
+          rawResult: true,
+        },
+      );
+
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.EMAIL_APP.NOT_FOUND);
+      }
+
+      if (
+        result.mongoose?.validationErrors &&
+        result.mongoose?.validationErrors?.length > 0
+      ) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Invalid data",
+          cause: result.mongoose?.validationErrors,
+        });
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.insertMany.name,
+        metadata: {
+          result,
+        },
+      });
+
+      return result;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.insertMany.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async find(input: {
+    filter: RootFilterQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
+  }): Promise<EmailAppDocument[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.find.name,
+        metadata: {
+          input,
+        },
+      });
+
+      const documents: EmailAppDocument[] | null = await this.emailAppModel
+        .find(input.filter)
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.EMAIL_APP.NOT_FOUND);
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.find.name,
+        metadata: {
+          input,
+          documentKeys: documents.map((document) => Object.keys(document)),
+        },
+      });
+
+      return documents;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.find.name,
+        error: error,
+        metadata: {
+          input,
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  async findOneAndUpdate(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
   }): Promise<EmailAppDocument> {
     try {
       this.logger.debug({
         action: "Entry",
         method: this.findOneAndUpdate.name,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      const emailAppDocument: EmailAppDocument | null | undefined =
-        await this.emailAppModel.findOneAndUpdate(conditions, update, {
-          timestamps: true,
+      const document: EmailAppDocument | null = await this.emailAppModel
+        .findOneAndUpdate(input.filter, input.update, {
           new: true,
-        });
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!emailAppDocument) {
-        throw new Error("Email App Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.EMAIL_APP.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
         method: this.findOneAndUpdate.name,
         metadata: {
-          conditions,
-          update,
-          updatedKeys: Object.keys(update),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndUpdate.name,
-        metadata: {
-          conditions,
-          update,
-          emailAppDocument,
-        },
-      });
-
-      return emailAppDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
         method: this.findOneAndUpdate.name,
         error: error,
         metadata: {
-          conditions,
-          update,
+          input,
         },
       });
 
-      throw new Error("Failed to update email app document by conditions");
+      throw error;
     }
   }
 
-  // PUT
-  async findOneAndReplace({
-    filter,
-    replacement,
-  }: {
-    filter: { [field: string]: unknown };
-    replacement: { [field: string]: unknown };
-  }): Promise<EmailAppDocument> {
+  async updateMany(input: {
+    filter: RootFilterQuery<any>;
+    update: UpdateQuery<any>;
+    select: string[];
+    populate: PopulateOptions | (PopulateOptions | string)[];
+  }): Promise<UpdateWriteOpResult> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndReplace.name,
+        method: this.updateMany.name,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      const emailAppDocument: EmailAppDocument | null | undefined =
-        await this.emailAppModel.findOneAndReplace(filter, replacement, {
-          timestamps: true,
+      const document: UpdateWriteOpResult = await this.emailAppModel
+        .updateMany(input.filter, input.update, {
           new: true,
-        });
+          upsert: false,
+        })
+        .select(input.select)
+        .populate(input.populate)
+        .exec();
 
-      if (!emailAppDocument) {
-        throw new Error("Email App Document not found");
+      if (!document) {
+        throw new TRPCError(ERROR.EMAIL_APP.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.updateMany.name,
         metadata: {
-          filter,
-          replacement,
-          replacedKeys: Object.keys(replacement),
+          documentKeys: Object.keys(document),
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndReplace.name,
-        metadata: {
-          filter,
-          replacement,
-          emailAppDocument,
-        },
-      });
-
-      return emailAppDocument;
+      return document;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndReplace.name,
+        method: this.updateMany.name,
         error: error,
         metadata: {
-          filter,
-          replacement,
+          input,
         },
       });
 
-      throw new Error("Failed to replacement email app document by filter");
+      throw error;
     }
   }
 
-  // DELETE
-  async findOneAndDelete({
-    conditions,
-  }: {
-    conditions: { [field: string]: unknown };
-  }): Promise<EmailAppDocument> {
+  async delete(input: { filter: RootFilterQuery<any> }): Promise<Number> {
     try {
       this.logger.debug({
         action: "Entry",
-        method: this.findOneAndDelete.name,
+        method: this.delete.name,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      const emailAppDocument: EmailAppDocument | null | undefined =
-        await this.emailAppModel.findOneAndDelete(conditions);
+      const result: DeleteResult = await this.emailAppModel.deleteMany(
+        input.filter,
+      );
 
-      if (!emailAppDocument) {
-        throw new Error("Email App Document not found");
+      if (!result || !result.acknowledged) {
+        throw new TRPCError(ERROR.EMAIL_APP.NOT_FOUND);
       }
 
       this.logger.log({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.delete.name,
         metadata: {
-          conditions,
-          documentKeys: Object.keys(emailAppDocument),
+          result,
         },
       });
 
-      this.logger.debug({
-        action: "Exit",
-        method: this.findOneAndDelete.name,
-        metadata: {
-          conditions,
-          emailAppDocument,
-        },
-      });
-
-      return emailAppDocument;
+      return result.deletedCount;
     } catch (error) {
       this.logger.error({
         action: "Exit",
-        method: this.findOneAndDelete.name,
+        method: this.delete.name,
         error: error,
         metadata: {
-          conditions,
+          input,
         },
       });
 
-      throw new Error("Failed to delete email app document by conditions");
+      throw error;
+    }
+  }
+
+  async getIds(filter: RootFilterQuery<any>): Promise<string[]> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+        },
+      });
+
+      if (Object.keys(filter).length === 0) {
+        this.logger.warn({
+          action: "Exit",
+          method: this.getIds.name,
+          metadata: {
+            filter,
+          },
+        });
+        return [];
+      }
+
+      const documents: EmailAppDocument[] | null = await this.emailAppModel
+        .find(filter)
+        .select("_id")
+        .exec();
+
+      if (!documents) {
+        throw new TRPCError(ERROR.EMAILAPP.NOT_FOUND);
+      }
+
+      const documentIds = documents.map((document) => document._id.toString());
+
+      this.logger.log({
+        action: "Exit",
+        method: this.getIds.name,
+        metadata: {
+          filter,
+          documentIds,
+        },
+      });
+
+      return documentIds;
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.getIds.name,
+        error: error,
+        metadata: {
+          filter,
+        },
+      });
+
+      throw error;
     }
   }
 }

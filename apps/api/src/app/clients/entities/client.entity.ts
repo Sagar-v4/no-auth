@@ -1,42 +1,54 @@
+import { randomUUID } from "crypto";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 
-export enum LOGIN_METHODS {
-  EMAIL_OTP = "Email OTP",
-}
-
-export enum STATUS {
-  ACTIVE = "Active",
-  BLOCKED = "Blocked",
-  DELETED = "Deleted",
-}
-
-export enum ROLES {
-  ADMIN = "Admin",
-  CLIENT = "Client",
-}
+import {
+  LOGIN_METHODS,
+  LOGIN_METHODS_ENUM,
+  ROLES,
+  ROLES_ENUM,
+  STATUS,
+  STATUS_ENUM,
+} from "@/lib/trpc/schemas/clients";
 
 @Schema({
   timestamps: true,
 })
 export class Client {
+  @Prop({
+    type: Types.UUID,
+    required: true,
+    unique: true,
+    default: () => randomUUID(),
+  })
+  uuid!: string;
+
   @Prop({ type: String, required: true })
   name!: string;
 
   @Prop({ type: String, required: true, unique: true })
   email!: string;
 
-  @Prop({ type: String, enum: LOGIN_METHODS, default: LOGIN_METHODS.EMAIL_OTP })
-  loginMethod?: string;
+  @Prop({
+    type: String,
+    enum: LOGIN_METHODS,
+    default: LOGIN_METHODS_ENUM.enum.EMAIL_OTP,
+  })
+  login_method?: string;
 
-  @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
+  @Prop({
+    type: String,
+    enum: STATUS,
+    required: true,
+    default: STATUS_ENUM.enum.ACTIVE,
+  })
   status!: string;
 
   @Prop({
     type: [String],
     enum: ROLES,
     required: true,
-    default: [ROLES.CLIENT],
+    default: [ROLES_ENUM.enum.CLIENT],
   })
   roles!: string[];
 
@@ -44,8 +56,8 @@ export class Client {
   metadata?: object;
 }
 
+export type ClientDocument = HydratedDocument<Client>;
+
 export const CLIENT_SCHEMA_NAME: string = Client.name;
 
 export const ClientSchema = SchemaFactory.createForClass(Client);
-
-export type ClientDocument = HydratedDocument<Client>;

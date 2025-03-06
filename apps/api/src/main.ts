@@ -1,6 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "@/app.module";
-import { INestApplication, Logger } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { EnvService } from "@/env/env.service";
 import {
   FastifyAdapter,
@@ -17,7 +17,7 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
   app.enableCors();
-  app.setGlobalPrefix(globalPrefix);
+  // app.setGlobalPrefix(globalPrefix);
 
   const envService: EnvService = app.get(EnvService);
   const PORT: number = envService.get("PORT");

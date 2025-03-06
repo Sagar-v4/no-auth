@@ -1,0 +1,45 @@
+import * as React from "react";
+
+import { Button } from "@workspace/ui/components/button";
+import { ResponsiveAlertDialog } from "@workspace/ui/components/responsive-alert-dialog";
+import { deleteEmailAppsByData } from "@/trpc/routers/email-apps";
+import { EmailAppIdInputSchema } from "@/lib/trpc/schemas/email/apps";
+
+export function DeleteEmailApp(ids: EmailAppIdInputSchema) {
+  const { exec } = deleteEmailAppsByData();
+
+  const title = <>Are you absolutely sure?</>;
+  const description = (
+    <span className="grid">
+      <span>
+        This action cannot be undone. This will permanently delete your email
+        app and remove from our servers.
+      </span>
+      <span>
+        <strong>Note: </strong>
+        If this app is currently in use then it will not deleted.
+      </span>
+    </span>
+  );
+
+  const trigger = (
+    <Button variant="ghost" size="sm" className="flex w-full justify-start">
+      Delete
+    </Button>
+  );
+
+  const onConfirm = async () => {
+    await exec({
+      filter: [ids],
+    });
+  };
+
+  return (
+    <ResponsiveAlertDialog
+      title={title}
+      trigger={trigger}
+      onConfirm={onConfirm}
+      description={description}
+    />
+  );
+}
