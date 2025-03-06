@@ -34,21 +34,13 @@ import { useIsMounted } from "usehooks-ts";
 import { getClientById } from "@/trpc/routers/clients";
 import { redirect } from "next/navigation";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function SidebarUsers() {
   if (!useIsMounted()) return <p>non mounted</p>;
   const { isMobile } = useSidebar();
 
   const { data, isError, isLoading } = getClientById({
     filter: {
-      _id: "67c4331ebae09b4bce26a661",
+      _id: "67c9fe0dd8020ca2e2b54dd1",
     },
   });
 

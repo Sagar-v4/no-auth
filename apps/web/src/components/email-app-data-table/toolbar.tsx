@@ -7,7 +7,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 
 import { types, status } from "@/components/email-app-data-table/data";
-import { AddEmailApp } from "@/components/email-app-data-table/add-email-app";
+import { AddEmailApp } from "@/components/email-app-data-table/add";
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
 

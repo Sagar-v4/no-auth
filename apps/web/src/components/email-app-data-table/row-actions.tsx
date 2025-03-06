@@ -11,7 +11,6 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -19,8 +18,10 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 
 import { status } from "@/components/email-app-data-table/data";
-import { appSchema } from "@/components/email-app-data-table/schema";
 import { emailAppOutputSchema } from "@/lib/trpc/schemas/email/apps";
+import { EditEmailApp } from "@/components/email-app-data-table/update";
+import { DeleteEmailApp } from "@/components/email-app-data-table/delete";
+import { EmailAppStatusChange } from "@/components/email-app-data-table/status-change";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -43,26 +44,29 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <EditEmailApp _id={app._id} uuid={app.uuid} />
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuRadioGroup value={app.name}>
-              {status.map((status) => (
-                <DropdownMenuRadioItem key={status.value} value={status.value}>
+              {status.map((status, idx) => (
+                <EmailAppStatusChange
+                  key={idx}
+                  value={status.value}
+                  ids={{ _id: app._id, uuid: app.uuid }}
+                >
                   {status.label}
-                </DropdownMenuRadioItem>
+                </EmailAppStatusChange>
               ))}
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+        <DropdownMenuItem asChild>
+          <DeleteEmailApp _id={app._id} uuid={app.uuid} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

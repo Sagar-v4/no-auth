@@ -3,7 +3,7 @@ import { InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { DevicesService } from "@/app/devices/devices.service";
-import { DeviceDocument, STATUS } from "@/app/devices/entities/device.entity";
+import { DeviceDocument } from "@/app/devices/entities/device.entity";
 import { LoggerMiddleware } from "@/trpc/middleware/logger.midleware";
 import {
   insertOneDeviceInputSchema,

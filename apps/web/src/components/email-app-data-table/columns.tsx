@@ -9,41 +9,41 @@ import {
 } from "@/components/email-app-data-table/data";
 import { App } from "@/components/email-app-data-table/schema";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { DataTableRowActions } from "@/components/email-app-data-table/data-table-row-actions";
+import { DataTableRowActions } from "@/components/email-app-data-table/row-actions";
 import { EmailAppOutputSchema } from "@/lib/trpc/schemas/email/apps";
 
 export const columns: ColumnDef<EmailAppOutputSchema>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //       className="translate-y-[2px]"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //       className="translate-y-[2px]"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "uuid",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="UUID" />
+      <DataTableColumnHeader column={column} title="UUID" className="pl-2" />
     ),
     cell: ({ row }) => (
-      <div className="w-[50px] overflow-hidden text-nowrap text-ellipsis">
+      <div className="w-[50px] overflow-hidden pl-2 text-nowrap text-ellipsis">
         {row.getValue("uuid")}
       </div>
     ),

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { STATUS_ENUM, TYPES_ENUM } from ".";
 
 export const emailAppInputSchema = z.object({
   _id: z.string().optional(),
@@ -7,10 +8,16 @@ export const emailAppInputSchema = z.object({
   organization_id: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
-  type: z.string().optional(),
-  status: z.string().optional(),
+  type: TYPES_ENUM.optional(),
+  status: STATUS_ENUM.optional(),
 });
 export type EmailAppInputSchema = z.infer<typeof emailAppInputSchema>;
+
+export const emailAppMetadataSchema = z.object({
+  email: z.string().email(),
+  password: z.string().nonempty(),
+});
+export type EmailAppMetadataSchema = z.infer<typeof emailAppMetadataSchema>;
 
 export const emailAppOutputSchema = z.object({
   _id: z.custom<any>(),
@@ -19,9 +26,9 @@ export const emailAppOutputSchema = z.object({
   organization_id: z.string().nonempty(),
   name: z.string().nonempty(),
   description: z.string().optional(),
-  type: z.string().nonempty(),
-  status: z.string().nonempty(),
-  metadata: z.object({}).optional(),
+  type: TYPES_ENUM,
+  status: STATUS_ENUM,
+  metadata: emailAppMetadataSchema.optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -32,15 +39,18 @@ export const emailAppInsertInputSchema = z.object({
   organization_id: z.string().nonempty(),
   name: z.string().nonempty(),
   description: z.string().optional(),
+  metadata: emailAppMetadataSchema,
 });
 export type EmailAppInsertInputSchema = z.infer<
   typeof emailAppInsertInputSchema
 >;
 
-export const emailAppIdInputSchema = z.object({
-  _id: z.string().optional(),
-  uuid: z.string().uuid().optional(),
-});
+export const emailAppIdInputSchema = z
+  .object({
+    _id: z.string().optional(),
+    uuid: z.string().uuid().optional(),
+  })
+  .refine((data) => !Object.values(data).every((value) => !value));
 export type EmailAppIdInputSchema = z.infer<typeof emailAppIdInputSchema>;
 
 export const emailAppUpdateInputSchema = z.object({
@@ -48,8 +58,8 @@ export const emailAppUpdateInputSchema = z.object({
   organization_id: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
-  type: z.string().optional(),
-  status: z.string().optional(),
+  type: TYPES_ENUM.optional(),
+  status: STATUS_ENUM.optional(),
 });
 export type EmailAppUpdateInputSchema = z.infer<
   typeof emailAppUpdateInputSchema

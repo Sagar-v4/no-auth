@@ -2,10 +2,7 @@ import { Logger } from "@nestjs/common";
 import { InsertManyResult, PopulateOptions } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
-import {
-  OrganizationDocument,
-  STATUS,
-} from "@/app/organizations/entities/organization.entity";
+import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
 import { LoggerMiddleware } from "@/trpc/middleware/logger.midleware";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import {

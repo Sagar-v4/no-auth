@@ -1,9 +1,9 @@
 import { SidebarMenu, SidebarMenuItem } from "@workspace/ui/components/sidebar";
 import { ModeSwitcher } from "@workspace/ui/components/mode-switcher";
 import { Separator } from "@workspace/ui/components/separator";
-import { ThemeCustomizer } from "@workspace/ui/theme/customizer.tsx";
+import { ThemeCustomizer } from "@workspace/ui/theme/customizer";
 
-export function NavTheme() {
+export function SidebarThemes() {
   return (
     <SidebarMenu suppressHydrationWarning>
       <SidebarMenuItem className="flex px-2 group-data-[collapsible=icon]:p-0">

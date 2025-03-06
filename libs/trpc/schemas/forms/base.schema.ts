@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { STATUS_ENUM, TYPES_ENUM } from ".";
 
 export const formInputSchema = z.object({
   _id: z.string().optional(),
@@ -11,7 +12,8 @@ export const formInputSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
   expiry: z.number().optional(),
-  status: z.string().optional(),
+  type: TYPES_ENUM.optional(),
+  status: STATUS_ENUM.optional(),
 });
 export type FormInputSchema = z.infer<typeof formInputSchema>;
 
@@ -26,7 +28,8 @@ export const formOutputSchema = z.object({
   name: z.string().nonempty(),
   description: z.string().optional(),
   expiry: z.number(),
-  status: z.string().nonempty(),
+  type: TYPES_ENUM,
+  status: STATUS_ENUM,
   metadata: z.object({}).optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -44,10 +47,12 @@ export const formInsertInputSchema = z.object({
 });
 export type FormInsertInputSchema = z.infer<typeof formInsertInputSchema>;
 
-export const formIdInputSchema = z.object({
-  _id: z.string().optional(),
-  uuid: z.string().uuid().optional(),
-});
+export const formIdInputSchema = z
+  .object({
+    _id: z.string().optional(),
+    uuid: z.string().uuid().optional(),
+  })
+  .refine((data) => !Object.values(data).every((value) => !value));
 export type FormIdInputSchema = z.infer<typeof formIdInputSchema>;
 
 export const formUpdateInputSchema = z.object({
@@ -59,6 +64,7 @@ export const formUpdateInputSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
   expiry: z.number().optional(),
-  status: z.string().optional(),
+  type: TYPES_ENUM.optional(),
+  status: STATUS_ENUM.optional(),
 });
 export type FormUpdateInputSchema = z.infer<typeof formUpdateInputSchema>;

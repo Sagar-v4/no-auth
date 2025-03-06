@@ -11,12 +11,7 @@ import {
   Clientele,
   CLIENTELE_SCHEMA_NAME,
 } from "@/app/clienteles/entities/clientele.entity";
-import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
-
-export enum STATUS {
-  ACTIVE = "Active",
-  EXPIRED = "Expired",
-}
+import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/sessions";
 
 @Schema({
   timestamps: true,
@@ -51,7 +46,12 @@ export class Session {
   })
   device_id!: string;
 
-  @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
+  @Prop({
+    type: String,
+    enum: STATUS,
+    required: true,
+    default: STATUS_ENUM.enum.ACTIVE,
+  })
   status!: string;
 
   @Prop({ type: Object })

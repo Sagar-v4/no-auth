@@ -4,15 +4,12 @@ import { randomUUID } from "crypto";
 
 import { CLIENT_SCHEMA_NAME } from "@/app/clients/entities/client.entity";
 import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
-
-export enum STATUS {
-  ACTIVE = "Active",
-  BLOCKED = "Blocked",
-}
-
-export enum TYPES {
-  NODE_MAILER = "Node Mailer",
-}
+import {
+  STATUS,
+  STATUS_ENUM,
+  TYPES,
+  TYPES_ENUM,
+} from "@/lib/trpc/schemas/email/apps";
 
 @Schema({
   timestamps: true,
@@ -42,7 +39,6 @@ export class Email_App {
 
   @Prop({
     type: String,
-    unique: true,
     required: true,
   })
   name!: string;
@@ -55,7 +51,7 @@ export class Email_App {
   @Prop({
     type: String,
     enum: TYPES,
-    default: TYPES.NODE_MAILER,
+    default: TYPES_ENUM.enum.NODE_MAILER,
     required: true,
   })
   type!: string;
@@ -64,7 +60,7 @@ export class Email_App {
     type: String,
     enum: STATUS,
     required: true,
-    default: STATUS.ACTIVE,
+    default: STATUS_ENUM.enum.ACTIVE,
   })
   status!: string;
 

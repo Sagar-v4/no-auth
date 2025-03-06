@@ -55,12 +55,14 @@ function getQueryClient() {
     return browserQueryClient;
   }
 }
+
+export const queryClient = getQueryClient();
+
 export function TrpcReactQueryProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const queryClient = getQueryClient();
   // const [trpcClient] = useState(() =>
   //   createTRPCClient<AppRouter>({
   //     links: [
@@ -71,6 +73,7 @@ export function TrpcReactQueryProvider({
   //   })
   // );
 
+  const queryClient = getQueryClient();
   const trpcClient = createTRPCClient<AppRouter>({
     links: [
       httpBatchLink({

@@ -28,20 +28,20 @@ import {
   CollapsibleTrigger,
 } from "@workspace/ui/components/collapsible";
 import { Label } from "@workspace/ui/components/label";
-import { organizations, sidebar, user } from "@/registry/sidebar";
-import { NavUser } from "@/components/nav-user";
-import { NavTheme } from "@/components/nav-theme";
-import { OrganizationSwitcher } from "@/components/organization-switcher";
+import { sidebar } from "@/registry/sidebar";
+import { SidebarUsers } from "@/components/sidebar/users";
+import { SidebarThemes } from "@/components/sidebar/themes";
+import { SidebarOrganizations } from "@/components/sidebar/organizations";
 
 export function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar> & { active_org_id: string }) {
-  const pageName = usePathname().valueOf().split("/").at(-1);
+  const pageName = usePathname().valueOf().split("/").at(3);
 
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>
       <SidebarHeader>
-        <OrganizationSwitcher active_org_id={props.active_org_id} />
+        <SidebarOrganizations active_org_id={props.active_org_id} />
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupContent>
             <form className="relative">
@@ -120,8 +120,8 @@ export function AppSidebar({
         })}
       </SidebarContent>
       <SidebarFooter>
-        <NavTheme />
-        <NavUser user={user} />
+        <SidebarThemes />
+        <SidebarUsers />
       </SidebarFooter>
       <SidebarRail className="hover:after:!bg-sidebar-primary" />
     </Sidebar>

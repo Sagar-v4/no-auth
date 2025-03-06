@@ -5,16 +5,12 @@ import { randomUUID } from "crypto";
 import { CLIENT_SCHEMA_NAME } from "@/app/clients/entities/client.entity";
 import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
 import { EMAIL_APP_SCHEMA_NAME } from "@/app/email/apps/entities/app.entity";
-
-export enum TYPES {
-  OTP = "OTP",
-  MAGIC_LINK = "Magic Link",
-}
-
-export enum STATUS {
-  ACTIVE = "Active",
-  ARCHIVED = "Archived",
-}
+import {
+  STATUS,
+  STATUS_ENUM,
+  TYPES,
+  TYPES_ENUM,
+} from "@/lib/trpc/schemas/forms";
 
 @Schema({
   timestamps: true,
@@ -49,7 +45,12 @@ export class Form {
   })
   email_app_id!: string;
 
-  @Prop({ type: String, enum: TYPES, required: true, default: TYPES.OTP })
+  @Prop({
+    type: String,
+    enum: TYPES,
+    required: true,
+    default: TYPES_ENUM.enum.OTP,
+  })
   type?: string;
 
   @Prop({ type: String, required: true })
@@ -67,7 +68,12 @@ export class Form {
   @Prop({ type: Number, required: true, default: -1 })
   expiry?: number; // Ex: new Date().getTime()
 
-  @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
+  @Prop({
+    type: String,
+    enum: STATUS,
+    required: true,
+    default: STATUS_ENUM.enum.ACTIVE,
+  })
   status!: string;
 
   @Prop({ type: Object })

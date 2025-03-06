@@ -67,7 +67,7 @@ export function NavHeader({
   };
 
   const [tabName, setTabName] = useQueryState("tab");
-  const pageName = usePathname().valueOf().split("/").at(-1);
+  const pageName = usePathname().valueOf().split("/").at(3);
 
   if (!pageName || !pages[pageName]) return;
 

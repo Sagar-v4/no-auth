@@ -3,10 +3,7 @@ import { InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { ClientelesService } from "@/app/clienteles/clienteles.service";
-import {
-  ClienteleDocument,
-  STATUS,
-} from "@/app/clienteles/entities/clientele.entity";
+import { ClienteleDocument } from "@/app/clienteles/entities/clientele.entity";
 import { LoggerMiddleware } from "@/trpc/middleware/logger.midleware";
 import {
   insertOneClienteleInputSchema,

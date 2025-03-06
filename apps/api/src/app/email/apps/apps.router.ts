@@ -2,7 +2,7 @@ import { Logger } from "@nestjs/common";
 import { InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
-import { EmailAppDocument, STATUS } from "@/app/email/apps/entities/app.entity";
+import { EmailAppDocument } from "@/app/email/apps/entities/app.entity";
 import { LoggerMiddleware } from "@/trpc/middleware/logger.midleware";
 import { EmailAppsService } from "@/app/email/apps/apps.service";
 import {

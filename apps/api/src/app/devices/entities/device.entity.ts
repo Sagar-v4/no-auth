@@ -1,11 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 import { randomUUID } from "crypto";
-
-export enum STATUS {
-  ACTIVE = "Active",
-  BLOCKED = "Blocked",
-}
+import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/devices";
 
 @Schema({
   timestamps: true,
@@ -19,7 +15,12 @@ export class Device {
   })
   uuid!: string;
 
-  @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
+  @Prop({
+    type: String,
+    enum: STATUS,
+    required: true,
+    default: STATUS_ENUM.enum.ACTIVE,
+  })
   status!: string;
 
   @Prop({ type: Object })

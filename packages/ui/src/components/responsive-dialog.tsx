@@ -24,10 +24,10 @@ export function ResponsiveDialog({
   children,
   description,
 }: Readonly<{
-  title: string;
+  title: React.ReactNode;
   trigger: React.JSX.Element;
   children: React.ReactNode;
-  description?: string;
+  description?: React.ReactNode;
 }>) {
   const [open, setOpen] = React.useState(false);
   const isMobile = useIsMobile();

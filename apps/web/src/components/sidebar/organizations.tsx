@@ -22,8 +22,9 @@ import {
   useSidebar,
 } from "@workspace/ui/components/sidebar";
 import { getOrganizationsByData } from "@/trpc/routers/organizations";
+import { SidebarOrganizationsSkeleton } from "@/skeletons/sidebar/organizations";
 
-export function OrganizationSwitcher({
+export function SidebarOrganizations({
   active_org_id,
 }: Readonly<{
   active_org_id: string;
@@ -35,12 +36,12 @@ export function OrganizationSwitcher({
   const { data, isError, isLoading } = getOrganizationsByData({
     filter: [
       {
-        client_id: "67c4331ebae09b4bce26a661",
+        client_id: "67c9fe0dd8020ca2e2b54dd1",
       },
     ],
   });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <SidebarOrganizationsSkeleton />;
   if (isError) return <p>Error...</p>;
   if (!data) return <p>no org</p>;
 

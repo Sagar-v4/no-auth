@@ -1,3 +1,4 @@
+export * from "./base.enum";
 export * from "./base.schema";
 export * from "./delete-by-data.schema";
 export * from "./delete-by-ref.schema";

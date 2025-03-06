@@ -5,12 +5,7 @@ import {
   CLIENT_SCHEMA_NAME,
 } from "@/app/clients/entities/client.entity";
 import { randomUUID } from "crypto";
-
-export enum STATUS {
-  ACTIVE = "Active",
-  ARCHIVED = "Archived",
-}
-
+import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/organizations";
 @Schema({
   timestamps: true,
 })
@@ -38,7 +33,12 @@ export class Organization {
   @Prop({ type: String })
   description?: string;
 
-  @Prop({ type: String, enum: STATUS, required: true, default: STATUS.ACTIVE })
+  @Prop({
+    type: String,
+    enum: STATUS,
+    required: true,
+    default: STATUS_ENUM.enum.ACTIVE,
+  })
   status!: string;
 
   @Prop({ type: Object })

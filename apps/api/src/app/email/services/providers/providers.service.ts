@@ -1,16 +1,13 @@
 import { Injectable, Logger } from "@nestjs/common";
 
-import {
-  STATUS as EMAIL_APP_STATUS,
-  TYPES as EMAIL_APP_TYPES,
-} from "@/app/email/apps/entities/app.entity";
+import { TYPES_ENUM as EMAIL_APP_TYPES } from "@/lib/trpc/schemas/email/apps";
 import { NodeMailer } from "@/app/email/services/providers";
 import { EmailAppsService } from "@/app/email/apps/apps.service";
 import { EmailServicesService } from "@/app/email/services/services.service";
 import { EmailTemplatesService } from "@/app/email/templates/templates.service";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { EmailServiceDocument } from "@/app/email/services/entities/service.entity";
-import { STATUS as ORGANIZATION_STATUS } from "@/app/organizations/entities/organization.entity";
+import { STATUS_ENUM as ORGANIZATION_STATUS } from "@/lib/trpc/schemas/organizations";
 
 @Injectable()
 export class EmailServicesProvidersService {
@@ -69,7 +66,10 @@ export class EmailServicesProvidersService {
       }
 
       const organization: any = await this.organizationsService.find({
-        filter: { _id: organizationId, status: ORGANIZATION_STATUS.ACTIVE },
+        filter: {
+          _id: organizationId,
+          status: ORGANIZATION_STATUS.enum.ACTIVE,
+        },
         populate: [],
         select: ["domain"],
       });
@@ -92,7 +92,7 @@ export class EmailServicesProvidersService {
 
       let messageId: string;
       switch (emailApp.type) {
-        case EMAIL_APP_TYPES.NODE_MAILER:
+        case EMAIL_APP_TYPES.enum.NODE_MAILER:
           messageId = await this.handleNodeMailer({
             ...metadata,
             otp: finalOTP,

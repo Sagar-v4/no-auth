@@ -4,7 +4,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@workspace/ui/components/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/sidebar/sidebar";
 import { NavHeader } from "@/components/nav-header";
 
 export default async function AppLayout({

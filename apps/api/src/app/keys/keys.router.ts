@@ -2,7 +2,7 @@ import { Logger } from "@nestjs/common";
 import { InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
-import { KeyDocument, STATUS } from "@/app/keys/entities/key.entity";
+import { KeyDocument } from "@/app/keys/entities/key.entity";
 import { LoggerMiddleware } from "@/trpc/middleware/logger.midleware";
 import { KeysService } from "@/app/keys/keys.service";
 import {

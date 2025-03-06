@@ -26,7 +26,7 @@ import {
 } from "@workspace/ui/components/table";
 
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
-import { DataTableToolbar } from "@/components/email-app-data-table/data-table-toolbar";
+import { DataTableToolbar } from "@/components/email-app-data-table/toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -120,7 +120,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} selected={false} />
     </div>
   );
 }

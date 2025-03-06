@@ -9,7 +9,7 @@ import { DataTableViewOptions } from "@/components/data-table/data-table-view-op
 
 import { types, status } from "@/components/email-template-data-table/data";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
-import { AddEmailApp } from "@/components/email-app-data-table/add-email-app";
+import { AddEmailApp } from "@/components/email-app-data-table/add";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

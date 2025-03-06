@@ -2,10 +2,7 @@ import { Logger } from "@nestjs/common";
 import { InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
-import {
-  SessionDocument,
-  STATUS,
-} from "@/app/sessions/entities/session.entity";
+import { SessionDocument } from "@/app/sessions/entities/session.entity";
 import { LoggerMiddleware } from "@/trpc/middleware/logger.midleware";
 import { SessionsService } from "@/app/sessions/sessions.service";
 import {

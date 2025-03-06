@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 import {
   InsertOneClientInputType,
@@ -11,219 +11,213 @@ import {
   DeleteByClientDataInputType,
 } from "@/lib/trpc/schemas/clients";
 import { useTRPC } from "@/trpc/server";
+import { queryClient } from "@/trpc/provider";
 
-/**
-onMutate(variables) {
-      toast.info("Client onMutate()", {
-        richColors: true,
-        position: "bottom-right",
-        icon: Loading(),
-      });
-    },
-    onSuccess(data, variables, context) {
-      toast.success("Client created." + data._id, {
-        richColors: true,
-        position: "bottom-right",
-      });
-    },
-    onError(error, variables, context) {
-      toast.error("Failed to create client." + error.message, {
-        richColors: true,
-        position: "bottom-right",
-      });
-    },
-    onSettled(data, error, variables, context) {
-      toast.warning("Client onSettled()", {
-        richColors: true,
-        position: "bottom-right",
-      });
-    },
- */
-export function createOneClient(input: InsertOneClientInputType) {
+export function createOneClient() {
   const { clients } = useTRPC();
 
   const mutationOptions = clients.insertOne.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
+    onSettled: () => {
+      const findByData = clients.findByData.queryKey();
+      const findById = clients.findById.queryKey();
+      queryClient.invalidateQueries([findByData, findById] as any);
+    },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const createOneClient = async () => {
-    const promise = mutation.mutateAsync(input, {
-      onSuccess(data, variables, context) {
-        toast.success("Client created." + data._id, {
-          richColors: true,
-          position: "bottom-right",
-        });
-      },
-      onError(error, variables, context) {
-        toast.error("Failed to create client." + error.message, {
-          richColors: true,
-          position: "bottom-right",
-        });
-      },
-      onSettled(data, error, variables, context) {
-        toast.warning("Client onSettled()", {
-          richColors: true,
-          position: "bottom-right",
-        });
-      },
-    });
+  const exec = async (input: InsertOneClientInputType) => {
+    const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
       richColors: true,
-      position: "top-right",
-      success: (data) => {
-        return `${data.email} added`;
-      },
-      error: (data) => {
-        return {
-          message: `Failed to add ${data.message} toast`,
-        };
-      },
-      finally() {
-        // toast.message("done");
-      },
-
       loading: "Creating client...",
-      // description: "Creating client...",
+      success: "Client created successfully",
+      error: "Failed to create client",
     });
   };
 
-  return { createOneClient, ...mutation };
+  return { exec, ...mutation };
 }
 
-export function createManyClient(input: InsertManyClientInputType) {
+export function createManyClient() {
   const { clients } = useTRPC();
 
   const mutationOptions = clients.insertMany.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
+    onSettled: () => {
+      const findByData = clients.findByData.queryKey();
+      const findById = clients.findById.queryKey();
+      queryClient.invalidateQueries([findByData, findById] as any);
+    },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const createManyClient = async () => {
+  const exec = async (input: InsertManyClientInputType) => {
     const promise = mutation.mutateAsync(input);
+
+    toast.promise(promise, {
+      richColors: true,
+      loading: "Creating client...",
+      success: "Client created successfully",
+      error: "Failed to create client",
+    });
   };
 
-  return { createManyClient, ...mutation };
+  return { exec, ...mutation };
 }
 
 export function getClientById(input: FindByClientIdInputType) {
   const { clients } = useTRPC();
 
   const queryOptions = clients.findById.queryOptions(input, {
-    staleTime: 60 * 1000, // 1 min
-    refetchInterval: 60 * 1000, // 1 min
-    select: (data) => {
-      if (!data) return null;
-
-      const { _id, ...rest } = data;
-      return {
-        ...rest,
-        id: _id,
-      };
-    },
+    retry: 2,
+    retryDelay: (retryCount) => retryCount * 1000,
+    enabled: false,
+    staleTime: 1000 * 60 * 10, // 10 min
+    refetchInterval: 1000 * 60 * 10, // 10 min
     trpc: {
       abortOnUnmount: true,
       ssr: true,
     },
-    enabled: true,
   });
 
-  const query = useQuery(queryOptions);
+  const query = useSuspenseQuery(queryOptions);
 
-  const getClientById = async () => {
+  const exec = async () => {
     const promise = query.refetch({
       cancelRefetch: false,
     });
+
+    toast.promise(promise, {
+      richColors: true,
+      loading: "Fetching client...",
+      error: "Failed to fetch client",
+    });
   };
 
-  return { getClientById, ...query };
+  return { exec, ...query };
 }
 
 export function getClientsByData(input: FindByClientDataInputType) {
   const { clients } = useTRPC();
 
   const queryOptions = clients.findByData.queryOptions(input, {
-    staleTime: 60 * 1000, // 1 min
-    refetchInterval: 60 * 1000, // 1 min
-    // select: (data) => {
-    //   if (!data) return null;
-
-    //   const { _id, ...rest } = data;
-    //   return {
-    //     ...rest,
-    //     id: _id,
-    //   };
-    // },
+    retry: 2,
+    retryDelay: (retryCount) => retryCount * 1000,
+    enabled: false,
+    staleTime: 1000 * 60 * 10, // 10 min
+    refetchInterval: 1000 * 60 * 10, // 10 min
     trpc: {
       abortOnUnmount: true,
       ssr: true,
     },
-    enabled: true,
   });
 
   const query = useQuery(queryOptions);
 
-  const getClientsByData = async () => {
+  const exec = async () => {
     const promise = query.refetch({
       cancelRefetch: false,
     });
+
+    toast.promise(promise, {
+      richColors: true,
+      loading: "Fetching client...",
+      error: "Failed to fetch client",
+    });
   };
 
-  return { getClientsByData, ...query };
+  return { exec, ...query };
 }
 
-export function updateClientById(input: UpdateByClientIdInputType) {
+export function updateClientById() {
   const { clients } = useTRPC();
 
   const mutationOptions = clients.updateById.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
+    onSettled: () => {
+      const findByData = clients.findByData.queryKey();
+      const findById = clients.findById.queryKey();
+      queryClient.invalidateQueries([findByData, findById] as any);
+    },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const updateClientById = async () => {
+  const exec = async (input: UpdateByClientIdInputType) => {
     const promise = mutation.mutateAsync(input);
+
+    toast.promise(promise, {
+      richColors: true,
+      loading: "Updating client...",
+      success: "Client updated successfully",
+      error: "Failed to update client",
+    });
   };
 
-  return { updateClientById, ...mutation };
+  return { exec, ...mutation };
 }
 
-export function updateClientsByData(input: UpdateByClientDataInputType) {
+export function updateClientsByData() {
   const { clients } = useTRPC();
 
   const mutationOptions = clients.updateByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
+    onSettled: () => {
+      const findByData = clients.findByData.queryKey();
+      const findById = clients.findById.queryKey();
+      queryClient.invalidateQueries([findByData, findById] as any);
+    },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const updateClientsByData = async () => {
+  const exec = async (input: UpdateByClientDataInputType) => {
     const promise = mutation.mutateAsync(input);
+
+    toast.promise(promise, {
+      richColors: true,
+      loading: "Updating client...",
+      success: "Client updated successfully",
+      error: "Failed to update client",
+    });
   };
 
-  return { updateClientsByData, ...mutation };
+  return { exec, ...mutation };
 }
 
-export function deleteClientsByData(input: DeleteByClientDataInputType) {
+export function deleteClientsByData() {
   const { clients } = useTRPC();
 
   const mutationOptions = clients.deleteByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
+    onSettled: () => {
+      const findByData = clients.findByData.queryKey();
+      const findById = clients.findById.queryKey();
+      queryClient.invalidateQueries([findByData, findById] as any);
+    },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const deleteClientsByData = async () => {
+  const exec = async (input: DeleteByClientDataInputType) => {
     const promise = mutation.mutateAsync(input);
+
+    toast.promise(promise, {
+      richColors: true,
+      loading: "Deleting client...",
+      success: "Client deleted successfully",
+      error: "Failed to delete client",
+    });
   };
 
-  return { deleteClientsByData, ...mutation };
+  return { exec, ...mutation };
 }

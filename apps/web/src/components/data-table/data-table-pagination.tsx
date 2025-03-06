@@ -21,14 +21,21 @@ interface DataTablePaginationProps<TData> {
 
 export function DataTablePagination<TData>({
   table,
-}: DataTablePaginationProps<TData>) {
+  selected = true,
+}: DataTablePaginationProps<TData> & {
+  selected?: boolean;
+}) {
   return (
     <>
       <div className="mx-auto flex items-center justify-between py-2 pl-1 sm:mx-0 sm:px-2 sm:py-0">
-        <div className="text-muted-foreground hidden text-sm sm:inline-flex">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
+        {selected ? (
+          <div className="text-muted-foreground hidden text-sm sm:inline-flex">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected.
+          </div>
+        ) : (
+          <span></span>
+        )}
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Page size</p>
@@ -117,10 +124,12 @@ export function DataTablePagination<TData>({
           </div>
         </div>
       </div>
-      <div className="text-muted-foreground mx-auto text-sm sm:hidden">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
-      </div>
+      {selected ? (
+        <div className="text-muted-foreground mx-auto text-sm sm:hidden">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+      ) : null}
     </>
   );
 }
