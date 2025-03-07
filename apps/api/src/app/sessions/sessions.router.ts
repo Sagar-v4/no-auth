@@ -457,7 +457,7 @@ export class SessionsRouter {
 
       const filter = query$or(updateBySessionDataInputData.filter);
 
-      const session = await this.sessionsService.updateMany({
+      const result = await this.sessionsService.updateMany({
         filter: filter,
         update: updateBySessionDataInputData.update,
         select: [],
@@ -468,11 +468,11 @@ export class SessionsRouter {
         action: "Exit",
         method: this.updateById.name,
         metadata: {
-          session,
+          result,
         },
       });
 
-      return updateBySessionDataOutputSchema.parse(session);
+      return updateBySessionDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

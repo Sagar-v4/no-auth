@@ -17,6 +17,10 @@ import {
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { TRPCError } from "@trpc/server";
 import { ERROR } from "@/trpc/error";
+import {
+  InsertManyEmailAppInputType,
+  InsertOneEmailAppInputType,
+} from "@/lib/trpc/schemas/email/apps";
 
 @Injectable()
 export class EmailAppsService {
@@ -40,14 +44,9 @@ export class EmailAppsService {
     }
   }
 
-  async insertOne(input: {
-    doc: {
-      client_id: string;
-      organization_id: string;
-      name: string;
-      description?: string;
-    };
-  }): Promise<EmailAppDocument> {
+  async insertOne(
+    input: InsertOneEmailAppInputType,
+  ): Promise<EmailAppDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -91,14 +90,9 @@ export class EmailAppsService {
     }
   }
 
-  async insertMany(input: {
-    docs: {
-      client_id: string;
-      organization_id: string;
-      name: string;
-      description?: string;
-    }[];
-  }): Promise<InsertManyResult<any>> {
+  async insertMany(
+    input: InsertManyEmailAppInputType,
+  ): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",

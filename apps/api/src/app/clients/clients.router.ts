@@ -292,7 +292,7 @@ export class ClientsRouter {
 
       const filter = query$or(updateByClientDataInputData.filter);
 
-      const client = await this.clientsService.updateMany({
+      const result = await this.clientsService.updateMany({
         filter: filter,
         update: updateByClientDataInputData.update,
         select: [],
@@ -303,11 +303,11 @@ export class ClientsRouter {
         action: "Exit",
         method: this.updateById.name,
         metadata: {
-          client,
+          result,
         },
       });
 
-      return updateByClientDataOutputSchema.parse(client);
+      return updateByClientDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

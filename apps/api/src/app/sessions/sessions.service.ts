@@ -17,6 +17,10 @@ import {
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { TRPCError } from "@trpc/server";
 import { ERROR } from "@/trpc/error";
+import {
+  InsertManySessionInputType,
+  InsertOneSessionInputType,
+} from "@/lib/trpc/schemas/sessions";
 
 @Injectable()
 export class SessionsService {
@@ -40,13 +44,7 @@ export class SessionsService {
     }
   }
 
-  async insertOne(input: {
-    doc: {
-      user_id: string;
-      user_type: string;
-      device_id: string;
-    };
-  }): Promise<SessionDocument> {
+  async insertOne(input: InsertOneSessionInputType): Promise<SessionDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -90,13 +88,9 @@ export class SessionsService {
     }
   }
 
-  async insertMany(input: {
-    docs: {
-      user_id: string;
-      user_type: string;
-      device_id: string;
-    }[];
-  }): Promise<InsertManyResult<any>> {
+  async insertMany(
+    input: InsertManySessionInputType,
+  ): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",

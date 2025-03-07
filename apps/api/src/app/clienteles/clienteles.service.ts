@@ -17,6 +17,10 @@ import {
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { TRPCError } from "@trpc/server";
 import { ERROR } from "@/trpc/error";
+import {
+  InsertManyClienteleInputType,
+  InsertOneClienteleInputType,
+} from "@/lib/trpc/schemas/clienteles";
 
 @Injectable()
 export class ClientelesService {
@@ -40,11 +44,9 @@ export class ClientelesService {
     }
   }
 
-  async insertOne(input: {
-    doc: {
-      organization_id: string;
-    };
-  }): Promise<ClienteleDocument> {
+  async insertOne(
+    input: InsertOneClienteleInputType,
+  ): Promise<ClienteleDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -88,11 +90,9 @@ export class ClientelesService {
     }
   }
 
-  async insertMany(input: {
-    docs: {
-      organization_id: string;
-    }[];
-  }): Promise<InsertManyResult<any>> {
+  async insertMany(
+    input: InsertManyClienteleInputType,
+  ): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",

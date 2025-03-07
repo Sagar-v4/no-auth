@@ -19,6 +19,9 @@ import { DevicesModule } from "@/app/devices/devices.module";
 import { SessionsModule } from "@/app/sessions/sessions.module";
 import { TrpcModule } from "@/trpc/trpc.module";
 import { SSOModule } from "@/app/sso/sso.module";
+import { RolesModule } from "@/app/roles/roles.module";
+import { PermissionsModule } from "@/app/permissions/permissions.module";
+import { PermissionGroupsModule } from "@/app/permission-groups/permission-groups.module";
 
 @Module({
   imports: [
@@ -43,6 +46,9 @@ import { SSOModule } from "@/app/sso/sso.module";
     SSOModule,
     MongooseModelsModule,
     MongooseDatabaseModule,
+    RolesModule,
+    PermissionsModule,
+    PermissionGroupsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

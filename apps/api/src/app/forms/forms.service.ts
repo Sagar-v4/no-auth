@@ -17,6 +17,10 @@ import {
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { TRPCError } from "@trpc/server";
 import { ERROR } from "@/trpc/error";
+import {
+  InsertManyFormInputType,
+  InsertOneFormInputType,
+} from "@/lib/trpc/schemas/forms";
 
 @Injectable()
 export class FormsService {
@@ -40,18 +44,7 @@ export class FormsService {
     }
   }
 
-  async insertOne(input: {
-    doc: {
-      client_id: string;
-      organization_id: string;
-      email_app_id: string;
-      title: string;
-      short_description?: string;
-      name: string;
-      description?: string;
-      expiry?: number;
-    };
-  }): Promise<FormDocument> {
+  async insertOne(input: InsertOneFormInputType): Promise<FormDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -88,18 +81,9 @@ export class FormsService {
     }
   }
 
-  async insertMany(input: {
-    docs: {
-      client_id: string;
-      organization_id: string;
-      email_app_id: string;
-      title: string;
-      short_description?: string;
-      name: string;
-      description?: string;
-      expiry?: number;
-    }[];
-  }): Promise<InsertManyResult<any>> {
+  async insertMany(
+    input: InsertManyFormInputType,
+  ): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",

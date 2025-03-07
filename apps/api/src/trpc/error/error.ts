@@ -63,4 +63,22 @@ export const ERROR: {
       message: "SSO Document not found",
     },
   },
+  ROLE: {
+    NOT_FOUND: {
+      code: "NOT_FOUND",
+      message: "Role Document not found",
+    },
+  },
+  PERMISSION: {
+    NOT_FOUND: {
+      code: "NOT_FOUND",
+      message: "Permission Document not found",
+    },
+  },
+  PERMISSION_GROUP: {
+    NOT_FOUND: {
+      code: "NOT_FOUND",
+      message: "Permission Group Document not found",
+    },
+  },
 };

@@ -292,7 +292,7 @@ export class DevicesRouter {
 
       const filter = query$or(updateByDeviceDataInputData.filter);
 
-      const device = await this.devicesService.updateMany({
+      const result = await this.devicesService.updateMany({
         filter: filter,
         update: updateByDeviceDataInputData.update,
         select: [],
@@ -303,11 +303,11 @@ export class DevicesRouter {
         action: "Exit",
         method: this.updateById.name,
         metadata: {
-          device,
+          result,
         },
       });
 
-      return updateByDeviceDataOutputSchema.parse(device);
+      return updateByDeviceDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

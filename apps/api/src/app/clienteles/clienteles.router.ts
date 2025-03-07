@@ -388,7 +388,7 @@ export class ClientelesRouter {
 
       const filter = query$or(updateByClienteleDataInputData.filter);
 
-      const clientele = await this.clientelesService.updateMany({
+      const result = await this.clientelesService.updateMany({
         filter: filter,
         update: updateByClienteleDataInputData.update,
         select: [],
@@ -399,11 +399,11 @@ export class ClientelesRouter {
         action: "Exit",
         method: this.updateById.name,
         metadata: {
-          clientele,
+          result,
         },
       });
 
-      return updateByClienteleDataOutputSchema.parse(clientele);
+      return updateByClienteleDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

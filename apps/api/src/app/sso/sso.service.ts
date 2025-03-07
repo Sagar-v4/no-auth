@@ -14,6 +14,10 @@ import { SSO_SCHEMA_NAME, SSODocument } from "@/app/sso/entities/sso.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { TRPCError } from "@trpc/server";
 import { ERROR } from "@/trpc/error";
+import {
+  InsertManySSOInputType,
+  InsertOneSSOInputType,
+} from "@/lib/trpc/schemas/sso";
 
 @Injectable()
 export class SSOService {
@@ -37,17 +41,7 @@ export class SSOService {
     }
   }
 
-  async insertOne(input: {
-    doc: {
-      client_id: string;
-      organization_id: string;
-      name: string;
-      description?: string;
-      redirect_url: string;
-      webhook_url: string;
-      show_device_users?: boolean;
-    };
-  }): Promise<SSODocument> {
+  async insertOne(input: InsertOneSSOInputType): Promise<SSODocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -88,17 +82,9 @@ export class SSOService {
     }
   }
 
-  async insertMany(input: {
-    docs: {
-      client_id: string;
-      organization_id: string;
-      name: string;
-      description?: string;
-      redirect_url: string;
-      webhook_url: string;
-      show_device_users?: boolean;
-    }[];
-  }): Promise<InsertManyResult<any>> {
+  async insertMany(
+    input: InsertManySSOInputType,
+  ): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",

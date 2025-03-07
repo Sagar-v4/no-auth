@@ -390,7 +390,7 @@ export class SSORouter {
 
       const filter = query$or(updateBySSODataInputData.filter);
 
-      const sso = await this.ssoService.updateMany({
+      const result = await this.ssoService.updateMany({
         filter: filter,
         update: updateBySSODataInputData.update,
         select: [],
@@ -401,11 +401,11 @@ export class SSORouter {
         action: "Exit",
         method: this.updateById.name,
         metadata: {
-          sso,
+          result,
         },
       });
 
-      return updateBySSODataOutputSchema.parse(sso);
+      return updateBySSODataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
