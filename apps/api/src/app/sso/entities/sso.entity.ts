@@ -1,15 +1,15 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
 import { randomUUID } from "crypto";
+import { HydratedDocument, Types } from "mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import { CLIENT_SCHEMA_NAME } from "@/app/clients/entities/client.entity";
 import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
-import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/keys";
+import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/sso";
 
 @Schema({
   timestamps: true,
 })
-export class Key {
+export class SSO {
   @Prop({
     type: Types.UUID,
     required: true,
@@ -32,19 +32,30 @@ export class Key {
   })
   organization_id!: string;
 
-  @Prop({
-    type: String,
-    required: true,
-  })
+  @Prop({ type: String, required: true })
   name!: string;
 
-  @Prop({
-    type: String,
-  })
+  @Prop({ type: String })
   description?: string;
 
-  @Prop({ type: Number, required: true, default: -1 })
-  expiry!: number; // Ex: new Date().getTime()
+  @Prop({
+    type: URL,
+    required: true,
+  })
+  redirect_url!: string;
+
+  @Prop({
+    type: URL,
+    required: true,
+  })
+  webhook_url!: string;
+
+  @Prop({
+    type: Boolean,
+    required: true,
+    default: true,
+  })
+  show_device_users!: boolean;
 
   @Prop({
     type: String,
@@ -58,8 +69,8 @@ export class Key {
   metadata?: object;
 }
 
-export const KEY_SCHEMA_NAME: string = Key.name;
+export const SSO_SCHEMA_NAME: string = SSO.name;
 
-export const KeySchema = SchemaFactory.createForClass(Key);
+export const SSOSchema = SchemaFactory.createForClass(SSO);
 
-export type KeyDocument = HydratedDocument<Key>;
+export type SSODocument = HydratedDocument<SSO>;

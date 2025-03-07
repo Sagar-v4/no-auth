@@ -16,7 +16,7 @@ export default function Page() {
   const { exec, data, isLoading, isError } = getEmailAppsByData({
     filter: [
       {
-        organization_id: "67c9fe2ed8020ca2e2b54dd3",
+        organization_id: "67ca9a198e591331d8e817f9",
       },
     ],
   });

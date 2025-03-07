@@ -311,9 +311,7 @@ export class OrganizationsRouter {
         },
       });
 
-      return findByOrganizationRefOutputSchema.parse(
-        organizations.filter((o) => o.client_id),
-      );
+      return findByOrganizationRefOutputSchema.parse(organizations);
     } catch (error) {
       this.logger.error({
         action: "Exit",

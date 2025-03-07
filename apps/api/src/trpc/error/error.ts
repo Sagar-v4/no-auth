@@ -57,4 +57,10 @@ export const ERROR: {
       message: "Session Document not found",
     },
   },
+  SSO: {
+    NOT_FOUND: {
+      code: "NOT_FOUND",
+      message: "SSO Document not found",
+    },
+  },
 };

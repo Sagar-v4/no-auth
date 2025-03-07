@@ -18,6 +18,7 @@ import { KeysModule } from "@/app/keys/keys.module";
 import { DevicesModule } from "@/app/devices/devices.module";
 import { SessionsModule } from "@/app/sessions/sessions.module";
 import { TrpcModule } from "@/trpc/trpc.module";
+import { SSOModule } from "@/app/sso/sso.module";
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { TrpcModule } from "@/trpc/trpc.module";
     KeysModule,
     DevicesModule,
     SessionsModule,
+    SSOModule,
     MongooseModelsModule,
     MongooseDatabaseModule,
   ],

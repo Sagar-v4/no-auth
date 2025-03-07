@@ -3,7 +3,7 @@
 import { useIsMounted } from "usehooks-ts";
 
 import { cn } from "@workspace/ui/lib/utils";
-import { useThemeConfig } from "../hooks/use-theme-config";
+import { useThemeConfig } from "@workspace/ui/hooks/use-theme-config";
 
 interface ThemeWrapperProps {
   defaultTheme?: string;

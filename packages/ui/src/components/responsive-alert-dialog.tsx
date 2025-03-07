@@ -22,7 +22,7 @@ import {
   DrawerFooter,
   DrawerClose,
 } from "@workspace/ui/components/drawer";
-import { Button } from "./button";
+import { Button } from "@workspace/ui/components/button";
 
 export function ResponsiveAlertDialog({
   title,

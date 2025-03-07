@@ -10,6 +10,7 @@ export interface MongooseDbSchema {
 }
 
 export enum MONGOOSE_DB_CONNECTION {
+  SSO = "SSO",
   KEY = "KEY",
   FORM = "FORM",
   EMAIL = "EMAIL",
