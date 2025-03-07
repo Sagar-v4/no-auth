@@ -5,20 +5,26 @@ import { useTheme } from "next-themes";
 import { useIsMounted } from "usehooks-ts";
 import { Check, Palette, RefreshCw } from "lucide-react";
 
-// import "../styles/mdx.css";
-import { cn } from "../lib/utils";
-import { Wrapper as ThemeWrapper } from "./wrapper";
-import { baseColors, Modes, modes, Radius, radius } from "../registry";
-import { ResponsiveDialog } from "../components/responsive-dialog";
-import { Button } from "../components/button";
-import { Label } from "../components/label";
-import { useThemeConfig } from "../hooks/use-theme-config";
+import "../styles/mdx.css";
+import {
+  baseColors,
+  Modes,
+  modes,
+  Radius,
+  radius,
+} from "@workspace/ui/registry";
+import { cn } from "@workspace/ui/lib/utils";
+import { Wrapper as ThemeWrapper } from "@workspace/ui/theme/wrapper";
+import { ResponsiveDialog } from "@workspace/ui/components/responsive-dialog";
+import { Button } from "@workspace/ui/components/button";
+import { Label } from "@workspace/ui/components/label";
+import { useThemeConfig } from "@workspace/ui/hooks/use-theme-config";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../components/tooltip";
+} from "@workspace/ui/components/tooltip";
 
 export function ThemeCustomizer() {
   const title = "Customize theme";

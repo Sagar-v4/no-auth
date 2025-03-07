@@ -6,7 +6,7 @@ import { Button } from "@workspace/ui/components/button";
 export default function Page() {
   const { exec, data, isError, error } = getOrganizationById({
     filter: {
-      _id: "67c9fe2ed8020ca2e2b54dd3",
+      _id: "67ca9a198e591331d8e817f9",
     },
   });
 

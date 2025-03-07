@@ -41,8 +41,8 @@ export function Form({
 
   const form = useForm({
     defaultValues: {
-      client_id: "67c9fe0dd8020ca2e2b54dd1",
-      organization_id: "67c9fe2ed8020ca2e2b54dd3",
+      client_id: "67ca9a078e591331d8e817f7",
+      organization_id: "67ca9a198e591331d8e817f9",
       name: data?.name ?? "",
       description: data?.description ?? "",
       metadata: {

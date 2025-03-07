@@ -50,7 +50,7 @@ export class Key {
     type: String,
     enum: STATUS,
     required: true,
-    default: STATUS_ENUM.enum.ACTIVE,
+    default: STATUS_ENUM.enum.PREACTIVE,
   })
   status!: string;
 

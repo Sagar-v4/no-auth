@@ -311,9 +311,7 @@ export class OrganizationsRouter {
         },
       });
 
-      return findByOrganizationRefOutputSchema.parse(
-        organizations.filter((o) => o.client_id),
-      );
+      return findByOrganizationRefOutputSchema.parse(organizations);
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -389,7 +387,7 @@ export class OrganizationsRouter {
 
       const filter = query$or(updateByOrganizationDataInputData.filter);
 
-      const organization = await this.organizationsService.updateMany({
+      const result = await this.organizationsService.updateMany({
         filter: filter,
         update: updateByOrganizationDataInputData.update,
         select: [],
@@ -400,11 +398,11 @@ export class OrganizationsRouter {
         action: "Exit",
         method: this.updateById.name,
         metadata: {
-          organization,
+          result,
         },
       });
 
-      return updateByOrganizationDataOutputSchema.parse(organization);
+      return updateByOrganizationDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

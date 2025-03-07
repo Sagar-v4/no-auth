@@ -17,6 +17,10 @@ import {
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { TRPCError } from "@trpc/server";
 import { ERROR } from "@/trpc/error";
+import {
+  InsertManyDeviceInputType,
+  InsertOneDeviceInputType,
+} from "@/lib/trpc/schemas/devices";
 
 @Injectable()
 export class DevicesService {
@@ -40,7 +44,7 @@ export class DevicesService {
     }
   }
 
-  async insertOne(input: { doc: {} }): Promise<DeviceDocument> {
+  async insertOne(input: InsertOneDeviceInputType): Promise<DeviceDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -84,7 +88,9 @@ export class DevicesService {
     }
   }
 
-  async insertMany(input: { docs: {}[] }): Promise<InsertManyResult<any>> {
+  async insertMany(
+    input: InsertManyDeviceInputType,
+  ): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",

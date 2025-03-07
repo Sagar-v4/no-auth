@@ -391,7 +391,7 @@ export class KeysRouter {
 
       const filter = query$or(updateByKeyDataInputData.filter);
 
-      const key = await this.keysService.updateMany({
+      const result = await this.keysService.updateMany({
         filter: filter,
         update: updateByKeyDataInputData.update,
         select: [],
@@ -402,11 +402,11 @@ export class KeysRouter {
         action: "Exit",
         method: this.updateById.name,
         metadata: {
-          key,
+          result,
         },
       });
 
-      return updateByKeyDataOutputSchema.parse(key);
+      return updateByKeyDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

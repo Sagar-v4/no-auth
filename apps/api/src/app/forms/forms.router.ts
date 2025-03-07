@@ -404,7 +404,7 @@ export class FormRouter {
 
       const filter = query$or(updateByFormDataInputData.filter);
 
-      const key = await this.formsService.updateMany({
+      const result = await this.formsService.updateMany({
         filter: filter,
         update: updateByFormDataInputData.update,
         select: [],
@@ -415,11 +415,11 @@ export class FormRouter {
         action: "Exit",
         method: this.updateById.name,
         metadata: {
-          key,
+          result,
         },
       });
 
-      return updateByFormDataOutputSchema.parse(key);
+      return updateByFormDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

@@ -396,7 +396,7 @@ export class EmailAppRouter {
 
       const filter = query$or(updateByEmailAppDataInputData.filter);
 
-      const key = await this.emailAppsService.updateMany({
+      const result = await this.emailAppsService.updateMany({
         filter: filter,
         update: updateByEmailAppDataInputData.update,
         select: [],
@@ -407,11 +407,11 @@ export class EmailAppRouter {
         action: "Exit",
         method: this.updateById.name,
         metadata: {
-          key,
+          result,
         },
       });
 
-      return updateByEmailAppDataOutputSchema.parse(key);
+      return updateByEmailAppDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

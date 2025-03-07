@@ -36,7 +36,7 @@ export function SidebarOrganizations({
   const { data, isError, isLoading } = getOrganizationsByData({
     filter: [
       {
-        client_id: "67c9fe0dd8020ca2e2b54dd1",
+        client_id: "67ca9a078e591331d8e817f7",
       },
     ],
   });

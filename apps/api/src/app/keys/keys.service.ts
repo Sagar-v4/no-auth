@@ -14,6 +14,10 @@ import { KEY_SCHEMA_NAME, KeyDocument } from "@/app/keys/entities/key.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { TRPCError } from "@trpc/server";
 import { ERROR } from "@/trpc/error";
+import {
+  InsertManyKeyInputType,
+  InsertOneKeyInputType,
+} from "@/lib/trpc/schemas/keys";
 
 @Injectable()
 export class KeysService {
@@ -37,14 +41,7 @@ export class KeysService {
     }
   }
 
-  async insertOne(input: {
-    doc: {
-      client_id: string;
-      organization_id: string;
-      name: string;
-      description?: string;
-    };
-  }): Promise<KeyDocument> {
+  async insertOne(input: InsertOneKeyInputType): Promise<KeyDocument> {
     try {
       this.logger.debug({
         action: "Entry",
@@ -85,14 +82,9 @@ export class KeysService {
     }
   }
 
-  async insertMany(input: {
-    docs: {
-      client_id: string;
-      organization_id: string;
-      name: string;
-      description?: string;
-    }[];
-  }): Promise<InsertManyResult<any>> {
+  async insertMany(
+    input: InsertManyKeyInputType,
+  ): Promise<InsertManyResult<any>> {
     try {
       this.logger.debug({
         action: "Entry",
