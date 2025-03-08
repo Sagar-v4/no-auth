@@ -21,7 +21,7 @@ export default function Page() {
       <div className="flex flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold">{data?.createdAt}</h1>
         <Button size="sm" onClick={exec}>
-          Fetch
+          Fetch ID
         </Button>
       </div>
     </div>

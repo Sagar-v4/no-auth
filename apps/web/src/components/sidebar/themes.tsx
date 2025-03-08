@@ -6,7 +6,7 @@ import { ThemeCustomizer } from "@workspace/ui/theme/customizer";
 export function SidebarThemes() {
   return (
     <SidebarMenu suppressHydrationWarning>
-      <SidebarMenuItem className="flex px-2 group-data-[collapsible=icon]:p-0">
+      <SidebarMenuItem className="flex group-data-[collapsible=icon]:p-0">
         <ModeSwitcher className="group-data-[collapsible=icon]:size-8" />
         <Separator
           orientation="vertical"
