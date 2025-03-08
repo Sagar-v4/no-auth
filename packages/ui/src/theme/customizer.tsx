@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { useIsMounted } from "usehooks-ts";
 import { Check, Palette, RefreshCw } from "lucide-react";
 
-import "../styles/mdx.css";
+// import "../styles/mdx.css";
 import {
   baseColors,
   Modes,

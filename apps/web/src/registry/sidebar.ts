@@ -1,9 +1,4 @@
 import {
-  AudioWaveform,
-  ChevronRight,
-  Command,
-  GalleryVerticalEnd,
-  Search,
   LayoutDashboard,
   KeyRound,
   UserRound,
@@ -14,108 +9,268 @@ import {
   Mail,
   UserRoundCog,
   ShieldBan,
+  Building2,
+  Building,
 } from "lucide-react";
 
-// This is sample data.
-export const user = {
-  name: "sagar",
-  email: "m@example.com",
-  avatar: "/shadcn.jpg",
+export const enum GROUPS {
+  CLIENT = "Client",
+  ORGANIZATION = "Organization",
+  AUTHENTICATION = "Authentication",
+  AUTHORIZATION = "Authorization",
+}
+
+export const enum USERS {
+  CLIENT = "c",
+  ORGANIZATION = "o",
+}
+
+export const LINKS = {
+  // C Specific
+  PROFILE_C: {
+    title: "Profile",
+    url: "profile",
+    icon: UserRound,
+  },
+
+  // O Specific
+  PROFILE_O: {
+    title: "Profile",
+    url: "profile",
+    icon: Building,
+  },
+
+  // General
+  ORGANIZATION: {
+    title: "Organizations",
+    url: "organizations",
+    icon: Building2,
+  },
+  SETTING: {
+    title: "Settings",
+    url: "settings",
+    icon: Settings,
+  },
+  DASHBOARD: {
+    title: "Dashboard",
+    url: "dashboard",
+    icon: LayoutDashboard,
+  },
+  KEY: {
+    title: "Keys",
+    url: "keys",
+    icon: KeyRound,
+  },
+  TEAM: {
+    title: "Team",
+    url: "team",
+    icon: UsersRound,
+  },
+  FORM: {
+    title: "Forms",
+    url: "forms",
+    icon: FilePenLine,
+  },
+  SESSION: {
+    title: "Sessions",
+    url: "sessions",
+    icon: IdCard,
+  },
+  EMAIL: {
+    title: "Email",
+    url: "email",
+    icon: Mail,
+  },
+  ROLE: {
+    title: "Roles",
+    url: "roles",
+    icon: UserRoundCog,
+  },
+  PERMISSION: {
+    title: "Permissions",
+    url: "permissions",
+    icon: ShieldBan,
+  },
 };
 
-export const organizations = [
+export const TABS = {
+  ORGANIZATION: { title: "Organizations", value: "organizations" },
+  PROFILE: { title: "Profile", value: "profile" },
+  SETTING: { title: "Settings", value: "settings" },
+  DASHBOARD: {
+    title: "Dashboard",
+    value: "dashboard",
+  },
+  KEY: { title: "Keys", value: "keys" },
+  MEMBER: { title: "Members", value: "members" },
+  ROLE: { title: "Roles", value: "roles" },
+  PERMISSION: { title: "Permissions", value: "permissions" },
+  FORM: { title: "Forms", value: "forms" },
+  USER: { title: "User", value: "user" },
+  DEVICE: { title: "Device", value: "device" },
+  APP: { title: "App", value: "app" },
+  TEMPLATE: { title: "Template", value: "template" },
+};
+
+export const data = [
+  // C - Client
   {
-    name: "Acme Inc",
-    logo: GalleryVerticalEnd,
-    plan: "Enterprise",
+    users: USERS.CLIENT,
+    group: GROUPS.CLIENT,
+    ...LINKS.ORGANIZATION,
+    tabs: {
+      default: TABS.ORGANIZATION.value,
+      list: [TABS.ORGANIZATION],
+    },
   },
   {
-    name: "Acme Corp.",
-    logo: AudioWaveform,
-    plan: "Startup",
+    users: USERS.CLIENT,
+    group: GROUPS.CLIENT,
+    ...LINKS.PROFILE_C,
+    tabs: {
+      default: TABS.PROFILE.value,
+      list: [TABS.PROFILE],
+    },
   },
   {
-    name: "Evil Corp.",
-    logo: Command,
-    plan: "Free",
+    users: USERS.CLIENT,
+    group: GROUPS.CLIENT,
+    ...LINKS.SETTING,
+    tabs: {
+      default: TABS.SETTING.value,
+      list: [TABS.SETTING],
+    },
+  },
+
+  // O - Organization
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.ORGANIZATION,
+    ...LINKS.DASHBOARD,
+    tabs: {
+      default: TABS.DASHBOARD.value,
+      list: [TABS.DASHBOARD],
+    },
+  },
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.ORGANIZATION,
+    ...LINKS.PROFILE_O,
+    tabs: {
+      default: TABS.PROFILE.value,
+      list: [TABS.PROFILE],
+    },
+  },
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.ORGANIZATION,
+    ...LINKS.KEY,
+    tabs: {
+      default: TABS.KEY.value,
+      list: [TABS.KEY],
+    },
+  },
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.ORGANIZATION,
+    ...LINKS.TEAM,
+    tabs: {
+      default: TABS.MEMBER.value,
+      list: [TABS.MEMBER, TABS.PERMISSION],
+    },
+  },
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.ORGANIZATION,
+    ...LINKS.SETTING,
+    tabs: {
+      default: TABS.SETTING.value,
+      list: [TABS.SETTING],
+    },
+  },
+
+  // O - Authentication
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.AUTHENTICATION,
+    ...LINKS.FORM,
+    tabs: {
+      default: TABS.FORM.value,
+      list: [TABS.FORM],
+    },
+  },
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.AUTHENTICATION,
+    ...LINKS.SESSION,
+    tabs: {
+      default: TABS.USER.value,
+      list: [TABS.USER, TABS.DEVICE],
+    },
+  },
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.AUTHENTICATION,
+    ...LINKS.EMAIL,
+    tabs: {
+      default: TABS.APP.value,
+      list: [TABS.APP, TABS.TEMPLATE],
+    },
+  },
+
+  // O - Authorization
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.AUTHORIZATION,
+    ...LINKS.ROLE,
+    tabs: {
+      default: TABS.ROLE.value,
+      list: [TABS.ROLE],
+    },
+  },
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.AUTHORIZATION,
+    ...LINKS.PERMISSION,
+    tabs: {
+      default: TABS.PERMISSION.value,
+      list: [TABS.PERMISSION],
+    },
   },
 ];
 
-export const sidebar = {
-  Organization: [
-    {
-      title: "Dashboard",
-      url: "dashboard",
-      icon: LayoutDashboard,
-      isActive: false,
-      items: [],
-    },
-    {
-      title: "Profile",
-      url: "profile",
-      icon: UserRound,
-      isActive: false,
-      items: [],
-    },
-    {
-      title: "Keys",
-      url: "keys",
-      icon: KeyRound,
-      isActive: false,
-      items: [],
-    },
-    {
-      title: "Team",
-      url: "team",
-      icon: UsersRound,
-      isActive: false,
-      items: [],
-    },
-    {
-      title: "Settings",
-      url: "settings",
-      icon: Settings,
-      isActive: false,
-      items: [],
-    },
-  ],
-  Authentication: [
-    {
-      title: "Forms",
-      url: "forms",
-      icon: FilePenLine,
-      isActive: false,
-      items: [],
-    },
-    {
-      title: "Sessions",
-      url: "sessions",
-      icon: IdCard,
-      isActive: false,
-      items: [],
-    },
-    {
-      title: "Email",
-      url: "email",
-      icon: Mail,
-      isActive: false,
-      items: [],
-    },
-  ],
-  Authorization: [
-    {
-      title: "Roles",
-      url: "roles",
-      icon: UserRoundCog,
-      isActive: false,
-      items: [],
-    },
-    {
-      title: "Permissions",
-      url: "permissions",
-      icon: ShieldBan,
-      isActive: false,
-      items: [],
-    },
-  ],
-};
+export function getSidebarLinks(userType: USERS) {
+  // Use a Map to accumulate the grouped results
+  const map = new Map<string, { title: string; url: string; icon: any }[]>();
+
+  data
+    .filter((item) => item.users === userType) // Filter by userType
+    .forEach((item) => {
+      const { group, title, url, icon } = item;
+
+      // Check if the group already exists in the map
+      if (map.has(group)) {
+        // If it exists, push the new item
+        map.get(group)?.push({ title, url, icon });
+      } else {
+        // Otherwise, initialize a new array with the item
+        map.set(group, [{ title, url, icon }]);
+      }
+    });
+
+  // Convert the Map back to a plain object for easier readability if needed
+  return Object.fromEntries(map);
+}
+
+export function getNavbarTabs(userType: USERS, targetUrl: string) {
+  // Filter data by userType and url
+  const filteredData = data.filter(
+    (item) => item.users === userType && item.url === targetUrl,
+  );
+
+  if (filteredData.length === 1) {
+    return filteredData[0]?.tabs;
+  }
+
+  return undefined;
+}

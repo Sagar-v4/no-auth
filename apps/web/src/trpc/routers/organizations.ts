@@ -113,7 +113,7 @@ export function getOrganizationsByData(input: FindByOrganizationDataInputType) {
   const queryOptions = organizations.findByData.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
-    enabled: false,
+    // enabled: false,
     staleTime: 1000 * 60 * 10, // 10 min
     refetchInterval: 1000 * 60 * 10, // 10 min
     trpc: {
