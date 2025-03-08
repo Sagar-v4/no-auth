@@ -1,29 +1,36 @@
-"use client";
+import * as React from "react";
 
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { getOrganizationById } from "@/trpc/routers/organizations";
-import { Button } from "@workspace/ui/components/button";
+import { SSOForm } from "@/components/sso/form";
+import { Card } from "@workspace/ui/components/card";
+import { Separator } from "@workspace/ui/components/separator";
+import { ModeSwitcher } from "@workspace/ui/components/mode-switcher";
+import { SSOLoggedIn } from "@/components/sso/loggedin";
 
-export default function Page() {
-  const { organization } = useCurrentUser();
-  const { exec, data, isError, error } = getOrganizationById({
-    filter: {
-      _id: organization._id,
-    },
-  });
-
-  if (isError) {
-    return <pre>{JSON.stringify(error)}</pre>;
-  }
+export default async function Page({
+  params,
+}: Readonly<{
+  params: Promise<{ id: string }>;
+}>) {
+  const { id } = await params;
 
   return (
-    <div className="flex min-h-svh items-center justify-center">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold">{data?.createdAt}</h1>
-        <Button size="sm" onClick={exec}>
-          Fetch ID
-        </Button>
+    <>
+      <div className="bg-secondary flex h-svh flex-col items-center justify-center p-6 md:p-10">
+        <ModeSwitcher className="text-primary absolute top-4 right-4" />
+        <div className="w-full max-w-sm md:max-w-3xl">
+          <Card className="flex flex-col justify-center p-4 md:flex-row md:p-6">
+            <div className="w-full p-2">
+              <SSOLoggedIn />
+            </div>
+
+            <Separator className="md:!h-auto md:!w-px" />
+
+            <div className="w-full p-2">
+              <SSOForm />
+            </div>
+          </Card>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
