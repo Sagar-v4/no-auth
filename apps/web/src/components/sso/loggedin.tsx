@@ -39,7 +39,7 @@ export function SSOLoggedIn() {
     );
   };
 
-  const users: number[] = Array.of(3);
+  const users: number[] = Array.of(1, 2, 3, 4, 5, 6, 7, 8);
 
   return (
     <>
@@ -49,7 +49,7 @@ export function SSOLoggedIn() {
           Select email from below to login to that account
         </p>
       </div>
-      <Card className="hidden overflow-scroll p-0 md:block md:h-46">
+      <Card className="hidden overflow-scroll p-0 lg:block lg:h-60">
         <CardContent className="p-2">
           {users.length !== 0 ? (
             users.map((user) => <User key={user} />)
@@ -60,16 +60,16 @@ export function SSOLoggedIn() {
           )}
         </CardContent>
       </Card>
-      <div className="md:hidden">
-        <Select>
-          <SelectTrigger>
+      <div className="lg:hidden">
+        <Select defaultValue="2">
+          <SelectTrigger className="h-14">
             <SelectValue placeholder="Select loggedin account" />
           </SelectTrigger>
-          <SelectContent className="h-81">
+          <SelectContent className="h-83">
             <SelectGroup>
               {users.length !== 0 ? (
                 users.map((user) => (
-                  <SelectItem key={user} value={"user"}>
+                  <SelectItem key={user} value={String(user)}>
                     <User />
                   </SelectItem>
                 ))

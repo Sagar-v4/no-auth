@@ -38,14 +38,14 @@ export function SSOForm() {
           e.stopPropagation();
           form.handleSubmit().finally(() => {});
         }}
-        className="grid gap-2"
+        className="flex h-52 flex-col gap-2 lg:h-60"
       >
         <form.Field
           name="email"
           children={(field) => {
             return (
               <>
-                <div className="grid gap-2">
+                <div className="flex flex-col gap-2">
                   <div className="flex justify-between">
                     <Label htmlFor={field.name}>Email</Label>
                     <Button
@@ -57,7 +57,7 @@ export function SSOForm() {
                     </Button>
                   </div>
                   <Input
-                    disabled
+                    disabled={false}
                     type="email"
                     id={field.name}
                     name={field.name}
@@ -82,7 +82,7 @@ export function SSOForm() {
           children={(field) => {
             return (
               <>
-                <div className="grid gap-2">
+                <div className="flex flex-col gap-2">
                   <div className="flex justify-between">
                     <Label htmlFor={field.name}>One-Time Password</Label>
                     <Button
@@ -94,7 +94,7 @@ export function SSOForm() {
                     </Button>
                   </div>
                   <InputOTP
-                    disabled
+                    disabled={false}
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
