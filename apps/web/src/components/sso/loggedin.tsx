@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { Check } from "lucide-react";
+
 import {
   Select,
   SelectContent,
@@ -9,12 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-import { Card, CardContent } from "@workspace/ui/components/card";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@workspace/ui/components/avatar";
+import { cn } from "@workspace/ui/lib/utils";
+import { Card, CardContent } from "@workspace/ui/components/card";
 
 export function SSOLoggedIn() {
   const data = {
@@ -24,7 +27,7 @@ export function SSOLoggedIn() {
 
   const User = () => {
     return (
-      <div className="hover:bg-accent flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm">
+      <div className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm">
         <Avatar className="h-8 w-8 rounded-lg">
           <AvatarImage src={data.image_url} />
           <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground rounded-lg">
@@ -52,7 +55,22 @@ export function SSOLoggedIn() {
       <Card className="hidden overflow-scroll p-0 lg:block lg:h-60">
         <CardContent className="p-2">
           {users.length !== 0 ? (
-            users.map((user) => <User key={user} />)
+            users.map((user) => (
+              <span
+                key={user}
+                className={cn(
+                  user == 2
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "hover:bg-accent",
+                  "relative flex rounded-md",
+                )}
+              >
+                <User />
+                {user == 2 && (
+                  <Check className="absolute right-0 mx-2 my-4 size-4" />
+                )}
+              </span>
+            ))
           ) : (
             <div className="flex h-40 items-center justify-center">
               No loggedin accounts
