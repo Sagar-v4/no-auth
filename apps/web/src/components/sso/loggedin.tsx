@@ -21,8 +21,8 @@ import { Card, CardContent } from "@workspace/ui/components/card";
 
 export function SSOLoggedIn() {
   const data = {
-    email: "sagarvariya4@gmai.com",
-    image_url: "",
+    email: "test@email.com",
+    image_url: "shadcn.jpg",
   };
 
   const User = () => {
@@ -36,13 +36,13 @@ export function SSOLoggedIn() {
         </Avatar>
         <div className="grid flex-1 text-left text-sm leading-tight">
           <span className="truncate font-medium">{data.email}</span>
-          <span className="truncate text-xs">vcds</span>
+          <span className="truncate text-xs">test name</span>
         </div>
       </div>
     );
   };
 
-  const users: number[] = Array.of(1, 2, 3, 4, 5, 6, 7, 8);
+  const users: number[] = Array.of(1, 2);
 
   return (
     <>

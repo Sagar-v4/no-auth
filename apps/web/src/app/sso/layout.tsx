@@ -1,7 +1,9 @@
-export default function RootLayout({
+import { DeviceProvider } from "@/components/device/provider";
+
+export default async function SSOLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return children;
+  return <DeviceProvider>{children}</DeviceProvider>;
 }

@@ -141,11 +141,13 @@ const appRouter = t.router({
   clienteles: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
+        generated_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
       }),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
+      generated_id: z.string().uuid().nonempty(),
       organization_id: z.string().optional(),
       status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
       metadata: z.object({}).optional(),
@@ -154,6 +156,7 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     insertMany: publicProcedure.input(z.object({
       docs: z.array(z.object({
+        generated_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
       })),
     })).output(z.object({
@@ -166,11 +169,13 @@ const appRouter = t.router({
         .object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
+          organization_id: z.string().optional(),
         })
         .refine((data) => !Object.values(data).every((value) => !value)),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
+      generated_id: z.string().uuid().nonempty(),
       organization_id: z.string().optional(),
       status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
       metadata: z.object({}).optional(),
@@ -189,6 +194,7 @@ const appRouter = t.router({
     })).output(z.array(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
+      generated_id: z.string().uuid().nonempty(),
       organization_id: z.string().optional(),
       status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
       metadata: z.object({}).optional(),
@@ -216,6 +222,7 @@ const appRouter = t.router({
       z.object({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
+        generated_id: z.string().uuid().nonempty(),
         organization_id: z.string().optional(),
         status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
         metadata: z.object({}).optional(),
@@ -242,6 +249,7 @@ const appRouter = t.router({
         .object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
+          organization_id: z.string().optional(),
         })
         .refine((data) => !Object.values(data).every((value) => !value)),
       update: z.object({
@@ -250,6 +258,7 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
+      generated_id: z.string().uuid().nonempty(),
       organization_id: z.string().optional(),
       status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
       metadata: z.object({}).optional(),
@@ -773,6 +782,335 @@ const appRouter = t.router({
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
         }),
       }),
+    })).output(z.object({
+      delete_count: z.number(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+  }),
+  emailServices: t.router({
+    insertOne: publicProcedure.input(z.object({
+      doc: z.object({
+        user_id: z.string().nonempty(),
+        user_type: z.string().nonempty(),
+        device_id: z.string().nonempty(),
+        metadata: z.object({}),
+      }),
+    })).output(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      user_id: z.string().nonempty(),
+      user_type: z.string().nonempty(),
+      device_id: z.string().nonempty(),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    insertMany: publicProcedure.input(z.object({
+      docs: z.array(z.object({
+        user_id: z.string().nonempty(),
+        user_type: z.string().nonempty(),
+        device_id: z.string().nonempty(),
+        metadata: z.object({}),
+      })),
+    })).output(z.object({
+      acknowledged: z.boolean(),
+      insertedCount: z.number(),
+      insertedIds: z.record(z.string().nonempty(), z.custom<any>()),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    findById: publicProcedure.input(z.object({
+      filter: z
+        .object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+        })
+        .refine((data) => !Object.values(data).every((value) => !value)),
+    })).output(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      user_id: z.string().nonempty(),
+      user_type: z.string().nonempty(),
+      device_id: z.string().nonempty(),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }).or(
+      z.undefined(),
+    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    findByData: publicProcedure.input(z.object({
+      filter: z.array(z.object({
+        _id: z.string().optional(),
+        uuid: z.string().uuid().optional(),
+        user_id: z.string().optional(),
+        user_type: z.string().optional(),
+        device_id: z.string().optional(),
+      })),
+    })).output(z.array(
+      z.object({
+        _id: z.custom<any>(),
+        uuid: z.string().uuid().nonempty(),
+        user_id: z.string().nonempty(),
+        user_type: z.string().nonempty(),
+        device_id: z.string().nonempty(),
+        metadata: z.object({}).optional(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+      }),
+    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    findByRef: publicProcedure.input(z.object({
+      filter: z.object({
+        client: z.object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+          name: z.string().optional(),
+          email: z.string().email().optional(),
+          login_method: z.enum(["EMAIL_OTP"] as const).optional(),
+          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+        }),
+        clientele: z.object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+          organization_id: z.string().optional(),
+          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+        }),
+        device: z.object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+        }),
+        emailService: z.object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+          user_id: z.string().optional(),
+          user_type: z.string().optional(),
+          device_id: z.string().optional(),
+        }),
+      }),
+    })).output(z.array(
+      z.object({
+        _id: z.custom<any>(),
+        uuid: z.string().uuid().nonempty(),
+        user_id: z.string().nonempty(),
+        user_type: z.string().nonempty(),
+        device_id: z.string().nonempty(),
+        metadata: z.object({}).optional(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+      }).merge(
+        z.object({
+          user_id: z.union([z.object({
+            _id: z.custom<any>(),
+            uuid: z.string().uuid().nonempty(),
+            name: z.string().nonempty(),
+            email: z.string().email().nonempty(),
+            login_method: z.enum(["EMAIL_OTP"] as const),
+            status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+            roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
+            metadata: z.object({}).optional(),
+            createdAt: z.date(),
+            updatedAt: z.date(),
+          }), z.object({
+            _id: z.custom<any>(),
+            uuid: z.string().uuid().nonempty(),
+            generated_id: z.string().uuid().nonempty(),
+            organization_id: z.string().optional(),
+            status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+            metadata: z.object({}).optional(),
+            createdAt: z.date(),
+            updatedAt: z.date(),
+          })]),
+        }),
+      ).merge(z.object({
+        device_id: z.object({
+          _id: z.custom<any>(),
+          uuid: z.string().uuid().nonempty(),
+          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+          metadata: z.object({}).optional(),
+          createdAt: z.date(),
+          updatedAt: z.date(),
+        })
+      })),
+    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    updateById: publicProcedure.input(z.object({
+      filter: z
+        .object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+        })
+        .refine((data) => !Object.values(data).every((value) => !value)),
+      update: z.object({
+        user_id: z.string().optional(),
+        user_type: z.string().optional(),
+        device_id: z.string().optional(),
+      }),
+    })).output(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      user_id: z.string().nonempty(),
+      user_type: z.string().nonempty(),
+      device_id: z.string().nonempty(),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    updateByData: publicProcedure.input(z.object({
+      filter: z.array(z.object({
+        _id: z.string().optional(),
+        uuid: z.string().uuid().optional(),
+        user_id: z.string().optional(),
+        user_type: z.string().optional(),
+        device_id: z.string().optional(),
+      })),
+      update: z.object({
+        user_id: z.string().optional(),
+        user_type: z.string().optional(),
+        device_id: z.string().optional(),
+      }),
+    })).output(z.object({
+      acknowledged: z.boolean(),
+      modifiedCount: z.number(),
+      upsertedCount: z.number(),
+      matchedCount: z.number(),
+      upsertedId: z.custom<any>(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    deleteByData: publicProcedure.input(z.object({
+      filter: z.array(z.object({
+        _id: z.string().optional(),
+        uuid: z.string().uuid().optional(),
+        user_id: z.string().optional(),
+        user_type: z.string().optional(),
+        device_id: z.string().optional(),
+      })),
+    })).output(z.object({
+      delete_count: z.number(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    deleteByRef: publicProcedure.input(z.object({
+      filter: z.object({
+        client: z.object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+          name: z.string().optional(),
+          email: z.string().email().optional(),
+          login_method: z.enum(["EMAIL_OTP"] as const).optional(),
+          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+        }),
+        clientele: z.object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+          organization_id: z.string().optional(),
+          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+        }),
+        device: z.object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+        }),
+        emailService: z.object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+          user_id: z.string().optional(),
+          user_type: z.string().optional(),
+          device_id: z.string().optional(),
+        }),
+      }),
+    })).output(z.object({
+      delete_count: z.number(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    sendEmail: publicProcedure.input(z.object({
+      to: z.array(z.string().email()),
+      subject: z.string().nonempty(),
+      from: z.string().optional(),
+      text: z.string().optional(),
+      html: z.string().optional(),
+    })).output(z.any()).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+  }),
+  devices: t.router({
+    insertOne: publicProcedure.input(z.object({
+      doc: z.object({}),
+    })).output(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    insertMany: publicProcedure.input(z.object({
+      docs: z.array(z.object({})),
+    })).output(z.object({
+      acknowledged: z.boolean(),
+      insertedCount: z.number(),
+      insertedIds: z.record(z.string().nonempty(), z.custom<any>()),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    findById: publicProcedure.input(z.object({
+      filter: z
+        .object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+        })
+        .refine((data) => !Object.values(data).every((value) => !value)),
+    })).output(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }).or(z.undefined())).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    findByData: publicProcedure.input(z.object({
+      filter: z.array(z.object({
+        _id: z.string().optional(),
+        uuid: z.string().uuid().optional(),
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+      })),
+    })).output(z.array(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    updateById: publicProcedure.input(z.object({
+      filter: z
+        .object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+        })
+        .refine((data) => !Object.values(data).every((value) => !value)),
+      update: z.object({
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+      }),
+    })).output(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    updateByData: publicProcedure.input(z.object({
+      filter: z.array(z.object({
+        _id: z.string().optional(),
+        uuid: z.string().uuid().optional(),
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+      })),
+      update: z.object({
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+      }),
+    })).output(z.object({
+      acknowledged: z.boolean(),
+      modifiedCount: z.number(),
+      upsertedCount: z.number(),
+      matchedCount: z.number(),
+      upsertedId: z.custom<any>(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    deleteByData: publicProcedure.input(z.object({
+      filter: z.array(z.object({
+        _id: z.string().optional(),
+        uuid: z.string().uuid().optional(),
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+      })),
     })).output(z.object({
       delete_count: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
@@ -1438,97 +1776,6 @@ const appRouter = t.router({
       delete_count: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  devices: t.router({
-    insertOne: publicProcedure.input(z.object({
-      doc: z.object({}),
-    })).output(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    insertMany: publicProcedure.input(z.object({
-      docs: z.array(z.object({})),
-    })).output(z.object({
-      acknowledged: z.boolean(),
-      insertedCount: z.number(),
-      insertedIds: z.record(z.string().nonempty(), z.custom<any>()),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    findById: publicProcedure.input(z.object({
-      filter: z
-        .object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-        })
-        .refine((data) => !Object.values(data).every((value) => !value)),
-    })).output(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    }).or(z.undefined())).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    findByData: publicProcedure.input(z.object({
-      filter: z.array(z.object({
-        _id: z.string().optional(),
-        uuid: z.string().uuid().optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      })),
-    })).output(z.array(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    updateById: publicProcedure.input(z.object({
-      filter: z
-        .object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-        })
-        .refine((data) => !Object.values(data).every((value) => !value)),
-      update: z.object({
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      }),
-    })).output(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    updateByData: publicProcedure.input(z.object({
-      filter: z.array(z.object({
-        _id: z.string().optional(),
-        uuid: z.string().uuid().optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      })),
-      update: z.object({
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      }),
-    })).output(z.object({
-      acknowledged: z.boolean(),
-      modifiedCount: z.number(),
-      upsertedCount: z.number(),
-      matchedCount: z.number(),
-      upsertedId: z.custom<any>(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    deleteByData: publicProcedure.input(z.object({
-      filter: z.array(z.object({
-        _id: z.string().optional(),
-        uuid: z.string().uuid().optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      })),
-    })).output(z.object({
-      delete_count: z.number(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
-  }),
   sessions: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
@@ -1656,6 +1903,7 @@ const appRouter = t.router({
           }), z.object({
             _id: z.custom<any>(),
             uuid: z.string().uuid().nonempty(),
+            generated_id: z.string().uuid().nonempty(),
             organization_id: z.string().optional(),
             status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
             metadata: z.object({}).optional(),
@@ -2104,6 +2352,19 @@ const appRouter = t.router({
       }),
     })).output(z.object({
       delete_count: z.number(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    sendEmailOTP: publicProcedure.input(z.object({
+      email: z.string().email().nonempty(),
+      sso_uuid: z.string().uuid().optional(),
+      device_uuid: z.string().uuid().nonempty(),
+    })).output(z.object({
+      service_id: z.string().uuid().nonempty(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    verifyEmailOTP: publicProcedure.input(z.object({
+      service_id: z.string().uuid().nonempty(),
+      otp: z.number(),
+    })).output(z.object({
+      is_otp_correct: z.boolean(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
   roles: t.router({

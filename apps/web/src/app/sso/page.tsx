@@ -6,13 +6,7 @@ import { Separator } from "@workspace/ui/components/separator";
 import { ModeSwitcher } from "@workspace/ui/components/mode-switcher";
 import { SSOLoggedIn } from "@/components/sso/loggedin";
 
-export default async function Page({
-  params,
-}: Readonly<{
-  params: Promise<{ id: string }>;
-}>) {
-  const { id } = await params;
-
+export default async function Page() {
   return (
     <>
       <div className="bg-secondary flex h-svh flex-col items-center justify-center p-6 lg:p-10">
@@ -26,7 +20,7 @@ export default async function Page({
             <Separator className="lg:!h-auto lg:!w-px" />
 
             <div className="w-full p-2">
-              <SSOForm sso_uuid={id} />
+              <SSOForm />
             </div>
           </Card>
         </div>

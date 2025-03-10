@@ -16,6 +16,9 @@ import {
 } from "@/app/organizations/entities/organization.entity";
 import { ClientsModule } from "@/app/clients/clients.module";
 import { OrganizationsModule } from "@/app/organizations/organizations.module";
+import { EmailServicesModule } from "@/app/email/services/services.module";
+import { DevicesModule } from "@/app/devices/devices.module";
+import { ClientelesModule } from "@/app/clienteles/clienteles.module";
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { OrganizationsModule } from "@/app/organizations/organizations.module";
     ),
     ClientsModule,
     OrganizationsModule,
+    EmailServicesModule,
+    DevicesModule,
+    ClientelesModule,
   ],
   controllers: [SSOController],
   providers: [SSOService, SSORouter],

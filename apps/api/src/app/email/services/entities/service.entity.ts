@@ -6,10 +6,15 @@ import {
 } from "mongoose";
 import { randomUUID } from "crypto";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-
-import { FORM_SCHEMA_NAME } from "@/app/forms/entities/form.entity";
-import { EMAIL_APP_SCHEMA_NAME } from "@/app/email/apps/entities/app.entity";
-import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
+import { DEVICE_SCHEMA_NAME } from "@/app/devices/entities/device.entity";
+import {
+  Client,
+  CLIENT_SCHEMA_NAME,
+} from "@/app/clients/entities/client.entity";
+import {
+  Clientele,
+  CLIENTELE_SCHEMA_NAME,
+} from "@/app/clienteles/entities/clientele.entity";
 
 @Schema({
   timestamps: true,
@@ -25,24 +30,24 @@ export class Email_Service {
 
   @Prop({
     type: Types.ObjectId,
-    ref: FORM_SCHEMA_NAME,
+    refPath: "user_type",
     required: true,
   })
-  form_id!: string;
+  user_id!: Client | Clientele;
+
+  @Prop({
+    type: String,
+    required: true,
+    enum: [CLIENT_SCHEMA_NAME, CLIENTELE_SCHEMA_NAME],
+  })
+  user_type!: string;
 
   @Prop({
     type: Types.ObjectId,
-    ref: EMAIL_APP_SCHEMA_NAME,
+    ref: DEVICE_SCHEMA_NAME,
     required: true,
   })
-  email_app_id!: string;
-
-  @Prop({
-    type: Types.ObjectId,
-    ref: ORGANIZATION_SCHEMA_NAME,
-    required: true,
-  })
-  organization_id!: string;
+  device_id!: string;
 
   @Prop({ type: Object })
   metadata?: object;
@@ -61,13 +66,13 @@ const INDEXES = [
       createdAt: 1,
     },
     options: {
-      name: "Delete in 10 minutes",
-      expireAfterSeconds: 600, // 10 minutes
+      name: "Delete in 11 minutes",
+      expireAfterSeconds: 11 * 60, // 11 minutes
       background: true,
     },
   },
   {
-    drop: false,
+    drop: true,
     definition: {
       uuid: "hashed",
       createdAt: 1,

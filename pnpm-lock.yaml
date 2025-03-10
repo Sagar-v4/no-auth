@@ -213,6 +213,9 @@ importers:
       "@workspace/ui":
         specifier: workspace:*
         version: link:../../packages/ui
+      cookies-next:
+        specifier: ^5.1.0
+        version: 5.1.0(next@15.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       nuqs:
         specifier: ^2.4.0
         version: 2.4.0(next@15.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
@@ -5249,6 +5252,15 @@ packages:
       {
         integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==,
       }
+
+  cookies-next@5.1.0:
+    resolution:
+      {
+        integrity: sha512-9Ekne+q8hfziJtnT9c1yDUBqT0eDMGgPrfPl4bpR3xwQHLTd/8gbSf6+IEkP/pjGsDZt1TGbC6emYmFYRbIXwQ==,
+      }
+    peerDependencies:
+      next: ">=15.0.0"
+      react: ">= 16.8.0"
 
   core-js-pure@3.41.0:
     resolution:
@@ -15180,6 +15192,12 @@ snapshots:
   cookie@1.0.2: {}
 
   cookiejar@2.1.4: {}
+
+  cookies-next@5.1.0(next@15.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0):
+    dependencies:
+      cookie: 1.0.2
+      next: 15.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
 
   core-js-pure@3.41.0: {}
 

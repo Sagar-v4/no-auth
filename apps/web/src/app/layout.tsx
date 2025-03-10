@@ -8,6 +8,7 @@ import { cn } from "@workspace/ui/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Wrapper as ThemeWrapper } from "@workspace/ui/theme/wrapper";
 import { Toaster } from "@workspace/ui/components/sonner";
+import { Metadata } from "next";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -23,6 +24,12 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 });
+
+export const metadata: Metadata = {
+  title: "No Auth",
+  description: "Say, Good bye to Auth hiccups!",
+  keywords: ["Authentication", "Authorization", "SSO"],
+};
 
 export default function RootLayout({
   children,

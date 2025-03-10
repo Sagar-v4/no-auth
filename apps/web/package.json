@@ -17,6 +17,7 @@
     "@trpc/next": "11.0.0-rc.802",
     "@trpc/tanstack-react-query": "11.0.0-rc.802",
     "@workspace/ui": "workspace:*",
+    "cookies-next": "^5.1.0",
     "nuqs": "^2.4.0"
   },
   "devDependencies": {

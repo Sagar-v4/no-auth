@@ -18,6 +18,13 @@ export class Clientele {
   uuid!: string;
 
   @Prop({
+    type: String,
+    required: true,
+    unique: true,
+  })
+  generated_id!: string;
+
+  @Prop({
     type: Types.ObjectId,
     ref: ORGANIZATION_SCHEMA_NAME,
     required: true,
