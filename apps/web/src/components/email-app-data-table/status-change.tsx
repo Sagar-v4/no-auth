@@ -2,7 +2,10 @@ import * as React from "react";
 
 import { Button } from "@workspace/ui/components/button";
 import { updateEmailAppById } from "@/trpc/routers/email-apps";
-import { EmailAppIdInputSchema } from "@/lib/trpc/schemas/email/apps";
+import {
+  EmailAppIdInputSchema,
+  StatusEnum,
+} from "@/lib/trpc/schemas/email/apps";
 
 export function EmailAppStatusChange({
   ids,
@@ -10,7 +13,7 @@ export function EmailAppStatusChange({
   children,
 }: {
   ids: EmailAppIdInputSchema;
-  value: string;
+  value: StatusEnum;
   children: React.ReactNode;
 }) {
   const { exec } = updateEmailAppById();

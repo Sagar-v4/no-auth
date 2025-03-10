@@ -84,12 +84,12 @@ export function TrpcReactQueryProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+        <HydrationBoundary state={dehydrate(queryClient)}>
           {children}
           <ReactQueryDevtools initialIsOpen={false} />
-        </TRPCProvider>
-      </HydrationBoundary>
+        </HydrationBoundary>
+      </TRPCProvider>
     </QueryClientProvider>
   );
 }

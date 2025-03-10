@@ -12,6 +12,7 @@ export type clienteleDataInputType = z.infer<typeof clienteleInputSchema>;
 export const clienteleOutputSchema = z.object({
   _id: z.custom<any>(),
   uuid: z.string().uuid().nonempty(),
+  generated_id: z.string().uuid().nonempty(),
   organization_id: z.string().optional(),
   status: STATUS_ENUM,
   metadata: z.object({}).optional(),
@@ -21,6 +22,7 @@ export const clienteleOutputSchema = z.object({
 export type ClienteleOutputSchema = z.infer<typeof clienteleOutputSchema>;
 
 export const clienteleInsertInputSchema = z.object({
+  generated_id: z.string().nonempty(),
   organization_id: z.string().nonempty(),
 });
 export type ClienteleInsertInputSchema = z.infer<
@@ -31,6 +33,7 @@ export const clienteleIdInputSchema = z
   .object({
     _id: z.string().optional(),
     uuid: z.string().uuid().optional(),
+    organization_id: z.string().optional(),
   })
   .refine((data) => !Object.values(data).every((value) => !value));
 export type ClienteleIdInputSchema = z.infer<typeof clienteleIdInputSchema>;

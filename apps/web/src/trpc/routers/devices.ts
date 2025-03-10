@@ -19,6 +19,10 @@ export function createOneDevice() {
   const mutationOptions = devices.insertOne.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
+    trpc: {
+      abortOnUnmount: true,
+      ssr: false,
+    },
     onSettled: () => {
       const findByData = devices.findByData.queryKey();
       const findById = devices.findById.queryKey();

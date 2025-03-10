@@ -42,11 +42,34 @@ import {
   DeleteBySSORefInputType,
   deleteBySSORefOutputSchema,
   DeleteBySSORefOutputType,
+  sendEmailOTPSSOInputSchema,
+  SendEmailOTPSSOInputType,
+  sendEmailOTPSSOOutputSchema,
+  SendEmailOTPSSOOutputType,
+  verifyEmailOTPSSOInputSchema,
+  VerifyEmailOTPSSOInputType,
+  verifyEmailOTPSSOOutputSchema,
+  VerifyEmailOTPSSOOutputType,
 } from "../../../../../libs/trpc/schemas/sso";
 import { ClientsService } from "@/app/clients/clients.service";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
+import { generateOTP } from "@/utils/otp-generator";
+import { EmailServicesService } from "@/app/email/services/services.service";
+import { DevicesService } from "@/app/devices/devices.service";
+import { EmailServiceDocument } from "@/app/email/services/entities/service.entity";
+import { DeviceDocument } from "@/app/devices/entities/device.entity";
+import {
+  CLIENTELE_SCHEMA_NAME,
+  ClienteleDocument,
+} from "@/app/clienteles/entities/clientele.entity";
+import {
+  CLIENT_SCHEMA_NAME,
+  ClientDocument,
+} from "@/app/clients/entities/client.entity";
+import { generateEmailID } from "@/utils/clientele-id-generator";
+import { ClientelesService } from "@/app/clienteles/clienteles.service";
 
 @Router({
   alias: "sso",
@@ -59,6 +82,9 @@ export class SSORouter {
     private readonly ssoService: SSOService,
     private readonly clientsService: ClientsService,
     private readonly organizationsService: OrganizationsService,
+    private readonly emailServicesService: EmailServicesService,
+    private readonly devicesService: DevicesService,
+    private readonly clientelesService: ClientelesService,
   ) {
     try {
       this.logger.log({
@@ -539,6 +565,190 @@ export class SSORouter {
         method: this.deleteByRef.name,
         error: error,
         deleteBySSORefInputData,
+      });
+
+      throw error;
+    }
+  }
+
+  @Mutation({
+    input: sendEmailOTPSSOInputSchema,
+    output: sendEmailOTPSSOOutputSchema,
+  })
+  async sendEmailOTP(
+    @Input()
+    sendEmailOTPSSOInputData: SendEmailOTPSSOInputType,
+  ): Promise<SendEmailOTPSSOOutputType> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.sendEmailOTP.name,
+        metadata: {
+          sendEmailOTPSSOInputData,
+        },
+      });
+
+      const user_type = sendEmailOTPSSOInputData.sso_uuid
+        ? CLIENTELE_SCHEMA_NAME
+        : CLIENT_SCHEMA_NAME;
+
+      let user_id: string;
+
+      if (sendEmailOTPSSOInputData.sso_uuid) {
+        const [sso] = await this.findByRef({
+          filter: {
+            client: {},
+            organization: {},
+            sso: {
+              uuid: sendEmailOTPSSOInputData.sso_uuid,
+            },
+          },
+        });
+
+        const generated_id: string = generateEmailID(
+          sendEmailOTPSSOInputData.email,
+          sso.organization_id.uuid,
+        );
+
+        const [clientele]: ClienteleDocument[] =
+          await this.clientelesService.find({
+            filter: {
+              generated_id: generated_id,
+              organization_id: sso.organization_id._id,
+            },
+            populate: [],
+            select: ["_id"],
+          });
+
+        if (!clientele) {
+          const newClientele = await this.clientelesService.insertOne({
+            doc: {
+              organization_id: sso.organization_id._id,
+              generated_id: generated_id,
+            },
+          });
+          user_id = newClientele._id.toString();
+        } else {
+          user_id = clientele._id.toString();
+        }
+      } else {
+        const [client]: ClientDocument[] = await this.clientsService.find({
+          filter: {
+            email: sendEmailOTPSSOInputData.email,
+          },
+          populate: [],
+          select: ["_id"],
+        });
+
+        if (!client) {
+          const newClient = await this.clientsService.insertOne({
+            doc: {
+              email: sendEmailOTPSSOInputData.email,
+              name: sendEmailOTPSSOInputData.email.split("@")[0],
+            },
+          });
+          user_id = newClient._id.toString();
+        } else {
+          user_id = client._id.toString();
+        }
+      }
+
+      const otp = generateOTP(6);
+
+      const emailResponse = await this.emailServicesService.sendEmail({
+        to: [sendEmailOTPSSOInputData.email],
+        subject: "One-Time Password (OTP)",
+        text: `Your one-time password (OTP) is: ${otp}`,
+      });
+
+      const [device]: DeviceDocument[] = await this.devicesService.find({
+        filter: {
+          uuid: sendEmailOTPSSOInputData.device_uuid,
+        },
+        populate: [],
+        select: ["uuid"],
+      });
+
+      const email_service: EmailServiceDocument =
+        await this.emailServicesService.insertOne({
+          doc: {
+            user_id: user_id,
+            user_type: user_type,
+            device_id: device.uuid,
+            metadata: {
+              otp: otp,
+              ...emailResponse,
+            },
+          },
+        });
+
+      const service_id = email_service.uuid;
+
+      this.logger.log({
+        action: "Exit",
+        method: this.sendEmailOTP.name,
+        metadata: {
+          service_id,
+        },
+      });
+
+      return sendEmailOTPSSOOutputSchema.parse({ service_id });
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.sendEmailOTP.name,
+        error: error,
+        sendEmailOTPSSOInputData,
+      });
+
+      throw error;
+    }
+  }
+
+  @Mutation({
+    input: verifyEmailOTPSSOInputSchema,
+    output: verifyEmailOTPSSOOutputSchema,
+  })
+  async verifyEmailOTP(
+    @Input()
+    verifyEmailOTPSSOInputData: VerifyEmailOTPSSOInputType,
+  ): Promise<VerifyEmailOTPSSOOutputType> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.verifyEmailOTP.name,
+        metadata: {
+          verifyEmailOTPSSOInputData,
+        },
+      });
+
+      const [email_service]: EmailServiceDocument[] =
+        await this.emailServicesService.find({
+          filter: {
+            uuid: verifyEmailOTPSSOInputData.service_id,
+          },
+          populate: [],
+          select: ["metadata.otp"],
+        });
+
+      const is_otp_correct =
+        (email_service?.metadata as any)?.otp == verifyEmailOTPSSOInputData.otp;
+
+      this.logger.log({
+        action: "Exit",
+        method: this.verifyEmailOTP.name,
+        metadata: {
+          is_otp_correct,
+        },
+      });
+
+      return verifyEmailOTPSSOOutputSchema.parse({ is_otp_correct });
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.verifyEmailOTP.name,
+        error: error,
+        verifyEmailOTPSSOInputData,
       });
 
       throw error;

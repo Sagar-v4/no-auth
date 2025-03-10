@@ -5,13 +5,7 @@ import { useTheme } from "next-themes";
 import { useIsMounted } from "usehooks-ts";
 import { Check, Palette, RefreshCw } from "lucide-react";
 
-import {
-  baseColors,
-  Modes,
-  modes,
-  Radius,
-  radius,
-} from "@workspace/ui/registry";
+import { baseColors, Modes, modes, Radius, radius } from "../registry";
 import { cn } from "@workspace/ui/lib/utils";
 import { Wrapper as ThemeWrapper } from "@workspace/ui/theme/wrapper";
 import { ResponsiveDialog } from "@workspace/ui/components/responsive-dialog";

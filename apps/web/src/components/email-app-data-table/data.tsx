@@ -1,14 +1,15 @@
+import { StatusEnum } from "@/lib/trpc/schemas/clienteles";
 import { CircleCheck, CircleX, Mail } from "lucide-react";
 
 export const status = [
   {
     label: "Active",
-    value: "Active",
+    value: "Active" as StatusEnum,
     icon: CircleCheck,
   },
   {
     label: "Blocked",
-    value: "Blocked",
+    value: "Blocked" as StatusEnum,
     icon: CircleX,
   },
 ];

@@ -24,15 +24,15 @@ import { EmailAppRouter } from "@/app/email/apps/apps.router";
   imports: [
     MongooseModule.forFeature(
       [{ name: EMAIL_APP_SCHEMA_NAME, schema: EmailAppSchema }],
-      MONGOOSE_DB_CONNECTION.EMAIL,
+      MONGOOSE_DB_CONNECTION.EMAIL_APP,
     ),
     MongooseModule.forFeature(
       [{ name: CLIENT_SCHEMA_NAME, schema: ClientSchema }],
-      MONGOOSE_DB_CONNECTION.EMAIL,
+      MONGOOSE_DB_CONNECTION.EMAIL_APP,
     ),
     MongooseModule.forFeature(
       [{ name: ORGANIZATION_SCHEMA_NAME, schema: OrganizationSchema }],
-      MONGOOSE_DB_CONNECTION.EMAIL,
+      MONGOOSE_DB_CONNECTION.EMAIL_APP,
     ),
     ClientsModule,
     OrganizationsModule,

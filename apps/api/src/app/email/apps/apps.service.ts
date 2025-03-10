@@ -27,7 +27,7 @@ export class EmailAppsService {
   private logger: Logger = new Logger(EmailAppsService.name);
 
   constructor(
-    @InjectModel(EMAIL_APP_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.EMAIL)
+    @InjectModel(EMAIL_APP_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.EMAIL_APP)
     private readonly emailAppModel: Model<EmailAppDocument>,
   ) {
     try {

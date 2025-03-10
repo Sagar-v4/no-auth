@@ -1,84 +1,84 @@
-# Turborepo starter
+# Motivation
 
-This Turborepo starter is maintained by the Turborepo core team.
+Every application needs Authentication and at some point Authorization, implementing this in each project can be tedious and time consuming. `No Auth` solves this problem for you so, you can focus on other important tasks.
 
-## Using this example
+### Features
 
-Run the following command:
+- Single Sign On(SSO)
+- Switch instantly in between loggedin accounts(Multi Tenancy)
+- Multi step form for signups, created by drag and drop input components (Next version)
+- One time password, Magic link etc via email and whatsapp (Whatsapp next version)
+- Create new roles and permissions and authorize your users according to that (Next version)
+- Create your own email app for your users communication (Next version)
+- Create Templates for messages (Next version)
 
-```sh
-npx create-turbo@latest
-```
+## Technologies
 
-## What's inside?
+- Next.js as frontend
+- Nest.js as backend
+- Zod for schema and type safety
+- Nestjs-trpc to generate trpc app router
+- tRPC as mode of communication
+- Tanstack/React Query as frontend data fetching and state management
+- Combining: [Generated tRPC app router](https://www.nestjs-trpc.io/) & [TanStack Query-native](https://trpc.io/docs/client/tanstack-react-query/setup)
+- Shadcn/ui for frontend component
+- Turborepo
 
-This Turborepo includes the following packages/apps:
+## Flow
 
-### Apps and Packages
+![Flow](images/trpc-flow.png)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@workspace/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@workspace/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@workspace/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## Single Sign On
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+![SSO LG](images/sso-lg.png)
+![SSO SM](images/sso-sm.png)
 
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
+## Folder structure
 
 ```
-cd my-turborepo
-pnpm dev
+- root
+  - apps
+    - api
+      - src
+        - app
+        - database
+        - env
+        - trpc
+        - utils
+    - web
+      - src
+        - app
+        - components
+        - env
+        - hooks
+        - public
+        - trpc
+          - routers
+        - utils
+  - libs
+    - trpc
+      - @generated
+      - schemas
+  - packages
+    - eslint-config
+    - typescript-config
+    - ui
 ```
 
-### Remote Caching
+## Contribution
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Open for developers to contribute. Create an issue and addd your findings regarding of bug or new features requests.
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+your work should be in your own branch created from issues with prefix like fix, bugfix, refactor /{issue-number}-{issue-desc}.
+example: `feat/1-add-whatsapp-feature`
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+You should add commit messages as per [conventional commit rules.](https://www.conventionalcommits.org/)
 
-```
-cd my-turborepo
-npx turbo login
-```
+### Process
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+1. Install all npm packages
+2. Check the `env.example` file and add your env variables
+3. All the commands that affects entire repo like `format` or `pnpm install` should be executed from the root
+4. To run individual(api or web) go the their path `cd apps/api` or `cd apps/web`
+5. For commit use `cz` command or `git cz` for conventional commits
+6. Create PR to master and wait for reviews.

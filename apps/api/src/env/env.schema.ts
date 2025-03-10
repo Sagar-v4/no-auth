@@ -10,6 +10,8 @@ export const envSchema = z.object({
     ])
     .default("development"),
   MONGO_URI: z.string().url(),
+  GMAIL_USER: z.string().email(),
+  GMAIL_PASS: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;
