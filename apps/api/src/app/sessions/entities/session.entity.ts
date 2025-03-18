@@ -3,15 +3,9 @@ import { HydratedDocument, Types } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import { DEVICE_SCHEMA_NAME } from "@/app/devices/entities/device.entity";
-import {
-  Client,
-  CLIENT_SCHEMA_NAME,
-} from "@/app/clients/entities/client.entity";
-import {
-  Clientele,
-  CLIENTELE_SCHEMA_NAME,
-} from "@/app/clienteles/entities/clientele.entity";
-import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/sessions";
+import { Client } from "@/app/clients/entities/client.entity";
+import { Clientele } from "@/app/clienteles/entities/clientele.entity";
+import { STATUS, STATUS_ENUM, USER_TYPE } from "@/lib/trpc/schemas/sessions";
 
 @Schema({
   timestamps: true,
@@ -35,7 +29,7 @@ export class Session {
   @Prop({
     type: String,
     required: true,
-    enum: [CLIENT_SCHEMA_NAME, CLIENTELE_SCHEMA_NAME],
+    enum: USER_TYPE,
   })
   user_type!: string;
 
@@ -58,7 +52,7 @@ export class Session {
   metadata?: object;
 }
 
-export const SESSION_SCHEMA_NAME: string = Session.name;
+export const SESSION_SCHEMA_NAME = "Session";
 
 export const SessionSchema = SchemaFactory.createForClass(Session);
 

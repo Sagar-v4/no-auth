@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult } from "mongoose";
+import { DeleteResult, InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { ClientsService } from "@/app/clients/clients.service";
@@ -36,6 +36,7 @@ import {
   DeleteByClientDataOutputType,
 } from "../../../../../libs/trpc/schemas/clients";
 import { query$or } from "@/utils/query-builder";
+import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
   alias: "clients",
@@ -44,7 +45,10 @@ import { query$or } from "@/utils/query-builder";
 export class ClientsRouter {
   private logger: Logger = new Logger(ClientsRouter.name);
 
-  constructor(private readonly clientsService: ClientsService) {
+  constructor(
+    private readonly clientsService: ClientsService,
+    private readonly basicService: BasicService,
+  ) {
     try {
       this.logger.log({
         action: "Construct",
@@ -75,7 +79,8 @@ export class ClientsRouter {
         },
       });
 
-      const client: ClientDocument = await this.clientsService.insertOne({
+      const client: ClientDocument = await this.basicService.insertOne({
+        schema: "Client",
         doc: insertOneClientInputData.doc,
       });
 
@@ -116,10 +121,10 @@ export class ClientsRouter {
         },
       });
 
-      const result: InsertManyResult<any> =
-        await this.clientsService.insertMany({
-          docs: insertManyClientInputData.docs,
-        });
+      const result: InsertManyResult<any> = await this.basicService.insertMany({
+        schema: "Client",
+        doc: insertManyClientInputData.doc,
+      });
 
       this.logger.log({
         action: "Exit",
@@ -158,7 +163,8 @@ export class ClientsRouter {
         },
       });
 
-      const [client]: ClientDocument[] = await this.clientsService.find({
+      const [client]: ClientDocument[] = await this.basicService.find({
+        schema: "Client",
         filter: findByClientIdInputData.filter,
         select: [],
         populate: [],
@@ -203,7 +209,8 @@ export class ClientsRouter {
 
       const filter = query$or(findByClientDataInputData.filter);
 
-      const clients: ClientDocument[] = await this.clientsService.find({
+      const clients: ClientDocument[] = await this.basicService.find({
+        schema: "Client",
         filter: filter,
         select: [],
         populate: [],
@@ -246,7 +253,8 @@ export class ClientsRouter {
         },
       });
 
-      const client = await this.clientsService.findOneAndUpdate({
+      const client = await this.basicService.findOneAndUpdate({
+        schema: "Client",
         filter: updateByClientIdInputData.filter,
         update: updateByClientIdInputData.update,
         select: [],
@@ -292,7 +300,8 @@ export class ClientsRouter {
 
       const filter = query$or(updateByClientDataInputData.filter);
 
-      const result = await this.clientsService.updateMany({
+      const result = await this.basicService.updateMany({
+        schema: "Client",
         filter: filter,
         update: updateByClientDataInputData.update,
         select: [],
@@ -338,7 +347,8 @@ export class ClientsRouter {
 
       const filter = query$or(deleteByClientDataInputData.filter);
 
-      const delete_count: Number = await this.clientsService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Client",
         filter: filter,
       });
 
@@ -346,11 +356,11 @@ export class ClientsRouter {
         action: "Exit",
         method: this.deleteByData.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByClientDataOutputSchema.parse({ delete_count });
+      return deleteByClientDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

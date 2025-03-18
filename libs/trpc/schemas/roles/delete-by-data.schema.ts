@@ -9,7 +9,8 @@ export type DeleteByRoleDataInputType = z.infer<
 >;
 
 export const deleteByRoleDataOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByRoleDataOutputType = z.infer<
   typeof deleteByRoleDataOutputSchema

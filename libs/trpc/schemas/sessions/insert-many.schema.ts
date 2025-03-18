@@ -2,7 +2,7 @@ import { z } from "zod";
 import { sessionInsertInputSchema } from ".";
 
 export const insertManySessionInputSchema = z.object({
-  docs: z.array(sessionInsertInputSchema),
+  doc: z.array(sessionInsertInputSchema),
 });
 export type InsertManySessionInputType = z.infer<
   typeof insertManySessionInputSchema

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { roleInsertInputSchema } from ".";
 
 export const insertManyRoleInputSchema = z.object({
-  docs: z.array(roleInsertInputSchema),
+  doc: z.array(roleInsertInputSchema),
 });
 export type InsertManyRoleInputType = z.infer<typeof insertManyRoleInputSchema>;
 

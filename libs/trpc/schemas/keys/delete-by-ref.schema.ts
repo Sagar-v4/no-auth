@@ -13,7 +13,8 @@ export const deleteByKeyRefInputSchema = z.object({
 export type DeleteByKeyRefInputType = z.infer<typeof deleteByKeyRefInputSchema>;
 
 export const deleteByKeyRefOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByKeyRefOutputType = z.infer<
   typeof deleteByKeyRefOutputSchema

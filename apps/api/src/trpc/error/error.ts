@@ -9,6 +9,16 @@ export const ERROR: {
     };
   };
 } = {
+  BASIC: {
+    NOT_FOUND: {
+      code: "NOT_FOUND",
+      message: "Document not found",
+    },
+    INVALID_SCHEMA: {
+      code: "BAD_REQUEST",
+      message: "Invalid schema name",
+    },
+  },
   CLIENT: {
     NOT_FOUND: {
       code: "NOT_FOUND",

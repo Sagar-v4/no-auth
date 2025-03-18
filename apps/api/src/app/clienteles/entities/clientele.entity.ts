@@ -20,9 +20,8 @@ export class Clientele {
   @Prop({
     type: String,
     required: true,
-    unique: true,
   })
-  generated_id!: string;
+  email!: string;
 
   @Prop({
     type: Types.ObjectId,
@@ -43,7 +42,7 @@ export class Clientele {
   metadata?: object;
 }
 
-export const CLIENTELE_SCHEMA_NAME: string = Clientele.name;
+export const CLIENTELE_SCHEMA_NAME = "Clientele";
 
 export const ClienteleSchema = SchemaFactory.createForClass(Clientele);
 

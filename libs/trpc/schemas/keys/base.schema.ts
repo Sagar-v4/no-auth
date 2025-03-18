@@ -45,8 +45,6 @@ export const keyIdInputSchema = z
 export type KeyIdInputSchema = z.infer<typeof keyIdInputSchema>;
 
 export const keyUpdateInputSchema = z.object({
-  client_id: z.string().optional(),
-  organization_id: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
   expiry: z.number().optional(),

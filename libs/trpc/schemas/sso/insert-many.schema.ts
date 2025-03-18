@@ -2,7 +2,7 @@ import { z } from "zod";
 import { ssoInsertInputSchema } from ".";
 
 export const insertManySSOInputSchema = z.object({
-  docs: z.array(ssoInsertInputSchema),
+  doc: z.array(ssoInsertInputSchema),
 });
 export type InsertManySSOInputType = z.infer<typeof insertManySSOInputSchema>;
 

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { keyInsertInputSchema } from ".";
 
 export const insertManyKeyInputSchema = z.object({
-  docs: z.array(keyInsertInputSchema),
+  doc: z.array(keyInsertInputSchema),
 });
 export type InsertManyKeyInputType = z.infer<typeof insertManyKeyInputSchema>;
 

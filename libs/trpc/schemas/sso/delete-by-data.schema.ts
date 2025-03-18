@@ -9,7 +9,8 @@ export type DeleteBySSODataInputType = z.infer<
 >;
 
 export const deleteBySSODataOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteBySSODataOutputType = z.infer<
   typeof deleteBySSODataOutputSchema

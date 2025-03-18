@@ -2,7 +2,7 @@ import { z } from "zod";
 import { clientInsertInputSchema } from ".";
 
 export const insertManyClientInputSchema = z.object({
-  docs: z.array(clientInsertInputSchema),
+  doc: z.array(clientInsertInputSchema),
 });
 export type InsertManyClientInputType = z.infer<
   typeof insertManyClientInputSchema

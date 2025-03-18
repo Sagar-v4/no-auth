@@ -51,13 +51,6 @@ export class SSO {
   webhook_url!: string;
 
   @Prop({
-    type: Boolean,
-    required: true,
-    default: true,
-  })
-  show_device_users!: boolean;
-
-  @Prop({
     type: String,
     enum: STATUS,
     required: true,
@@ -69,7 +62,7 @@ export class SSO {
   metadata?: object;
 }
 
-export const SSO_SCHEMA_NAME: string = SSO.name;
+export const SSO_SCHEMA_NAME = "SSO";
 
 export const SSOSchema = SchemaFactory.createForClass(SSO);
 

@@ -2,15 +2,13 @@ import {
   LayoutDashboard,
   KeyRound,
   UserRound,
-  UsersRound,
   Settings,
-  FilePenLine,
-  IdCard,
-  Mail,
-  UserRoundCog,
-  ShieldBan,
   Building2,
   Building,
+  FileLock,
+  ShieldCheck,
+  UserRoundCheck,
+  Cloud,
 } from "lucide-react";
 
 export const enum GROUPS {
@@ -57,39 +55,24 @@ export const LINKS = {
     icon: LayoutDashboard,
   },
   KEY: {
-    title: "Keys",
+    title: "API Keys",
     url: "keys",
     icon: KeyRound,
   },
-  TEAM: {
-    title: "Team",
-    url: "team",
-    icon: UsersRound,
-  },
-  FORM: {
-    title: "Forms",
-    url: "forms",
-    icon: FilePenLine,
-  },
-  SESSION: {
-    title: "Sessions",
-    url: "sessions",
-    icon: IdCard,
-  },
-  EMAIL: {
-    title: "Email",
-    url: "email",
-    icon: Mail,
+  SSO: {
+    title: "Single Sign On",
+    url: "sso",
+    icon: Cloud,
   },
   ROLE: {
     title: "Roles",
     url: "roles",
-    icon: UserRoundCog,
+    icon: UserRoundCheck,
   },
   PERMISSION: {
     title: "Permissions",
     url: "permissions",
-    icon: ShieldBan,
+    icon: ShieldCheck,
   },
 };
 
@@ -102,14 +85,9 @@ export const TABS = {
     value: "dashboard",
   },
   KEY: { title: "Keys", value: "keys" },
-  MEMBER: { title: "Members", value: "members" },
   ROLE: { title: "Roles", value: "roles" },
   PERMISSION: { title: "Permissions", value: "permissions" },
-  FORM: { title: "Forms", value: "forms" },
-  USER: { title: "User", value: "user" },
-  DEVICE: { title: "Device", value: "device" },
-  APP: { title: "App", value: "app" },
-  TEMPLATE: { title: "Template", value: "template" },
+  SSO: { title: "SSO", value: "sso" },
 };
 
 export const data = [
@@ -155,15 +133,6 @@ export const data = [
   {
     users: USERS.ORGANIZATION,
     group: GROUPS.ORGANIZATION,
-    ...LINKS.PROFILE_O,
-    tabs: {
-      default: TABS.PROFILE.value,
-      list: [TABS.PROFILE],
-    },
-  },
-  {
-    users: USERS.ORGANIZATION,
-    group: GROUPS.ORGANIZATION,
     ...LINKS.KEY,
     tabs: {
       default: TABS.KEY.value,
@@ -173,10 +142,10 @@ export const data = [
   {
     users: USERS.ORGANIZATION,
     group: GROUPS.ORGANIZATION,
-    ...LINKS.TEAM,
+    ...LINKS.PROFILE_O,
     tabs: {
-      default: TABS.MEMBER.value,
-      list: [TABS.MEMBER, TABS.PERMISSION],
+      default: TABS.PROFILE.value,
+      list: [TABS.PROFILE],
     },
   },
   {
@@ -193,28 +162,10 @@ export const data = [
   {
     users: USERS.ORGANIZATION,
     group: GROUPS.AUTHENTICATION,
-    ...LINKS.FORM,
+    ...LINKS.SSO,
     tabs: {
-      default: TABS.FORM.value,
-      list: [TABS.FORM],
-    },
-  },
-  {
-    users: USERS.ORGANIZATION,
-    group: GROUPS.AUTHENTICATION,
-    ...LINKS.SESSION,
-    tabs: {
-      default: TABS.USER.value,
-      list: [TABS.USER, TABS.DEVICE],
-    },
-  },
-  {
-    users: USERS.ORGANIZATION,
-    group: GROUPS.AUTHENTICATION,
-    ...LINKS.EMAIL,
-    tabs: {
-      default: TABS.APP.value,
-      list: [TABS.APP, TABS.TEMPLATE],
+      default: TABS.SSO.value,
+      list: [TABS.SSO],
     },
   },
 

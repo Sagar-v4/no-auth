@@ -6,6 +6,7 @@ import {
 } from "@/app/clients/entities/client.entity";
 import { randomUUID } from "crypto";
 import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/organizations";
+
 @Schema({
   timestamps: true,
 })
@@ -45,7 +46,7 @@ export class Organization {
   metadata?: object;
 }
 
-export const ORGANIZATION_SCHEMA_NAME: string = Organization.name;
+export const ORGANIZATION_SCHEMA_NAME = "Organization";
 
 export const OrganizationSchema = SchemaFactory.createForClass(Organization);
 

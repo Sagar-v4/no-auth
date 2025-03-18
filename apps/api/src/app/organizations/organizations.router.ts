@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult, PopulateOptions } from "mongoose";
+import { DeleteResult, InsertManyResult, PopulateOptions } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
@@ -46,6 +46,7 @@ import {
 import { ClientsService } from "@/app/clients/clients.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
+import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
   alias: "organizations",
@@ -56,7 +57,7 @@ export class OrganizationsRouter {
 
   constructor(
     private readonly organizationsService: OrganizationsService,
-    private readonly clientsService: ClientsService,
+    private readonly basicService: BasicService,
   ) {
     try {
       this.logger.log({
@@ -89,7 +90,8 @@ export class OrganizationsRouter {
       });
 
       const organization: OrganizationDocument =
-        await this.organizationsService.insertOne({
+        await this.basicService.insertOne({
+          schema: "Organization",
           doc: insertOneOrganizationInputData.doc,
         });
 
@@ -129,10 +131,10 @@ export class OrganizationsRouter {
         },
       });
 
-      const result: InsertManyResult<any> =
-        await this.organizationsService.insertMany({
-          docs: insertManyOrganizationInputData.docs,
-        });
+      const result: InsertManyResult<any> = await this.basicService.insertMany({
+        schema: "Organization",
+        doc: insertManyOrganizationInputData.doc,
+      });
 
       this.logger.log({
         action: "Exit",
@@ -172,7 +174,8 @@ export class OrganizationsRouter {
       });
 
       const [organization]: OrganizationDocument[] =
-        await this.organizationsService.find({
+        await this.basicService.find({
+          schema: "Organization",
           filter: findByOrganizationIdInputData.filter,
           select: [],
           populate: [],
@@ -218,7 +221,8 @@ export class OrganizationsRouter {
       const filter = query$or(findByOrganizationDataInputData.filter);
 
       const organizations: OrganizationDocument[] =
-        await this.organizationsService.find({
+        await this.basicService.find({
+          schema: "Organization",
           filter: filter,
           select: [],
           populate: [],
@@ -263,9 +267,10 @@ export class OrganizationsRouter {
 
       const client_ids = concatIds(
         [findByOrganizationRefInputData.filter.organization.client_id],
-        await this.clientsService.getIds(
-          findByOrganizationRefInputData.filter.client,
-        ),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: findByOrganizationRefInputData.filter.client,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -294,7 +299,8 @@ export class OrganizationsRouter {
       }
 
       const organizations: OrganizationDocument[] =
-        await this.organizationsService.find({
+        await this.basicService.find({
+          schema: "Organization",
           filter: {
             ...findByOrganizationRefInputData.filter.organization,
             ...Object.fromEntries(references_ids),
@@ -340,7 +346,8 @@ export class OrganizationsRouter {
         },
       });
 
-      const organization = await this.organizationsService.findOneAndUpdate({
+      const organization = await this.basicService.findOneAndUpdate({
+        schema: "Organization",
         filter: updateByOrganizationIdInputData.filter,
         update: updateByOrganizationIdInputData.update,
         select: [],
@@ -387,7 +394,8 @@ export class OrganizationsRouter {
 
       const filter = query$or(updateByOrganizationDataInputData.filter);
 
-      const result = await this.organizationsService.updateMany({
+      const result = await this.basicService.updateMany({
+        schema: "Organization",
         filter: filter,
         update: updateByOrganizationDataInputData.update,
         select: [],
@@ -434,7 +442,8 @@ export class OrganizationsRouter {
 
       const filter = query$or(deleteByOrganizationDataInputData.filter);
 
-      const delete_count: Number = await this.organizationsService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Organization",
         filter: filter,
       });
 
@@ -442,11 +451,11 @@ export class OrganizationsRouter {
         action: "Exit",
         method: this.deleteByData.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByOrganizationDataOutputSchema.parse({ delete_count });
+      return deleteByOrganizationDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -478,9 +487,10 @@ export class OrganizationsRouter {
 
       const client_ids = concatIds(
         [deleteByOrganizationRefInputData.filter.organization.client_id],
-        await this.clientsService.getIds(
-          deleteByOrganizationRefInputData.filter.client,
-        ),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: deleteByOrganizationRefInputData.filter.client,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -490,25 +500,8 @@ export class OrganizationsRouter {
         });
       }
 
-      if (
-        references_ids.size === 0 &&
-        Object.keys(deleteByOrganizationRefInputData.filter.organization)
-          .length === 0
-      ) {
-        this.logger.warn({
-          action: "Exit",
-          method: this.deleteByRef.name,
-          metadata: {
-            references_ids,
-            organization: Object.keys(
-              deleteByOrganizationRefInputData.filter.organization,
-            ),
-          },
-        });
-        return { delete_count: 0 };
-      }
-
-      const delete_count: Number = await this.organizationsService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Organization",
         filter: {
           ...deleteByOrganizationRefInputData.filter.organization,
           ...Object.fromEntries(references_ids),
@@ -519,11 +512,11 @@ export class OrganizationsRouter {
         action: "Exit",
         method: this.deleteByRef.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByOrganizationRefOutputSchema.parse({ delete_count });
+      return deleteByOrganizationRefOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

@@ -7,14 +7,9 @@ import {
 import { randomUUID } from "crypto";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { DEVICE_SCHEMA_NAME } from "@/app/devices/entities/device.entity";
-import {
-  Client,
-  CLIENT_SCHEMA_NAME,
-} from "@/app/clients/entities/client.entity";
-import {
-  Clientele,
-  CLIENTELE_SCHEMA_NAME,
-} from "@/app/clienteles/entities/clientele.entity";
+import { Client } from "@/app/clients/entities/client.entity";
+import { Clientele } from "@/app/clienteles/entities/clientele.entity";
+import { USER_TYPE } from "@/lib/trpc/schemas/email/services";
 
 @Schema({
   timestamps: true,
@@ -38,7 +33,7 @@ export class Email_Service {
   @Prop({
     type: String,
     required: true,
-    enum: [CLIENT_SCHEMA_NAME, CLIENTELE_SCHEMA_NAME],
+    enum: USER_TYPE,
   })
   user_type!: string;
 
@@ -53,7 +48,7 @@ export class Email_Service {
   metadata?: object;
 }
 
-export const EMAIL_SERVICE_SCHEMA_NAME: string = Email_Service.name;
+export const EMAIL_SERVICE_SCHEMA_NAME = "Email_Service";
 
 export const EmailServiceSchema = SchemaFactory.createForClass(Email_Service);
 

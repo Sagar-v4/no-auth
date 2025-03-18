@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult } from "mongoose";
+import { DeleteResult, InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { SSODocument } from "@/app/sso/entities/sso.entity";
@@ -70,6 +70,7 @@ import {
 } from "@/app/clients/entities/client.entity";
 import { generateEmailID } from "@/utils/clientele-id-generator";
 import { ClientelesService } from "@/app/clienteles/clienteles.service";
+import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
   alias: "sso",
@@ -80,11 +81,8 @@ export class SSORouter {
 
   constructor(
     private readonly ssoService: SSOService,
-    private readonly clientsService: ClientsService,
-    private readonly organizationsService: OrganizationsService,
     private readonly emailServicesService: EmailServicesService,
-    private readonly devicesService: DevicesService,
-    private readonly clientelesService: ClientelesService,
+    private readonly basicService: BasicService,
   ) {
     try {
       this.logger.log({
@@ -116,7 +114,8 @@ export class SSORouter {
         },
       });
 
-      const sso: SSODocument = await this.ssoService.insertOne({
+      const sso: SSODocument = await this.basicService.insertOne({
+        schema: "SSO",
         doc: insertOneSSOInputData.doc,
       });
 
@@ -156,8 +155,9 @@ export class SSORouter {
         },
       });
 
-      const result: InsertManyResult<any> = await this.ssoService.insertMany({
-        docs: insertManySSOInputData.docs,
+      const result: InsertManyResult<any> = await this.basicService.insertMany({
+        schema: "SSO",
+        doc: insertManySSOInputData.doc,
       });
 
       this.logger.log({
@@ -197,7 +197,8 @@ export class SSORouter {
         },
       });
 
-      const [sso]: SSODocument[] = await this.ssoService.find({
+      const [sso]: SSODocument[] = await this.basicService.find({
+        schema: "SSO",
         filter: findBySSOIdInputData.filter,
         select: [],
         populate: [],
@@ -242,7 +243,8 @@ export class SSORouter {
 
       const filter = query$or(findBySSODataInputData.filter);
 
-      const sso: SSODocument[] = await this.ssoService.find({
+      const sso: SSODocument[] = await this.basicService.find({
+        schema: "SSO",
         filter: filter,
         select: [],
         populate: [],
@@ -287,13 +289,17 @@ export class SSORouter {
 
       const client_ids = concatIds(
         [findBySSORefInputData.filter.sso.client_id],
-        await this.clientsService.getIds(findBySSORefInputData.filter.client),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: findBySSORefInputData.filter.client,
+        }),
       );
       const organization_ids = concatIds(
         [findBySSORefInputData.filter.sso.organization_id],
-        await this.organizationsService.getIds(
-          findBySSORefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: findBySSORefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -323,7 +329,8 @@ export class SSORouter {
         return [];
       }
 
-      const sso: SSODocument[] = await this.ssoService.find({
+      const sso: SSODocument[] = await this.basicService.find({
+        schema: "SSO",
         filter: {
           ...findBySSORefInputData.filter.sso,
           ...Object.fromEntries(references_ids),
@@ -369,7 +376,8 @@ export class SSORouter {
         },
       });
 
-      const sso = await this.ssoService.findOneAndUpdate({
+      const sso = await this.basicService.findOneAndUpdate({
+        schema: "SSO",
         filter: updateBySSOIdInputData.filter,
         update: updateBySSOIdInputData.update,
         select: [],
@@ -416,7 +424,8 @@ export class SSORouter {
 
       const filter = query$or(updateBySSODataInputData.filter);
 
-      const result = await this.ssoService.updateMany({
+      const result = await this.basicService.updateMany({
+        schema: "SSO",
         filter: filter,
         update: updateBySSODataInputData.update,
         select: [],
@@ -463,7 +472,8 @@ export class SSORouter {
 
       const filter = query$or(deleteBySSODataInputData.filter);
 
-      const delete_count: Number = await this.ssoService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "SSO",
         filter: filter,
       });
 
@@ -471,11 +481,11 @@ export class SSORouter {
         action: "Exit",
         method: this.deleteByData.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteBySSODataOutputSchema.parse({ delete_count });
+      return deleteBySSODataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -507,13 +517,17 @@ export class SSORouter {
 
       const client_ids = concatIds(
         [deleteBySSORefInputData.filter.sso.client_id],
-        await this.clientsService.getIds(deleteBySSORefInputData.filter.client),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: deleteBySSORefInputData.filter.client,
+        }),
       );
       const organization_ids = concatIds(
         [deleteBySSORefInputData.filter.sso.organization_id],
-        await this.organizationsService.getIds(
-          deleteBySSORefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: deleteBySSORefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -528,22 +542,8 @@ export class SSORouter {
         });
       }
 
-      if (
-        references_ids.size === 0 &&
-        Object.keys(deleteBySSORefInputData.filter.sso).length === 0
-      ) {
-        this.logger.warn({
-          action: "Exit",
-          method: this.findByRef.name,
-          metadata: {
-            references_ids,
-            sso: Object.keys(deleteBySSORefInputData.filter.sso),
-          },
-        });
-        return { delete_count: 0 };
-      }
-
-      const delete_count: Number = await this.ssoService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "SSO",
         filter: {
           ...deleteBySSORefInputData.filter.sso,
           ...Object.fromEntries(references_ids),
@@ -554,11 +554,11 @@ export class SSORouter {
         action: "Exit",
         method: this.deleteByRef.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteBySSORefOutputSchema.parse({ delete_count });
+      return deleteBySSORefOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -605,26 +605,22 @@ export class SSORouter {
           },
         });
 
-        const generated_id: string = generateEmailID(
-          sendEmailOTPSSOInputData.email,
-          sso.organization_id.uuid,
-        );
-
-        const [clientele]: ClienteleDocument[] =
-          await this.clientelesService.find({
-            filter: {
-              generated_id: generated_id,
-              organization_id: sso.organization_id._id,
-            },
-            populate: [],
-            select: ["_id"],
-          });
+        const [clientele]: ClienteleDocument[] = await this.basicService.find({
+          schema: "Clientele",
+          filter: {
+            email: sendEmailOTPSSOInputData.email,
+            organization_id: sso.organization_id._id,
+          },
+          populate: [],
+          select: ["_id"],
+        });
 
         if (!clientele) {
-          const newClientele = await this.clientelesService.insertOne({
+          const newClientele = await this.basicService.insertOne({
+            schema: "Clientele",
             doc: {
               organization_id: sso.organization_id._id,
-              generated_id: generated_id,
+              email: sendEmailOTPSSOInputData.email,
             },
           });
           user_id = newClientele._id.toString();
@@ -632,7 +628,8 @@ export class SSORouter {
           user_id = clientele._id.toString();
         }
       } else {
-        const [client]: ClientDocument[] = await this.clientsService.find({
+        const [client]: ClientDocument[] = await this.basicService.find({
+          schema: "Client",
           filter: {
             email: sendEmailOTPSSOInputData.email,
           },
@@ -641,7 +638,8 @@ export class SSORouter {
         });
 
         if (!client) {
-          const newClient = await this.clientsService.insertOne({
+          const newClient = await this.basicService.insertOne({
+            schema: "Client",
             doc: {
               email: sendEmailOTPSSOInputData.email,
               name: sendEmailOTPSSOInputData.email.split("@")[0],
@@ -661,7 +659,8 @@ export class SSORouter {
         text: `Your one-time password (OTP) is: ${otp}`,
       });
 
-      const [device]: DeviceDocument[] = await this.devicesService.find({
+      const [device]: DeviceDocument[] = await this.basicService.find({
+        schema: "Device",
         filter: {
           uuid: sendEmailOTPSSOInputData.device_uuid,
         },
@@ -670,7 +669,8 @@ export class SSORouter {
       });
 
       const email_service: EmailServiceDocument =
-        await this.emailServicesService.insertOne({
+        await this.basicService.insertOne({
+          schema: "Email_Service",
           doc: {
             user_id: user_id,
             user_type: user_type,
@@ -723,7 +723,8 @@ export class SSORouter {
       });
 
       const [email_service]: EmailServiceDocument[] =
-        await this.emailServicesService.find({
+        await this.basicService.find({
+          schema: "Email_Service",
           filter: {
             uuid: verifyEmailOTPSSOInputData.service_id,
           },

@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult } from "mongoose";
+import { DeleteResult, InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { PermissionDocument } from "@/app/permissions/entities/permission.entity";
@@ -47,6 +47,7 @@ import { ClientsService } from "@/app/clients/clients.service";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
+import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
   alias: "permissions",
@@ -57,8 +58,7 @@ export class PermissionsRouter {
 
   constructor(
     private readonly permissionsService: PermissionsService,
-    private readonly clientsService: ClientsService,
-    private readonly organizationsService: OrganizationsService,
+    private readonly basicService: BasicService,
   ) {
     try {
       this.logger.log({
@@ -90,10 +90,10 @@ export class PermissionsRouter {
         },
       });
 
-      const permission: PermissionDocument =
-        await this.permissionsService.insertOne({
-          doc: insertOnePermissionInputData.doc,
-        });
+      const permission: PermissionDocument = await this.basicService.insertOne({
+        schema: "Permission",
+        doc: insertOnePermissionInputData.doc,
+      });
 
       this.logger.log({
         action: "Exit",
@@ -132,10 +132,10 @@ export class PermissionsRouter {
         },
       });
 
-      const result: InsertManyResult<any> =
-        await this.permissionsService.insertMany({
-          docs: insertManyPermissionInputData.docs,
-        });
+      const result: InsertManyResult<any> = await this.basicService.insertMany({
+        schema: "Permission",
+        doc: insertManyPermissionInputData.doc,
+      });
 
       this.logger.log({
         action: "Exit",
@@ -174,12 +174,12 @@ export class PermissionsRouter {
         },
       });
 
-      const [permission]: PermissionDocument[] =
-        await this.permissionsService.find({
-          filter: findByPermissionIdInputData.filter,
-          select: [],
-          populate: [],
-        });
+      const [permission]: PermissionDocument[] = await this.basicService.find({
+        schema: "Permission",
+        filter: findByPermissionIdInputData.filter,
+        select: [],
+        populate: [],
+      });
 
       this.logger.log({
         action: "Exit",
@@ -220,12 +220,12 @@ export class PermissionsRouter {
 
       const filter = query$or(findByPermissionDataInputData.filter);
 
-      const permissions: PermissionDocument[] =
-        await this.permissionsService.find({
-          filter: filter,
-          select: [],
-          populate: [],
-        });
+      const permissions: PermissionDocument[] = await this.basicService.find({
+        schema: "Permission",
+        filter: filter,
+        select: [],
+        populate: [],
+      });
 
       this.logger.log({
         action: "Exit",
@@ -266,15 +266,17 @@ export class PermissionsRouter {
 
       const client_ids = concatIds(
         [findByPermissionRefInputData.filter.permission.client_id],
-        await this.clientsService.getIds(
-          findByPermissionRefInputData.filter.client,
-        ),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: findByPermissionRefInputData.filter.client,
+        }),
       );
       const organization_ids = concatIds(
         [findByPermissionRefInputData.filter.permission.organization_id],
-        await this.organizationsService.getIds(
-          findByPermissionRefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: findByPermissionRefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -306,15 +308,15 @@ export class PermissionsRouter {
         return [];
       }
 
-      const permissions: PermissionDocument[] =
-        await this.permissionsService.find({
-          filter: {
-            ...findByPermissionRefInputData.filter.permission,
-            ...Object.fromEntries(references_ids),
-          },
-          select: [],
-          populate: ["client_id", "organization_id"],
-        });
+      const permissions: PermissionDocument[] = await this.basicService.find({
+        schema: "Permission",
+        filter: {
+          ...findByPermissionRefInputData.filter.permission,
+          ...Object.fromEntries(references_ids),
+        },
+        select: [],
+        populate: ["client_id", "organization_id"],
+      });
 
       this.logger.log({
         action: "Exit",
@@ -353,7 +355,8 @@ export class PermissionsRouter {
         },
       });
 
-      const permission = await this.permissionsService.findOneAndUpdate({
+      const permission = await this.basicService.findOneAndUpdate({
+        schema: "Permission",
         filter: updateByPermissionIdInputData.filter,
         update: updateByPermissionIdInputData.update,
         select: [],
@@ -400,7 +403,8 @@ export class PermissionsRouter {
 
       const filter = query$or(updateByPermissionDataInputData.filter);
 
-      const result = await this.permissionsService.updateMany({
+      const result = await this.basicService.updateMany({
+        schema: "Permission",
         filter: filter,
         update: updateByPermissionDataInputData.update,
         select: [],
@@ -447,7 +451,8 @@ export class PermissionsRouter {
 
       const filter = query$or(deleteByPermissionDataInputData.filter);
 
-      const delete_count: Number = await this.permissionsService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Permission",
         filter: filter,
       });
 
@@ -455,11 +460,11 @@ export class PermissionsRouter {
         action: "Exit",
         method: this.deleteByData.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByPermissionDataOutputSchema.parse({ delete_count });
+      return deleteByPermissionDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -491,15 +496,17 @@ export class PermissionsRouter {
 
       const client_ids = concatIds(
         [deleteByPermissionRefInputData.filter.permission.client_id],
-        await this.clientsService.getIds(
-          deleteByPermissionRefInputData.filter.client,
-        ),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: deleteByPermissionRefInputData.filter.client,
+        }),
       );
       const organization_ids = concatIds(
         [deleteByPermissionRefInputData.filter.permission.organization_id],
-        await this.organizationsService.getIds(
-          deleteByPermissionRefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: deleteByPermissionRefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -514,25 +521,8 @@ export class PermissionsRouter {
         });
       }
 
-      if (
-        references_ids.size === 0 &&
-        Object.keys(deleteByPermissionRefInputData.filter.permission).length ===
-          0
-      ) {
-        this.logger.warn({
-          action: "Exit",
-          method: this.deleteByRef.name,
-          metadata: {
-            references_ids,
-            permission: Object.keys(
-              deleteByPermissionRefInputData.filter.permission,
-            ),
-          },
-        });
-        return { delete_count: 0 };
-      }
-
-      const delete_count: Number = await this.permissionsService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Permission",
         filter: {
           ...deleteByPermissionRefInputData.filter.permission,
           ...Object.fromEntries(references_ids),
@@ -543,11 +533,11 @@ export class PermissionsRouter {
         action: "Exit",
         method: this.deleteByRef.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByPermissionRefOutputSchema.parse({ delete_count });
+      return deleteByPermissionRefOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

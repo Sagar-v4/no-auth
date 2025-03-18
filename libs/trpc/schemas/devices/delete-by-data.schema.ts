@@ -9,7 +9,8 @@ export type DeleteByDeviceDataInputType = z.infer<
 >;
 
 export const deleteByDeviceDataOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByDeviceDataOutputType = z.infer<
   typeof deleteByDeviceDataOutputSchema

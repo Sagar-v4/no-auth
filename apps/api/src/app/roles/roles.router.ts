@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult } from "mongoose";
+import { DeleteResult, InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { RoleDocument } from "@/app/roles/entities/role.entity";
@@ -47,6 +47,7 @@ import { ClientsService } from "@/app/clients/clients.service";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
+import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
   alias: "roles",
@@ -57,8 +58,7 @@ export class RolesRouter {
 
   constructor(
     private readonly rolesService: RolesService,
-    private readonly clientsService: ClientsService,
-    private readonly organizationsService: OrganizationsService,
+    private readonly basicService: BasicService,
   ) {
     try {
       this.logger.log({
@@ -90,7 +90,8 @@ export class RolesRouter {
         },
       });
 
-      const role: RoleDocument = await this.rolesService.insertOne({
+      const role: RoleDocument = await this.basicService.insertOne({
+        schema: "Role",
         doc: insertOneRoleInputData.doc,
       });
 
@@ -131,8 +132,9 @@ export class RolesRouter {
         },
       });
 
-      const result: InsertManyResult<any> = await this.rolesService.insertMany({
-        docs: insertManyRoleInputData.docs,
+      const result: InsertManyResult<any> = await this.basicService.insertMany({
+        schema: "Role",
+        doc: insertManyRoleInputData.doc,
       });
 
       this.logger.log({
@@ -172,7 +174,8 @@ export class RolesRouter {
         },
       });
 
-      const [role]: RoleDocument[] = await this.rolesService.find({
+      const [role]: RoleDocument[] = await this.basicService.find({
+        schema: "Role",
         filter: findByRoleIdInputData.filter,
         select: [],
         populate: [],
@@ -217,7 +220,8 @@ export class RolesRouter {
 
       const filter = query$or(findByRoleDataInputData.filter);
 
-      const roles: RoleDocument[] = await this.rolesService.find({
+      const roles: RoleDocument[] = await this.basicService.find({
+        schema: "Role",
         filter: filter,
         select: [],
         populate: [],
@@ -262,13 +266,17 @@ export class RolesRouter {
 
       const client_ids = concatIds(
         [findByRoleRefInputData.filter.role.client_id],
-        await this.clientsService.getIds(findByRoleRefInputData.filter.client),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: findByRoleRefInputData.filter.client,
+        }),
       );
       const organization_ids = concatIds(
         [findByRoleRefInputData.filter.role.organization_id],
-        await this.organizationsService.getIds(
-          findByRoleRefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: findByRoleRefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -298,7 +306,8 @@ export class RolesRouter {
         return [];
       }
 
-      const roles: RoleDocument[] = await this.rolesService.find({
+      const roles: RoleDocument[] = await this.basicService.find({
+        schema: "Role",
         filter: {
           ...findByRoleRefInputData.filter.role,
           ...Object.fromEntries(references_ids),
@@ -344,7 +353,8 @@ export class RolesRouter {
         },
       });
 
-      const role = await this.rolesService.findOneAndUpdate({
+      const role = await this.basicService.findOneAndUpdate({
+        schema: "Role",
         filter: updateByRoleIdInputData.filter,
         update: updateByRoleIdInputData.update,
         select: [],
@@ -391,7 +401,8 @@ export class RolesRouter {
 
       const filter = query$or(updateByRoleDataInputData.filter);
 
-      const result = await this.rolesService.updateMany({
+      const result = await this.basicService.updateMany({
+        schema: "Role",
         filter: filter,
         update: updateByRoleDataInputData.update,
         select: [],
@@ -438,7 +449,8 @@ export class RolesRouter {
 
       const filter = query$or(deleteByRoleDataInputData.filter);
 
-      const delete_count: Number = await this.rolesService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Role",
         filter: filter,
       });
 
@@ -446,11 +458,11 @@ export class RolesRouter {
         action: "Exit",
         method: this.deleteByData.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByRoleDataOutputSchema.parse({ delete_count });
+      return deleteByRoleDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -482,15 +494,17 @@ export class RolesRouter {
 
       const client_ids = concatIds(
         [deleteByRoleRefInputData.filter.role.client_id],
-        await this.clientsService.getIds(
-          deleteByRoleRefInputData.filter.client,
-        ),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: deleteByRoleRefInputData.filter.client,
+        }),
       );
       const organization_ids = concatIds(
         [deleteByRoleRefInputData.filter.role.organization_id],
-        await this.organizationsService.getIds(
-          deleteByRoleRefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: deleteByRoleRefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -505,22 +519,8 @@ export class RolesRouter {
         });
       }
 
-      if (
-        references_ids.size === 0 &&
-        Object.keys(deleteByRoleRefInputData.filter.role).length === 0
-      ) {
-        this.logger.warn({
-          action: "Exit",
-          method: this.deleteByRef.name,
-          metadata: {
-            references_ids,
-            role: Object.keys(deleteByRoleRefInputData.filter.role),
-          },
-        });
-        return { delete_count: 0 };
-      }
-
-      const delete_count: Number = await this.rolesService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Role",
         filter: {
           ...deleteByRoleRefInputData.filter.role,
           ...Object.fromEntries(references_ids),
@@ -531,11 +531,11 @@ export class RolesRouter {
         action: "Exit",
         method: this.deleteByRef.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByRoleRefOutputSchema.parse({ delete_count });
+      return deleteByRoleRefOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

@@ -9,7 +9,8 @@ export type DeleteByKeyDataInputType = z.infer<
 >;
 
 export const deleteByKeyDataOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByKeyDataOutputType = z.infer<
   typeof deleteByKeyDataOutputSchema

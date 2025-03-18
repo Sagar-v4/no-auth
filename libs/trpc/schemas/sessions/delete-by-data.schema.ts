@@ -9,7 +9,8 @@ export type DeleteBySessionDataInputType = z.infer<
 >;
 
 export const deleteBySessionDataOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteBySessionDataOutputType = z.infer<
   typeof deleteBySessionDataOutputSchema

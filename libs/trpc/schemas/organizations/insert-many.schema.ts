@@ -2,7 +2,7 @@ import { z } from "zod";
 import { organizationInsertInputSchema } from ".";
 
 export const insertManyOrganizationInputSchema = z.object({
-  docs: z.array(organizationInsertInputSchema),
+  doc: z.array(organizationInsertInputSchema),
 });
 export type InsertManyOrganizationInputType = z.infer<
   typeof insertManyOrganizationInputSchema

@@ -9,7 +9,8 @@ export type DeleteByOrganizationDataInputType = z.infer<
 >;
 
 export const deleteByOrganizationDataOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByOrganizationDataOutputType = z.infer<
   typeof deleteByOrganizationDataOutputSchema

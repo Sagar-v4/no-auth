@@ -17,7 +17,8 @@ export type DeleteByEmailServiceRefInputType = z.infer<
 >;
 
 export const deleteByEmailServiceRefOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByEmailServiceRefOutputType = z.infer<
   typeof deleteByEmailServiceRefOutputSchema
