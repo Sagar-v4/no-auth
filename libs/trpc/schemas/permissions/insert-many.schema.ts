@@ -2,7 +2,7 @@ import { z } from "zod";
 import { permissionInsertInputSchema } from ".";
 
 export const insertManyPermissionInputSchema = z.object({
-  docs: z.array(permissionInsertInputSchema),
+  doc: z.array(permissionInsertInputSchema),
 });
 export type InsertManyPermissionInputType = z.infer<
   typeof insertManyPermissionInputSchema

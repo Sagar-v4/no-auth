@@ -58,7 +58,7 @@ export class Key {
   metadata?: object;
 }
 
-export const KEY_SCHEMA_NAME: string = Key.name;
+export const KEY_SCHEMA_NAME = "Key";
 
 export const KeySchema = SchemaFactory.createForClass(Key);
 

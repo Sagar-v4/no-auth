@@ -25,6 +25,7 @@ import {
 } from "@/app/devices/entities/device.entity";
 import { EmailServicesRouter } from "@/app/email/services/services.router";
 import { EnvModule } from "@/env/env.module";
+import { BasicModule } from "@/app/basic/basic.module";
 
 @Module({
   imports: [
@@ -32,22 +33,8 @@ import { EnvModule } from "@/env/env.module";
       [{ name: EMAIL_SERVICE_SCHEMA_NAME, schema: EmailServiceSchema }],
       MONGOOSE_DB_CONNECTION.EMAIL_SERVICE,
     ),
-    MongooseModule.forFeature(
-      [{ name: CLIENT_SCHEMA_NAME, schema: ClientSchema }],
-      MONGOOSE_DB_CONNECTION.SESSIOIN,
-    ),
-    MongooseModule.forFeature(
-      [{ name: CLIENTELE_SCHEMA_NAME, schema: ClienteleSchema }],
-      MONGOOSE_DB_CONNECTION.SESSIOIN,
-    ),
-    MongooseModule.forFeature(
-      [{ name: DEVICE_SCHEMA_NAME, schema: DeviceSchema }],
-      MONGOOSE_DB_CONNECTION.SESSIOIN,
-    ),
-    ClientsModule,
-    ClientelesModule,
-    DevicesModule,
     EnvModule,
+    BasicModule,
   ],
   controllers: [EmailServicesController],
   providers: [EmailServicesService, EmailServicesRouter],

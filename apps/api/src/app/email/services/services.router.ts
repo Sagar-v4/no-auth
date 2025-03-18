@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult } from "mongoose";
+import { DeleteResult, InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { EmailServiceDocument } from "@/app/email/services/entities/service.entity";
@@ -47,14 +47,12 @@ import {
   EmailServiceSendEmailInputType,
   EmailServiceSendEmailOutputType,
 } from "../../../../../../libs/trpc/schemas/email/services";
-import { ClientsService } from "@/app/clients/clients.service";
 import { ClientDocument } from "@/app/clients/entities/client.entity";
-import { ClientelesService } from "@/app/clienteles/clienteles.service";
 import { ClienteleDocument } from "@/app/clienteles/entities/clientele.entity";
-import { DevicesService } from "@/app/devices/devices.service";
 import { DeviceDocument } from "@/app/devices/entities/device.entity";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
+import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
   alias: "emailServices",
@@ -65,9 +63,7 @@ export class EmailServicesRouter {
 
   constructor(
     private readonly emailServicesService: EmailServicesService,
-    private readonly clientsService: ClientsService,
-    private readonly clientelesService: ClientelesService,
-    private readonly devicesService: DevicesService,
+    private readonly basicService: BasicService,
   ) {
     try {
       this.logger.log({
@@ -100,7 +96,8 @@ export class EmailServicesRouter {
       });
 
       const emailService: EmailServiceDocument =
-        await this.emailServicesService.insertOne({
+        await this.basicService.insertOne({
+          schema: "Email_Service",
           doc: insertOneEmailServiceInputData.doc,
         });
 
@@ -141,10 +138,10 @@ export class EmailServicesRouter {
         },
       });
 
-      const result: InsertManyResult<any> =
-        await this.emailServicesService.insertMany({
-          docs: insertManyEmailServiceInputData.docs,
-        });
+      const result: InsertManyResult<any> = await this.basicService.insertMany({
+        schema: "Email_Service",
+        doc: insertManyEmailServiceInputData.doc,
+      });
 
       this.logger.log({
         action: "Exit",
@@ -184,7 +181,8 @@ export class EmailServicesRouter {
       });
 
       const [emailService]: EmailServiceDocument[] =
-        await this.emailServicesService.find({
+        await this.basicService.find({
+          schema: "Email_Service",
           filter: findByEmailServiceIdInputData.filter,
           select: [],
           populate: [],
@@ -230,7 +228,8 @@ export class EmailServicesRouter {
       const filter = query$or(findByEmailServiceDataInputData.filter);
 
       const emailServices: EmailServiceDocument[] =
-        await this.emailServicesService.find({
+        await this.basicService.find({
+          schema: "Email_Service",
           filter: filter,
           select: [],
           populate: [],
@@ -275,16 +274,19 @@ export class EmailServicesRouter {
 
       const device_ids = concatIds(
         [findByEmailServiceRefInputData.filter.emailService.device_id],
-        await this.devicesService.getIds(
-          findByEmailServiceRefInputData.filter.device,
-        ),
+        await this.basicService.getIds({
+          schema: "Device",
+          filter: findByEmailServiceRefInputData.filter.device,
+        }),
       );
-      const client_ids = await this.clientsService.getIds(
-        findByEmailServiceRefInputData.filter.client,
-      );
-      const clientele_ids = await this.clientelesService.getIds(
-        findByEmailServiceRefInputData.filter.clientele,
-      );
+      const client_ids = await this.basicService.getIds({
+        schema: "Client",
+        filter: findByEmailServiceRefInputData.filter.client,
+      });
+      const clientele_ids = await this.basicService.getIds({
+        schema: "Clientele",
+        filter: findByEmailServiceRefInputData.filter.clientele,
+      });
       const user_ids = concatIds(
         [findByEmailServiceRefInputData.filter.emailService.user_id],
         [...client_ids, ...clientele_ids],
@@ -323,7 +325,8 @@ export class EmailServicesRouter {
       if (
         Object.keys(findByEmailServiceRefInputData.filter.client).length > 0
       ) {
-        const clients: ClientDocument[] = await this.clientsService.find({
+        const clients: ClientDocument[] = await this.basicService.find({
+          schema: "Client",
           filter: findByEmailServiceRefInputData.filter.client,
           select: ["_id"],
           populate: [],
@@ -338,12 +341,12 @@ export class EmailServicesRouter {
       if (
         Object.keys(findByEmailServiceRefInputData.filter.clientele).length > 0
       ) {
-        const clienteles: ClienteleDocument[] =
-          await this.clientelesService.find({
-            filter: findByEmailServiceRefInputData.filter.clientele,
-            select: ["_id"],
-            populate: [],
-          });
+        const clienteles: ClienteleDocument[] = await this.basicService.find({
+          schema: "Clientele",
+          filter: findByEmailServiceRefInputData.filter.clientele,
+          select: ["_id"],
+          populate: [],
+        });
 
         const clientele_ids = clienteles.map((clientele) =>
           clientele._id.toString(),
@@ -357,7 +360,8 @@ export class EmailServicesRouter {
       if (
         Object.keys(findByEmailServiceRefInputData.filter.device).length > 0
       ) {
-        const devices: DeviceDocument[] = await this.devicesService.find({
+        const devices: DeviceDocument[] = await this.basicService.find({
+          schema: "Device",
           filter: findByEmailServiceRefInputData.filter.device,
           select: ["_id"],
           populate: [],
@@ -385,7 +389,8 @@ export class EmailServicesRouter {
       }
 
       const emailServices: EmailServiceDocument[] =
-        await this.emailServicesService.find({
+        await this.basicService.find({
+          schema: "Email_Service",
           filter: {
             ...findByEmailServiceRefInputData.filter.emailService,
             ...Object.fromEntries(references_ids),
@@ -431,7 +436,8 @@ export class EmailServicesRouter {
         },
       });
 
-      const emailService = await this.emailServicesService.findOneAndUpdate({
+      const emailService = await this.basicService.findOneAndUpdate({
+        schema: "Email_Service",
         filter: updateByEmailServiceIdInputData.filter,
         update: updateByEmailServiceIdInputData.update,
         select: [],
@@ -478,7 +484,8 @@ export class EmailServicesRouter {
 
       const filter = query$or(updateByEmailServiceDataInputData.filter);
 
-      const result = await this.emailServicesService.updateMany({
+      const result = await this.basicService.updateMany({
+        schema: "Email_Service",
         filter: filter,
         update: updateByEmailServiceDataInputData.update,
         select: [],
@@ -525,7 +532,8 @@ export class EmailServicesRouter {
 
       const filter = query$or(deleteByEmailServiceDataInputData.filter);
 
-      const delete_count: Number = await this.emailServicesService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Email_Service",
         filter: filter,
       });
 
@@ -533,11 +541,11 @@ export class EmailServicesRouter {
         action: "Exit",
         method: this.deleteByData.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByEmailServiceDataOutputSchema.parse({ delete_count });
+      return deleteByEmailServiceDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -569,16 +577,19 @@ export class EmailServicesRouter {
 
       const device_ids = concatIds(
         [deleteByEmailServiceRefInputData.filter.emailService.device_id],
-        await this.devicesService.getIds(
-          deleteByEmailServiceRefInputData.filter.device,
-        ),
+        await this.basicService.getIds({
+          schema: "Device",
+          filter: deleteByEmailServiceRefInputData.filter.device,
+        }),
       );
-      const client_ids = await this.clientsService.getIds(
-        deleteByEmailServiceRefInputData.filter.client,
-      );
-      const clientele_ids = await this.clientelesService.getIds(
-        deleteByEmailServiceRefInputData.filter.clientele,
-      );
+      const client_ids = await this.basicService.getIds({
+        schema: "Client",
+        filter: deleteByEmailServiceRefInputData.filter.client,
+      });
+      const clientele_ids = await this.basicService.getIds({
+        schema: "Clientele",
+        filter: deleteByEmailServiceRefInputData.filter.clientele,
+      });
       const user_ids = concatIds(
         [deleteByEmailServiceRefInputData.filter.emailService.user_id],
         [...client_ids, ...clientele_ids],
@@ -596,25 +607,8 @@ export class EmailServicesRouter {
         });
       }
 
-      if (
-        references_ids.size === 0 &&
-        Object.keys(deleteByEmailServiceRefInputData.filter.emailService)
-          .length === 0
-      ) {
-        this.logger.warn({
-          action: "Exit",
-          method: this.deleteByRef.name,
-          metadata: {
-            references_ids,
-            emailService: Object.keys(
-              deleteByEmailServiceRefInputData.filter.emailService,
-            ),
-          },
-        });
-        return { delete_count: 0 };
-      }
-
-      const delete_count: Number = await this.emailServicesService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Email_Service",
         filter: {
           ...deleteByEmailServiceRefInputData.filter.emailService,
           ...Object.fromEntries(references_ids),
@@ -625,11 +619,11 @@ export class EmailServicesRouter {
         action: "Exit",
         method: this.deleteByRef.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByEmailServiceRefOutputSchema.parse({ delete_count });
+      return deleteByEmailServiceRefOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

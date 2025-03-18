@@ -2,7 +2,7 @@ import { z } from "zod";
 import { deviceInsertInputSchema } from ".";
 
 export const insertManyDeviceInputSchema = z.object({
-  docs: z.array(deviceInsertInputSchema),
+  doc: z.array(deviceInsertInputSchema),
 });
 export type InsertManyDeviceInputType = z.infer<
   typeof insertManyDeviceInputSchema

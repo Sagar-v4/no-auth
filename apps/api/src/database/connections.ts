@@ -14,6 +14,7 @@ export enum MONGOOSE_DB_CONNECTION {
   KEY = "KEY",
   ROLE = "ROLE",
   FORM = "FORM",
+  BASIC = "BASIC",
   CLIENT = "CLIENT",
   DEVICE = "DEVICE",
   SESSIOIN = "SESSIOIN",

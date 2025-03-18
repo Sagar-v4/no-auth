@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult } from "mongoose";
+import { DeleteResult, InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { DevicesService } from "@/app/devices/devices.service";
@@ -36,6 +36,7 @@ import {
   DeleteByDeviceDataOutputType,
 } from "../../../../../libs/trpc/schemas/devices";
 import { query$or } from "@/utils/query-builder";
+import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
   alias: "devices",
@@ -44,7 +45,10 @@ import { query$or } from "@/utils/query-builder";
 export class DevicesRouter {
   private logger: Logger = new Logger(DevicesRouter.name);
 
-  constructor(private readonly devicesService: DevicesService) {
+  constructor(
+    private readonly devicesService: DevicesService,
+    private readonly basicService: BasicService,
+  ) {
     try {
       this.logger.log({
         action: "Construct",
@@ -75,7 +79,8 @@ export class DevicesRouter {
         },
       });
 
-      const device: DeviceDocument = await this.devicesService.insertOne({
+      const device: DeviceDocument = await this.basicService.insertOne({
+        schema: "Device",
         doc: insertOneDeviceInputData.doc,
       });
 
@@ -116,10 +121,10 @@ export class DevicesRouter {
         },
       });
 
-      const result: InsertManyResult<any> =
-        await this.devicesService.insertMany({
-          docs: insertManyDeviceInputData.docs,
-        });
+      const result: InsertManyResult<any> = await this.basicService.insertMany({
+        schema: "Device",
+        doc: insertManyDeviceInputData.doc,
+      });
 
       this.logger.log({
         action: "Exit",
@@ -158,7 +163,8 @@ export class DevicesRouter {
         },
       });
 
-      const [device]: DeviceDocument[] = await this.devicesService.find({
+      const [device]: DeviceDocument[] = await this.basicService.find({
+        schema: "Device",
         filter: findByDeviceIdInputData.filter,
         select: [],
         populate: [],
@@ -203,7 +209,8 @@ export class DevicesRouter {
 
       const filter = query$or(findByDeviceDataInputData.filter);
 
-      const devices: DeviceDocument[] = await this.devicesService.find({
+      const devices: DeviceDocument[] = await this.basicService.find({
+        schema: "Device",
         filter: filter,
         select: [],
         populate: [],
@@ -246,7 +253,8 @@ export class DevicesRouter {
         },
       });
 
-      const device = await this.devicesService.findOneAndUpdate({
+      const device = await this.basicService.findOneAndUpdate({
+        schema: "Device",
         filter: updateByDeviceIdInputData.filter,
         update: updateByDeviceIdInputData.update,
         select: [],
@@ -292,7 +300,8 @@ export class DevicesRouter {
 
       const filter = query$or(updateByDeviceDataInputData.filter);
 
-      const result = await this.devicesService.updateMany({
+      const result = await this.basicService.updateMany({
+        schema: "Device",
         filter: filter,
         update: updateByDeviceDataInputData.update,
         select: [],
@@ -338,7 +347,8 @@ export class DevicesRouter {
 
       const filter = query$or(deleteByDeviceDataInputData.filter);
 
-      const delete_count: Number = await this.devicesService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Device",
         filter: filter,
       });
 
@@ -346,11 +356,11 @@ export class DevicesRouter {
         action: "Exit",
         method: this.deleteByData.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByDeviceDataOutputSchema.parse({ delete_count });
+      return deleteByDeviceDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

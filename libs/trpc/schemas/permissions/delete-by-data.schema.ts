@@ -9,7 +9,8 @@ export type DeleteByPermissionDataInputType = z.infer<
 >;
 
 export const deleteByPermissionDataOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByPermissionDataOutputType = z.infer<
   typeof deleteByPermissionDataOutputSchema

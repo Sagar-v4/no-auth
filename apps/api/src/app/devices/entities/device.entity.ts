@@ -27,7 +27,7 @@ export class Device {
   metadata?: object;
 }
 
-export const DEVICE_SCHEMA_NAME: string = Device.name;
+export const DEVICE_SCHEMA_NAME = "Device";
 
 export const DeviceSchema = SchemaFactory.createForClass(Device);
 

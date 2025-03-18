@@ -9,7 +9,8 @@ export type DeleteByEmailServiceDataInputType = z.infer<
 >;
 
 export const deleteByEmailServiceDataOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByEmailServiceDataOutputType = z.infer<
   typeof deleteByEmailServiceDataOutputSchema

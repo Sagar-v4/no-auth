@@ -10,7 +10,6 @@ export const ssoInputSchema = z.object({
   description: z.string().optional(),
   redirect_url: z.string().url().optional(),
   webhook_url: z.string().url().optional(),
-  show_device_users: z.boolean().optional(),
   status: STATUS_ENUM.optional(),
 });
 export type SSOInputSchema = z.infer<typeof ssoInputSchema>;
@@ -24,7 +23,6 @@ export const ssoOutputSchema = z.object({
   description: z.string().optional(),
   redirect_url: z.string().url().nonempty(),
   webhook_url: z.string().url().nonempty(),
-  show_device_users: z.boolean(),
   status: STATUS_ENUM,
   metadata: z.object({}).optional(),
   createdAt: z.date(),
@@ -39,7 +37,6 @@ export const ssoInsertInputSchema = z.object({
   description: z.string().optional(),
   redirect_url: z.string().url().nonempty(),
   webhook_url: z.string().url().nonempty(),
-  show_device_users: z.boolean().optional(),
 });
 export type SSOInsertInputSchema = z.infer<typeof ssoInsertInputSchema>;
 
@@ -58,7 +55,6 @@ export const ssoUpdateInputSchema = z.object({
   description: z.string().optional(),
   redirect_url: z.string().url().optional(),
   webhook_url: z.string().url().optional(),
-  show_device_users: z.boolean().optional(),
   status: STATUS_ENUM.optional(),
 });
 export type SSOUpdateInputSchema = z.infer<typeof ssoUpdateInputSchema>;

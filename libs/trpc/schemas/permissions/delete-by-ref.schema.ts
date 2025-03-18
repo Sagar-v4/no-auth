@@ -15,7 +15,8 @@ export type DeleteByPermissionRefInputType = z.infer<
 >;
 
 export const deleteByPermissionRefOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByPermissionRefOutputType = z.infer<
   typeof deleteByPermissionRefOutputSchema

@@ -19,27 +19,10 @@ import { OrganizationsModule } from "@/app/organizations/organizations.module";
 import { EmailServicesModule } from "@/app/email/services/services.module";
 import { DevicesModule } from "@/app/devices/devices.module";
 import { ClientelesModule } from "@/app/clienteles/clienteles.module";
+import { BasicModule } from "@/app/basic/basic.module";
 
 @Module({
-  imports: [
-    MongooseModule.forFeature(
-      [{ name: SSO_SCHEMA_NAME, schema: SSOSchema }],
-      MONGOOSE_DB_CONNECTION.SSO,
-    ),
-    MongooseModule.forFeature(
-      [{ name: CLIENT_SCHEMA_NAME, schema: ClientSchema }],
-      MONGOOSE_DB_CONNECTION.SSO,
-    ),
-    MongooseModule.forFeature(
-      [{ name: ORGANIZATION_SCHEMA_NAME, schema: OrganizationSchema }],
-      MONGOOSE_DB_CONNECTION.SSO,
-    ),
-    ClientsModule,
-    OrganizationsModule,
-    EmailServicesModule,
-    DevicesModule,
-    ClientelesModule,
-  ],
+  imports: [EmailServicesModule, BasicModule],
   controllers: [SSOController],
   providers: [SSOService, SSORouter],
   exports: [SSOService],

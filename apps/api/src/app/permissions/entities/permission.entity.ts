@@ -56,7 +56,7 @@ export class Permission {
   metadata?: object;
 }
 
-export const PERMISSION_SCHEMA_NAME: string = Permission.name;
+export const PERMISSION_SCHEMA_NAME = "Permission";
 
 export const PermissionSchema = SchemaFactory.createForClass(Permission);
 

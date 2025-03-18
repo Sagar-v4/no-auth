@@ -13,7 +13,8 @@ export type DeleteByClienteleRefInputType = z.infer<
 >;
 
 export const deleteByClienteleRefOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteByClienteleRefOutputType = z.infer<
   typeof deleteByClienteleRefOutputSchema

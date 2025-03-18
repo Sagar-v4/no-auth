@@ -2,7 +2,7 @@ import { z } from "zod";
 import { emailServiceInsertInputSchema } from ".";
 
 export const insertManyEmailServiceInputSchema = z.object({
-  docs: z.array(emailServiceInsertInputSchema),
+  doc: z.array(emailServiceInsertInputSchema),
 });
 export type InsertManyEmailServiceInputType = z.infer<
   typeof insertManyEmailServiceInputSchema

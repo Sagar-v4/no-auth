@@ -32,9 +32,9 @@ export class Client {
   @Prop({
     type: String,
     enum: LOGIN_METHODS,
-    default: LOGIN_METHODS_ENUM.enum.EMAIL_OTP,
+    default: LOGIN_METHODS_ENUM.enum.OTP,
   })
-  login_method?: string;
+  login_method!: string;
 
   @Prop({
     type: String,
@@ -56,8 +56,8 @@ export class Client {
   metadata?: object;
 }
 
-export type ClientDocument = HydratedDocument<Client>;
+export const CLIENT_SCHEMA_NAME = "Client";
 
-export const CLIENT_SCHEMA_NAME: string = Client.name;
+export type ClientDocument = HydratedDocument<Client>;
 
 export const ClientSchema = SchemaFactory.createForClass(Client);

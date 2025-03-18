@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult } from "mongoose";
+import { DeleteResult, InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { KeyDocument } from "@/app/keys/entities/key.entity";
@@ -47,6 +47,7 @@ import { ClientsService } from "@/app/clients/clients.service";
 import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
+import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
   alias: "keys",
@@ -57,8 +58,7 @@ export class KeysRouter {
 
   constructor(
     private readonly keysService: KeysService,
-    private readonly clientsService: ClientsService,
-    private readonly organizationsService: OrganizationsService,
+    private readonly basicService: BasicService,
   ) {
     try {
       this.logger.log({
@@ -90,7 +90,8 @@ export class KeysRouter {
         },
       });
 
-      const key: KeyDocument = await this.keysService.insertOne({
+      const key: KeyDocument = await this.basicService.insertOne({
+        schema: "Key",
         doc: insertOneKeyInputData.doc,
       });
 
@@ -131,8 +132,9 @@ export class KeysRouter {
         },
       });
 
-      const result: InsertManyResult<any> = await this.keysService.insertMany({
-        docs: insertManyKeyInputData.docs,
+      const result: InsertManyResult<any> = await this.basicService.insertMany({
+        schema: "Key",
+        doc: insertManyKeyInputData.doc,
       });
 
       this.logger.log({
@@ -172,7 +174,8 @@ export class KeysRouter {
         },
       });
 
-      const [key]: KeyDocument[] = await this.keysService.find({
+      const [key]: KeyDocument[] = await this.basicService.find({
+        schema: "Key",
         filter: findByKeyIdInputData.filter,
         select: [],
         populate: [],
@@ -217,7 +220,8 @@ export class KeysRouter {
 
       const filter = query$or(findByKeyDataInputData.filter);
 
-      const keys: KeyDocument[] = await this.keysService.find({
+      const keys: KeyDocument[] = await this.basicService.find({
+        schema: "Key",
         filter: filter,
         select: [],
         populate: [],
@@ -262,13 +266,17 @@ export class KeysRouter {
 
       const client_ids = concatIds(
         [findByKeyRefInputData.filter.key.client_id],
-        await this.clientsService.getIds(findByKeyRefInputData.filter.client),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: findByKeyRefInputData.filter.client,
+        }),
       );
       const organization_ids = concatIds(
         [findByKeyRefInputData.filter.key.organization_id],
-        await this.organizationsService.getIds(
-          findByKeyRefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: findByKeyRefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -298,7 +306,8 @@ export class KeysRouter {
         return [];
       }
 
-      const keys: KeyDocument[] = await this.keysService.find({
+      const keys: KeyDocument[] = await this.basicService.find({
+        schema: "Key",
         filter: {
           ...findByKeyRefInputData.filter.key,
           ...Object.fromEntries(references_ids),
@@ -344,7 +353,8 @@ export class KeysRouter {
         },
       });
 
-      const key = await this.keysService.findOneAndUpdate({
+      const key = await this.basicService.findOneAndUpdate({
+        schema: "Key",
         filter: updateByKeyIdInputData.filter,
         update: updateByKeyIdInputData.update,
         select: [],
@@ -391,7 +401,8 @@ export class KeysRouter {
 
       const filter = query$or(updateByKeyDataInputData.filter);
 
-      const result = await this.keysService.updateMany({
+      const result = await this.basicService.updateMany({
+        schema: "Key",
         filter: filter,
         update: updateByKeyDataInputData.update,
         select: [],
@@ -438,7 +449,8 @@ export class KeysRouter {
 
       const filter = query$or(deleteByKeyDataInputData.filter);
 
-      const delete_count: Number = await this.keysService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Key",
         filter: filter,
       });
 
@@ -446,11 +458,11 @@ export class KeysRouter {
         action: "Exit",
         method: this.deleteByData.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByKeyDataOutputSchema.parse({ delete_count });
+      return deleteByKeyDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -482,13 +494,17 @@ export class KeysRouter {
 
       const client_ids = concatIds(
         [deleteByKeyRefInputData.filter.key.client_id],
-        await this.clientsService.getIds(deleteByKeyRefInputData.filter.client),
+        await this.basicService.getIds({
+          schema: "Client",
+          filter: deleteByKeyRefInputData.filter.client,
+        }),
       );
       const organization_ids = concatIds(
         [deleteByKeyRefInputData.filter.key.organization_id],
-        await this.organizationsService.getIds(
-          deleteByKeyRefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: deleteByKeyRefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -503,22 +519,8 @@ export class KeysRouter {
         });
       }
 
-      if (
-        references_ids.size === 0 &&
-        Object.keys(deleteByKeyRefInputData.filter.key).length === 0
-      ) {
-        this.logger.warn({
-          action: "Exit",
-          method: this.deleteByRef.name,
-          metadata: {
-            references_ids,
-            key: Object.keys(deleteByKeyRefInputData.filter.key),
-          },
-        });
-        return { delete_count: 0 };
-      }
-
-      const delete_count: Number = await this.keysService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Key",
         filter: {
           ...deleteByKeyRefInputData.filter.key,
           ...Object.fromEntries(references_ids),
@@ -529,11 +531,11 @@ export class KeysRouter {
         action: "Exit",
         method: this.deleteByRef.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByKeyRefOutputSchema.parse({ delete_count });
+      return deleteByKeyRefOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",

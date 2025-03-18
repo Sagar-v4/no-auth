@@ -13,7 +13,8 @@ export const deleteBySSORefInputSchema = z.object({
 export type DeleteBySSORefInputType = z.infer<typeof deleteBySSORefInputSchema>;
 
 export const deleteBySSORefOutputSchema = z.object({
-  delete_count: z.number(),
+  acknowledged: z.boolean(),
+  deletedCount: z.number(),
 });
 export type DeleteBySSORefOutputType = z.infer<
   typeof deleteBySSORefOutputSchema

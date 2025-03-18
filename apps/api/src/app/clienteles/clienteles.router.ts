@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { InsertManyResult } from "mongoose";
+import { DeleteResult, InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { ClientelesService } from "@/app/clienteles/clienteles.service";
@@ -43,9 +43,9 @@ import {
   deleteByClienteleRefOutputSchema,
   DeleteByClienteleRefOutputType,
 } from "../../../../../libs/trpc/schemas/clienteles";
-import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
+import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
   alias: "clienteles",
@@ -56,7 +56,7 @@ export class ClientelesRouter {
 
   constructor(
     private readonly clientelesService: ClientelesService,
-    private readonly organizationsService: OrganizationsService,
+    private readonly basicService: BasicService,
   ) {
     try {
       this.logger.log({
@@ -88,10 +88,10 @@ export class ClientelesRouter {
         },
       });
 
-      const clientele: ClienteleDocument =
-        await this.clientelesService.insertOne({
-          doc: insertOneClienteleInputData.doc,
-        });
+      const clientele: ClienteleDocument = await this.basicService.insertOne({
+        schema: "Clientele",
+        doc: insertOneClienteleInputData.doc,
+      });
 
       this.logger.log({
         action: "Exit",
@@ -130,10 +130,10 @@ export class ClientelesRouter {
         },
       });
 
-      const result: InsertManyResult<any> =
-        await this.clientelesService.insertMany({
-          docs: insertManyClienteleInputData.docs,
-        });
+      const result: InsertManyResult<any> = await this.basicService.insertMany({
+        schema: "Clientele",
+        doc: insertManyClienteleInputData.doc,
+      });
 
       this.logger.log({
         action: "Exit",
@@ -172,12 +172,12 @@ export class ClientelesRouter {
         },
       });
 
-      const [clientele]: ClienteleDocument[] =
-        await this.clientelesService.find({
-          filter: findByClienteleIdInputData.filter,
-          select: [],
-          populate: [],
-        });
+      const [clientele]: ClienteleDocument[] = await this.basicService.find({
+        schema: "Clientele",
+        filter: findByClienteleIdInputData.filter,
+        select: [],
+        populate: [],
+      });
 
       this.logger.log({
         action: "Exit",
@@ -218,13 +218,12 @@ export class ClientelesRouter {
 
       const filter = query$or(findByClienteleDataInputData.filter);
 
-      const clienteles: ClienteleDocument[] = await this.clientelesService.find(
-        {
-          filter: filter,
-          select: [],
-          populate: [],
-        },
-      );
+      const clienteles: ClienteleDocument[] = await this.basicService.find({
+        schema: "Clientele",
+        filter: filter,
+        select: [],
+        populate: [],
+      });
 
       this.logger.log({
         action: "Exit",
@@ -265,9 +264,10 @@ export class ClientelesRouter {
 
       const organization_ids = concatIds(
         [findByClienteleRefInputData.filter.clientele.organization_id],
-        await this.organizationsService.getIds(
-          findByClienteleRefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: findByClienteleRefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -294,16 +294,15 @@ export class ClientelesRouter {
         return [];
       }
 
-      const clienteles: ClienteleDocument[] = await this.clientelesService.find(
-        {
-          filter: {
-            ...findByClienteleRefInputData.filter.clientele,
-            ...Object.fromEntries(references_ids),
-          },
-          select: [],
-          populate: ["organization_id"],
+      const clienteles: ClienteleDocument[] = await this.basicService.find({
+        schema: "Clientele",
+        filter: {
+          ...findByClienteleRefInputData.filter.clientele,
+          ...Object.fromEntries(references_ids),
         },
-      );
+        select: [],
+        populate: ["organization_id"],
+      });
 
       this.logger.log({
         action: "Exit",
@@ -342,7 +341,8 @@ export class ClientelesRouter {
         },
       });
 
-      const clientele = await this.clientelesService.findOneAndUpdate({
+      const clientele = await this.basicService.findOneAndUpdate({
+        schema: "Clientele",
         filter: updateByClienteleIdInputData.filter,
         update: updateByClienteleIdInputData.update,
         select: [],
@@ -388,7 +388,8 @@ export class ClientelesRouter {
 
       const filter = query$or(updateByClienteleDataInputData.filter);
 
-      const result = await this.clientelesService.updateMany({
+      const result = await this.basicService.updateMany({
+        schema: "Clientele",
         filter: filter,
         update: updateByClienteleDataInputData.update,
         select: [],
@@ -434,7 +435,8 @@ export class ClientelesRouter {
 
       const filter = query$or(deleteByClienteleDataInputData.filter);
 
-      const delete_count: Number = await this.clientelesService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Clientele",
         filter: filter,
       });
 
@@ -442,11 +444,11 @@ export class ClientelesRouter {
         action: "Exit",
         method: this.deleteByData.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByClienteleDataOutputSchema.parse({ delete_count });
+      return deleteByClienteleDataOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
@@ -478,9 +480,10 @@ export class ClientelesRouter {
 
       const organization_ids = concatIds(
         [deleteByClienteleRefInputData.filter.clientele.organization_id],
-        await this.organizationsService.getIds(
-          deleteByClienteleRefInputData.filter.organization,
-        ),
+        await this.basicService.getIds({
+          schema: "Organization",
+          filter: deleteByClienteleRefInputData.filter.organization,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -490,24 +493,8 @@ export class ClientelesRouter {
         });
       }
 
-      if (
-        references_ids.size === 0 &&
-        Object.keys(deleteByClienteleRefInputData.filter.clientele).length === 0
-      ) {
-        this.logger.warn({
-          action: "Exit",
-          method: this.deleteByRef.name,
-          metadata: {
-            references_ids,
-            clientele: Object.keys(
-              deleteByClienteleRefInputData.filter.clientele,
-            ),
-          },
-        });
-        return { delete_count: 0 };
-      }
-
-      const delete_count: Number = await this.clientelesService.delete({
+      const result: DeleteResult = await this.basicService.delete({
+        schema: "Clientele",
         filter: {
           ...deleteByClienteleRefInputData.filter.clientele,
           ...Object.fromEntries(references_ids),
@@ -518,11 +505,11 @@ export class ClientelesRouter {
         action: "Exit",
         method: this.deleteByRef.name,
         metadata: {
-          delete_count,
+          result,
         },
       });
 
-      return deleteByClienteleRefOutputSchema.parse({ delete_count });
+      return deleteByClienteleRefOutputSchema.parse(result);
     } catch (error) {
       this.logger.error({
         action: "Exit",
