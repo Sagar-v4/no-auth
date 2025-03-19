@@ -1,26 +1,56 @@
+"use client";
+
+import { useLocalStorage } from "usehooks-ts";
+
 export function useCurrentUser() {
-  const client = {
-    _id: "67ca9a078e591331d8e817f7",
-    uuid: "32397c32-e584-4ced-b9da-e58128c7fab9",
-    name: "sgr",
+  const USER_KEY = "user";
+  const ACTIVE_ORGANIZATION_KEY = "organization";
+
+  const [localUser, setLocalUser, removeLocalUser] = useLocalStorage(
+    USER_KEY,
+    "",
+  );
+  const [
+    localActiveOrganization,
+    setLocalActiveOrganization,
+    removeLocalActiveOrganization,
+  ] = useLocalStorage(ACTIVE_ORGANIZATION_KEY, "");
+
+  const user = {
+    _id: "67d9f47276052dc2a414cdc3",
+    name: "sagarvariya4",
     email: "sagarvariya4@gmail.com",
-    login_method: "EMAIL_OTP",
+    login_method: "OTP",
     status: "ACTIVE",
-    roles: ["CLIENT"],
-    createdAt: "2025-03-07T07:02:31.655Z",
-    updatedAt: "2025-03-07T07:02:31.655Z",
+    roles: ["CLIENT", "ADMIN"],
+    uuid: "94c951ba-4929-4c0f-89c7-52cff3485baf",
+    createdAt: "2025-03-18T22:32:18.059Z",
+    updatedAt: "2025-03-18T22:32:18.059Z",
+    __v: 0,
   };
 
   const organization = {
-    _id: "67ca9a198e591331d8e817f9",
-    uuid: "504bc814-dc0a-4d0e-bda8-13dc93a45e3e",
-    client_id: "67ca9a078e591331d8e817f7",
-    name: "test",
-    description: "gsdlmkldsmfkldsmkl",
+    _id: "67d9f47276052dc2a414cdd0",
+    user_id: "67d9f47276052dc2a414cdc3",
+    name: "No Auth",
+    description: "This is No Auth Organization",
     status: "ACTIVE",
-    createdAt: "2025-03-07T07:02:49.096Z",
-    updatedAt: "2025-03-07T07:02:49.096Z",
+    uuid: "b73e35eb-a6c6-4965-a56f-7262a21a019e",
+    createdAt: "2025-03-18T22:32:18.160Z",
+    updatedAt: "2025-03-18T22:32:18.160Z",
+    __v: 0,
   };
 
-  return { client, organization };
+  return {
+    user,
+    organization,
+    USER_KEY,
+    ACTIVE_ORGANIZATION_KEY,
+    localUser,
+    setLocalUser,
+    removeLocalUser,
+    localActiveOrganization,
+    setLocalActiveOrganization,
+    removeLocalActiveOrganization,
+  };
 }

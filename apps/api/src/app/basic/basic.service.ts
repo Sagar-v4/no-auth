@@ -17,14 +17,6 @@ import { Documents } from "@/app/basic/dto/document.dto";
 import { GetIdsInput } from "@/app/basic/dto/get-ids.dto";
 import { InsertInput } from "@/app/basic/dto/insert.dto";
 import {
-  CLIENTELE_SCHEMA_NAME,
-  ClienteleDocument,
-} from "@/app/clienteles/entities/clientele.entity";
-import {
-  CLIENT_SCHEMA_NAME,
-  ClientDocument,
-} from "@/app/clients/entities/client.entity";
-import {
   DEVICE_SCHEMA_NAME,
   DeviceDocument,
 } from "@/app/devices/entities/device.entity";
@@ -50,16 +42,13 @@ import {
   EMAIL_SERVICE_SCHEMA_NAME,
   EmailServiceDocument,
 } from "../email/services/entities/service.entity";
+import { USER_SCHEMA_NAME, UserDocument } from "../users/entities/user.entity";
 
 @Injectable()
 export class BasicService {
   private logger: Logger = new Logger(BasicService.name);
 
   constructor(
-    @InjectModel(CLIENT_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.BASIC)
-    private readonly clientModel: Model<ClientDocument>,
-    @InjectModel(CLIENTELE_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.BASIC)
-    private readonly clienteleModel: Model<ClienteleDocument>,
     @InjectModel(DEVICE_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.BASIC)
     private readonly deviceModel: Model<DeviceDocument>,
     @InjectModel(EMAIL_SERVICE_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.BASIC)
@@ -76,6 +65,8 @@ export class BasicService {
     private readonly sessionModel: Model<SessionDocument>,
     @InjectModel(SSO_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.BASIC)
     private readonly ssoModel: Model<SSODocument>,
+    @InjectModel(USER_SCHEMA_NAME, MONGOOSE_DB_CONNECTION.BASIC)
+    private readonly userModel: Model<UserDocument>,
   ) {
     try {
       this.logger.log({
@@ -107,24 +98,6 @@ export class BasicService {
       let document: Documents[T];
 
       switch (input.schema) {
-        case "Clientele":
-          document = (await this.clienteleModel.insertOne(
-            input.doc as InsertInput["doc"],
-            {
-              validateBeforeSave: true,
-            },
-          )) as unknown as Documents[T];
-          break;
-
-        case "Client":
-          document = (await this.clientModel.insertOne(
-            input.doc as InsertInput["doc"],
-            {
-              validateBeforeSave: true,
-            },
-          )) as unknown as Documents[T];
-          break;
-
         case "Device":
           document = (await this.deviceModel.insertOne(
             input.doc as InsertInput["doc"],
@@ -197,6 +170,15 @@ export class BasicService {
           )) as unknown as Documents[T];
           break;
 
+        case "User":
+          document = (await this.userModel.insertOne(
+            input.doc as InsertInput["doc"],
+            {
+              validateBeforeSave: true,
+            },
+          )) as unknown as Documents[T];
+          break;
+
         default:
           throw new TRPCError(ERROR.BASIC.INVALID_SCHEMA);
       }
@@ -244,20 +226,6 @@ export class BasicService {
       let result: InsertManyResult<any>;
 
       switch (input.schema) {
-        case "Clientele":
-          result = await this.clienteleModel.insertMany(input.doc, {
-            includeResultMetadata: true,
-            rawResult: true,
-          });
-          break;
-
-        case "Client":
-          result = await this.clientModel.insertMany(input.doc, {
-            includeResultMetadata: true,
-            rawResult: true,
-          });
-          break;
-
         case "Device":
           result = await this.deviceModel.insertMany(input.doc, {
             includeResultMetadata: true,
@@ -314,6 +282,13 @@ export class BasicService {
           });
           break;
 
+        case "User":
+          result = await this.userModel.insertMany(input.doc, {
+            includeResultMetadata: true,
+            rawResult: true,
+          });
+          break;
+
         default:
           throw new TRPCError(ERROR.BASIC.INVALID_SCHEMA);
       }
@@ -360,22 +335,6 @@ export class BasicService {
       let documents: Documents[T][];
 
       switch (input.schema) {
-        case "Clientele":
-          documents = (await this.clienteleModel
-            .find(input.filter)
-            .select(input.select)
-            .populate(input.populate)
-            .exec()) as unknown as Documents[T][];
-          break;
-
-        case "Client":
-          documents = (await this.clientModel
-            .find(input.filter)
-            .select(input.select)
-            .populate(input.populate)
-            .exec()) as unknown as Documents[T][];
-          break;
-
         case "Device":
           documents = (await this.deviceModel
             .find(input.filter)
@@ -440,6 +399,14 @@ export class BasicService {
             .exec()) as unknown as Documents[T][];
           break;
 
+        case "User":
+          documents = (await this.userModel
+            .find(input.filter)
+            .select(input.select)
+            .populate(input.populate)
+            .exec()) as unknown as Documents[T][];
+          break;
+
         default:
           throw new TRPCError(ERROR.BASIC.INVALID_SCHEMA);
       }
@@ -487,28 +454,6 @@ export class BasicService {
       let document: Documents[T];
 
       switch (input.schema) {
-        case "Clientele":
-          document = (await this.clienteleModel
-            .findOneAndUpdate(input.filter, input.update, {
-              new: true,
-              upsert: false,
-            })
-            .select(input.select)
-            .populate(input.populate)
-            .exec()) as unknown as Documents[T];
-          break;
-
-        case "Client":
-          document = (await this.clientModel
-            .findOneAndUpdate(input.filter, input.update, {
-              new: true,
-              upsert: false,
-            })
-            .select(input.select)
-            .populate(input.populate)
-            .exec()) as unknown as Documents[T];
-          break;
-
         case "Device":
           document = (await this.deviceModel
             .findOneAndUpdate(input.filter, input.update, {
@@ -597,6 +542,17 @@ export class BasicService {
             .exec()) as unknown as Documents[T];
           break;
 
+        case "User":
+          document = (await this.userModel
+            .findOneAndUpdate(input.filter, input.update, {
+              new: true,
+              upsert: false,
+            })
+            .select(input.select)
+            .populate(input.populate)
+            .exec()) as unknown as Documents[T];
+          break;
+
         default:
           throw new TRPCError(ERROR.BASIC.INVALID_SCHEMA);
       }
@@ -643,28 +599,6 @@ export class BasicService {
       let result: UpdateWriteOpResult;
 
       switch (input.schema) {
-        case "Clientele":
-          result = await this.clienteleModel
-            .updateMany(input.filter, input.update, {
-              new: true,
-              upsert: false,
-            })
-            .select(input.select)
-            .populate(input.populate)
-            .exec();
-          break;
-
-        case "Client":
-          result = await this.clientModel
-            .updateMany(input.filter, input.update, {
-              new: true,
-              upsert: false,
-            })
-            .select(input.select)
-            .populate(input.populate)
-            .exec();
-          break;
-
         case "Device":
           result = await this.deviceModel
             .updateMany(input.filter, input.update, {
@@ -753,6 +687,17 @@ export class BasicService {
             .exec();
           break;
 
+        case "User":
+          result = await this.userModel
+            .updateMany(input.filter, input.update, {
+              new: true,
+              upsert: false,
+            })
+            .select(input.select)
+            .populate(input.populate)
+            .exec();
+          break;
+
         default:
           throw new TRPCError(ERROR.BASIC.INVALID_SCHEMA);
       }
@@ -799,14 +744,6 @@ export class BasicService {
       let result: DeleteResult;
 
       switch (input.schema) {
-        case "Clientele":
-          result = await this.clienteleModel.deleteMany(input.filter).exec();
-          break;
-
-        case "Client":
-          result = await this.clientModel.deleteMany(input.filter).exec();
-          break;
-
         case "Device":
           result = await this.deviceModel.deleteMany(input.filter).exec();
           break;
@@ -837,6 +774,10 @@ export class BasicService {
 
         case "Session":
           result = await this.sessionModel.deleteMany(input.filter).exec();
+          break;
+
+        case "User":
+          result = await this.userModel.deleteMany(input.filter).exec();
           break;
 
         default:
@@ -896,20 +837,6 @@ export class BasicService {
       let documents: Documents[T][];
 
       switch (input.schema) {
-        case "Clientele":
-          documents = (await this.clienteleModel
-            .find(input.filter)
-            .select("_id")
-            .exec()) as unknown as Documents[T][];
-          break;
-
-        case "Client":
-          documents = (await this.clientModel
-            .find(input.filter)
-            .select("_id")
-            .exec()) as unknown as Documents[T][];
-          break;
-
         case "Device":
           documents = (await this.deviceModel
             .find(input.filter)
@@ -961,6 +888,13 @@ export class BasicService {
 
         case "Session":
           documents = (await this.sessionModel
+            .find(input.filter)
+            .select("_id")
+            .exec()) as unknown as Documents[T][];
+          break;
+
+        case "User":
+          documents = (await this.userModel
             .find(input.filter)
             .select("_id")
             .exec()) as unknown as Documents[T][];

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 import {
@@ -8,22 +9,20 @@ import {
   InputOTPSlot,
   REGEXP_ONLY_DIGITS,
 } from "@workspace/ui/components/input-otp";
+import { useDevice } from "@/hooks/use-device";
 import { useForm } from "@tanstack/react-form";
 import { OTP_LENGTH } from "@/registry/constants";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
-import { getCookie } from "cookies-next/client";
-import { useState } from "react";
 import { sendEmailOTP, verifyEmailOTP } from "@/trpc/routers/sso";
-import { UUID } from "crypto";
 
-export function SSOForm({ sso_uuid }: { sso_uuid?: string }) {
-  const device_uuid = getCookie("device_uuid") as string;
+export function SSOForm({ sso_uuid }: { sso_uuid: string }) {
+  const { device_uuid } = useDevice();
   const [service_uuid, set_service_uuid] = useState<string | null>(null);
 
   const { data: sendEmailData, exec: sendEmailExec } = sendEmailOTP();
-  const { exec: verifyEmailExec } = verifyEmailOTP();
+  const { data: verifyEmailData, exec: verifyEmailExec } = verifyEmailOTP();
 
   if (!service_uuid && sendEmailData) {
     set_service_uuid(sendEmailData.service_id);
@@ -41,11 +40,14 @@ export function SSOForm({ sso_uuid }: { sso_uuid?: string }) {
           otp: Number(value.otp),
           service_id: service_uuid,
         });
+        if (verifyEmailData?.is_otp_correct) {
+          alert("OTP verified successfully!");
+        }
       } else {
         await sendEmailExec({
           email: value.email,
           sso_uuid: sso_uuid,
-          device_uuid: device_uuid,
+          device_uuid: String(device_uuid),
         });
       }
     },
@@ -114,7 +116,7 @@ export function SSOForm({ sso_uuid }: { sso_uuid?: string }) {
                           await sendEmailExec({
                             email: form.getFieldValue("email"),
                             sso_uuid: sso_uuid,
-                            device_uuid: device_uuid,
+                            device_uuid: String(device_uuid),
                           });
                         }}
                       >

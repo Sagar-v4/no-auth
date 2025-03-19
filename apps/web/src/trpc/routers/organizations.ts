@@ -86,7 +86,7 @@ export function getOrganizationById(input: FindByOrganizationIdInputType) {
     refetchInterval: 1000 * 60 * 10, // 10 min
     trpc: {
       abortOnUnmount: true,
-      ssr: true,
+      ssr: false,
     },
   });
 

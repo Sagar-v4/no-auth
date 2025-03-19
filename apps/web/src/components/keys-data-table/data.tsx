@@ -1,19 +1,15 @@
-import { CircleAlert, CircleCheck, CircleX } from "lucide-react";
+import { STATUS_ENUM } from "@/lib/trpc/schemas/keys";
+import { CircleCheck, CircleX } from "lucide-react";
 
 export const status = [
   {
     label: "Active",
-    value: "Active",
+    value: STATUS_ENUM.Enum.ACTIVE,
     icon: CircleCheck,
   },
   {
-    label: "Deactivated",
-    value: "Deactivated",
+    label: "Deactive",
+    value: STATUS_ENUM.Enum.DEACTIVE,
     icon: CircleX,
-  },
-  {
-    label: "Expired",
-    value: "Expired",
-    icon: CircleAlert,
   },
 ];

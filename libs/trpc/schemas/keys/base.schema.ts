@@ -4,7 +4,8 @@ import { STATUS_ENUM } from ".";
 export const keyInputSchema = z.object({
   _id: z.string().optional(),
   uuid: z.string().uuid().optional(),
-  client_id: z.string().optional(),
+  secret: z.string().nanoid().optional(),
+  user_id: z.string().optional(),
   organization_id: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
@@ -16,7 +17,8 @@ export type KeyInputSchema = z.infer<typeof keyInputSchema>;
 export const keyOutputSchema = z.object({
   _id: z.custom<any>(),
   uuid: z.string().uuid().nonempty(),
-  client_id: z.string().nonempty(),
+  secret: z.string().nanoid().nonempty(),
+  user_id: z.string().nonempty(),
   organization_id: z.string().nonempty(),
   name: z.string().nonempty(),
   description: z.string().optional(),
@@ -29,7 +31,8 @@ export const keyOutputSchema = z.object({
 export type KeyOutputSchema = z.infer<typeof keyOutputSchema>;
 
 export const keyInsertInputSchema = z.object({
-  client_id: z.string().nonempty(),
+  secret: z.string().nanoid().nonempty(),
+  user_id: z.string().nonempty(),
   organization_id: z.string().nonempty(),
   name: z.string().nonempty(),
   description: z.string().optional(),
@@ -40,11 +43,13 @@ export const keyIdInputSchema = z
   .object({
     _id: z.string().optional(),
     uuid: z.string().uuid().optional(),
+    secret: z.string().nanoid().optional(),
   })
   .refine((data) => !Object.values(data).every((value) => !value));
 export type KeyIdInputSchema = z.infer<typeof keyIdInputSchema>;
 
 export const keyUpdateInputSchema = z.object({
+  secret: z.string().nanoid().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
   expiry: z.number().optional(),

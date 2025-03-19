@@ -47,8 +47,7 @@ import {
   EmailServiceSendEmailInputType,
   EmailServiceSendEmailOutputType,
 } from "../../../../../../libs/trpc/schemas/email/services";
-import { ClientDocument } from "@/app/clients/entities/client.entity";
-import { ClienteleDocument } from "@/app/clienteles/entities/clientele.entity";
+import { UserDocument } from "@/app/users/entities/user.entity";
 import { DeviceDocument } from "@/app/devices/entities/device.entity";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
@@ -279,17 +278,12 @@ export class EmailServicesRouter {
           filter: findByEmailServiceRefInputData.filter.device,
         }),
       );
-      const client_ids = await this.basicService.getIds({
-        schema: "Client",
-        filter: findByEmailServiceRefInputData.filter.client,
-      });
-      const clientele_ids = await this.basicService.getIds({
-        schema: "Clientele",
-        filter: findByEmailServiceRefInputData.filter.clientele,
-      });
       const user_ids = concatIds(
         [findByEmailServiceRefInputData.filter.emailService.user_id],
-        [...client_ids, ...clientele_ids],
+        await this.basicService.getIds({
+          schema: "User",
+          filter: findByEmailServiceRefInputData.filter.user,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -322,38 +316,16 @@ export class EmailServicesRouter {
         return [];
       }
 
-      if (
-        Object.keys(findByEmailServiceRefInputData.filter.client).length > 0
-      ) {
-        const clients: ClientDocument[] = await this.basicService.find({
-          schema: "Client",
-          filter: findByEmailServiceRefInputData.filter.client,
-          select: ["_id"],
-          populate: [],
-        });
-        const client_ids = clients.map((client) => client._id.toString());
-        const entry = references_ids.get("user_id") || { $in: [] };
-        references_ids.set("user_id", {
-          $in: [...entry.$in, ...client_ids],
-        });
-      }
-
-      if (
-        Object.keys(findByEmailServiceRefInputData.filter.clientele).length > 0
-      ) {
-        const clienteles: ClienteleDocument[] = await this.basicService.find({
-          schema: "Clientele",
-          filter: findByEmailServiceRefInputData.filter.clientele,
+      if (Object.keys(findByEmailServiceRefInputData.filter.user).length > 0) {
+        const users: UserDocument[] = await this.basicService.find({
+          schema: "User",
+          filter: findByEmailServiceRefInputData.filter.user,
           select: ["_id"],
           populate: [],
         });
 
-        const clientele_ids = clienteles.map((clientele) =>
-          clientele._id.toString(),
-        );
-        const entry = references_ids.get("user_id") || { $in: [] };
         references_ids.set("user_id", {
-          $in: [...entry.$in, ...clientele_ids],
+          $in: users.map((user) => user._id.toString()),
         });
       }
 
@@ -582,17 +554,12 @@ export class EmailServicesRouter {
           filter: deleteByEmailServiceRefInputData.filter.device,
         }),
       );
-      const client_ids = await this.basicService.getIds({
-        schema: "Client",
-        filter: deleteByEmailServiceRefInputData.filter.client,
-      });
-      const clientele_ids = await this.basicService.getIds({
-        schema: "Clientele",
-        filter: deleteByEmailServiceRefInputData.filter.clientele,
-      });
       const user_ids = concatIds(
         [deleteByEmailServiceRefInputData.filter.emailService.user_id],
-        [...client_ids, ...clientele_ids],
+        await this.basicService.getIds({
+          schema: "User",
+          filter: deleteByEmailServiceRefInputData.filter.user,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();

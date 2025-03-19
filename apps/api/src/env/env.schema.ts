@@ -9,9 +9,12 @@ export const envSchema = z.object({
       z.literal("production"),
     ])
     .default("development"),
-  MONGO_URI: z.string().url(),
-  GMAIL_USER: z.string().email(),
-  GMAIL_PASS: z.string(),
+  MONGO_URI: z.string().url().nonempty(),
+  GMAIL_USER: z.string().email().nonempty(),
+  GMAIL_PASS: z.string().nonempty(),
+  ADMIN_EMAIL: z.string().email().nonempty(),
+  NO_AUTH_SSO_SECRET: z.string().nanoid().nonempty(),
+  NO_AUTH_API_KEY_SECRET: z.string().nanoid().nonempty(),
 });
 
 export type Env = z.infer<typeof envSchema>;

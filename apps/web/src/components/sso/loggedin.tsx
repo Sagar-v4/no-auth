@@ -18,6 +18,7 @@ import {
 } from "@workspace/ui/components/avatar";
 import { cn } from "@workspace/ui/lib/utils";
 import { Card, CardContent } from "@workspace/ui/components/card";
+import { useDevice } from "@/hooks/use-device";
 
 export function SSOLoggedIn() {
   const data = {
@@ -42,7 +43,7 @@ export function SSOLoggedIn() {
     );
   };
 
-  const users: number[] = Array.of(1, 2);
+  const users = Array.from({ length: 5 });
 
   return (
     <>
@@ -55,7 +56,7 @@ export function SSOLoggedIn() {
       <Card className="hidden overflow-scroll p-0 lg:block lg:h-60">
         <CardContent className="p-2">
           {users.length !== 0 ? (
-            users.map((user) => (
+            users.map((_, user) => (
               <span
                 key={user}
                 className={cn(
@@ -67,7 +68,9 @@ export function SSOLoggedIn() {
               >
                 <User />
                 {user == 2 && (
-                  <Check className="absolute right-0 mx-2 my-4 size-4" />
+                  <span className="absolute right-2 my-4 flex size-3.5 items-center justify-center">
+                    <Check className="size-4" />
+                  </span>
                 )}
               </span>
             ))
@@ -86,8 +89,17 @@ export function SSOLoggedIn() {
           <SelectContent className="h-83">
             <SelectGroup>
               {users.length !== 0 ? (
-                users.map((user) => (
-                  <SelectItem key={user} value={String(user)}>
+                users.map((_, user) => (
+                  <SelectItem
+                    key={user}
+                    value={String(user)}
+                    className={cn(
+                      user == 2
+                        ? "!bg-blue-600 !text-white hover:!bg-blue-700"
+                        : "hover:!bg-accent",
+                      "relative flex rounded-md",
+                    )}
+                  >
                     <User />
                   </SelectItem>
                 ))

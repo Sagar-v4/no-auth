@@ -15,8 +15,7 @@ export default function Page() {
           <CardHeader>
             <CardTitle>{TABS.PERMISSION.title}</CardTitle>
             <CardDescription>
-              Create permission for organization users(clienteles) and combine
-              with role.
+              Create permission for organization users and combine with role.
             </CardDescription>
           </CardHeader>
         </Card>

@@ -40,7 +40,7 @@ export function NavbarTabs({
                   value={tab.value}
                   onClick={() => setTabName(tab.value)}
                   className={cn(
-                    "hover:bg-accent hover:text-primary bg-sidebar data-[state=active]:bg-primary data-[state=active]:text-primary-foreground !px-4 data-[state=active]:shadow-none",
+                    "bg-sidebar-accent text-sidebar-accent-foreground data-[state=active]:bg-sidebar-primary data-[state=active]:text-sidebar-primary-foreground hover:text-sidebar-primary-foreground hover:bg-sidebar-primary !px-4 data-[state=active]:shadow-none",
                   )}
                 >
                   {tab.title}

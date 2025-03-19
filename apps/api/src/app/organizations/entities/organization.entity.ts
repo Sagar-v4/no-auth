@@ -1,9 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
-import {
-  Client,
-  CLIENT_SCHEMA_NAME,
-} from "@/app/clients/entities/client.entity";
+import { USER_SCHEMA_NAME } from "@/app/users/entities/user.entity";
 import { randomUUID } from "crypto";
 import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/organizations";
 
@@ -21,12 +18,10 @@ export class Organization {
 
   @Prop({
     type: Types.ObjectId,
-    ref: CLIENT_SCHEMA_NAME,
+    ref: USER_SCHEMA_NAME,
     required: true,
-    auto: true,
-    select: true,
   })
-  client_id!: Client;
+  user_id!: string;
 
   @Prop({ type: String, required: true })
   name!: string;

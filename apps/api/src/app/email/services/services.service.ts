@@ -13,7 +13,6 @@ export class EmailServicesService {
     try {
       this.logger.log({
         action: "Construct",
-        EMAIL_SERVICE_SCHEMA_NAME: EMAIL_SERVICE_SCHEMA_NAME,
       });
     } catch (error) {
       this.logger.error({

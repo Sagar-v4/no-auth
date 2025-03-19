@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { HydratedDocument, Types } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { CLIENT_SCHEMA_NAME } from "@/app/clients/entities/client.entity";
+import { USER_SCHEMA_NAME } from "@/app/users/entities/user.entity";
 import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
 import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/roles";
 import { PERMISSION_SCHEMA_NAME } from "@/app/permissions/entities/permission.entity";
@@ -21,10 +21,10 @@ export class Role {
 
   @Prop({
     type: Types.ObjectId,
-    ref: CLIENT_SCHEMA_NAME,
+    ref: USER_SCHEMA_NAME,
     required: true,
   })
-  client_id!: string;
+  user_id!: string;
 
   @Prop({
     type: Types.ObjectId,

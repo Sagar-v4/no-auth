@@ -20,7 +20,7 @@ export default async function Page() {
             <Separator className="lg:!h-auto lg:!w-px" />
 
             <div className="w-full p-2">
-              <SSOForm />
+              <SSOForm sso_uuid="fake" />
             </div>
           </Card>
         </div>

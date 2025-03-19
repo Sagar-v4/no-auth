@@ -43,8 +43,6 @@ import {
   deleteByRoleRefOutputSchema,
   DeleteByRoleRefOutputType,
 } from "../../../../../libs/trpc/schemas/roles";
-import { ClientsService } from "@/app/clients/clients.service";
-import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
 import { BasicService } from "@/app/basic/basic.service";
@@ -264,11 +262,11 @@ export class RolesRouter {
         },
       });
 
-      const client_ids = concatIds(
-        [findByRoleRefInputData.filter.role.client_id],
+      const user_ids = concatIds(
+        [findByRoleRefInputData.filter.role.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: findByRoleRefInputData.filter.client,
+          schema: "User",
+          filter: findByRoleRefInputData.filter.user,
         }),
       );
       const organization_ids = concatIds(
@@ -280,9 +278,9 @@ export class RolesRouter {
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
       if (organization_ids.length > 0) {
@@ -313,7 +311,7 @@ export class RolesRouter {
           ...Object.fromEntries(references_ids),
         },
         select: [],
-        populate: ["client_id", "organization_id"],
+        populate: ["user_id", "organization_id"],
       });
 
       this.logger.log({
@@ -492,11 +490,11 @@ export class RolesRouter {
         },
       });
 
-      const client_ids = concatIds(
-        [deleteByRoleRefInputData.filter.role.client_id],
+      const user_ids = concatIds(
+        [deleteByRoleRefInputData.filter.role.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: deleteByRoleRefInputData.filter.client,
+          schema: "User",
+          filter: deleteByRoleRefInputData.filter.user,
         }),
       );
       const organization_ids = concatIds(
@@ -508,9 +506,9 @@ export class RolesRouter {
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
       if (organization_ids.length > 0) {

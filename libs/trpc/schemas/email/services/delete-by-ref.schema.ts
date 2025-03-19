@@ -1,13 +1,11 @@
 import { z } from "zod";
 import { deviceInputSchema } from "../../devices";
-import { clientInputSchema } from "../../clients";
-import { clienteleInputSchema } from "../../clienteles";
+import { userInputSchema } from "../../users";
 import { emailServiceInputSchema } from ".";
 
 export const deleteByEmailServiceRefInputSchema = z.object({
   filter: z.object({
-    client: clientInputSchema,
-    clientele: clienteleInputSchema,
+    user: userInputSchema,
     device: deviceInputSchema,
     emailService: emailServiceInputSchema,
   }),

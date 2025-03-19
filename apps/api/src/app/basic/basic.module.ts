@@ -1,17 +1,9 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
-import {
-  CLIENT_SCHEMA_NAME,
-  ClientSchema,
-} from "@/app/clients/entities/client.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
 import { BasicService } from "@/app/basic/basic.service";
 import { BasicController } from "@/app/basic/basic.controller";
-import {
-  CLIENTELE_SCHEMA_NAME,
-  ClienteleSchema,
-} from "@/app/clienteles/entities/clientele.entity";
 import {
   DEVICE_SCHEMA_NAME,
   DeviceSchema,
@@ -35,13 +27,12 @@ import {
   SessionSchema,
 } from "@/app/sessions/entities/session.entity";
 import { SSO_SCHEMA_NAME, SSOSchema } from "@/app/sso/entities/sso.entity";
+import { USER_SCHEMA_NAME, UserSchema } from "@/app/users/entities/user.entity";
 
 @Module({
   imports: [
     MongooseModule.forFeature(
       [
-        { name: CLIENT_SCHEMA_NAME, schema: ClientSchema },
-        { name: CLIENTELE_SCHEMA_NAME, schema: ClienteleSchema },
         { name: DEVICE_SCHEMA_NAME, schema: DeviceSchema },
         { name: EMAIL_SERVICE_SCHEMA_NAME, schema: EmailServiceSchema },
         { name: KEY_SCHEMA_NAME, schema: KeySchema },
@@ -50,6 +41,7 @@ import { SSO_SCHEMA_NAME, SSOSchema } from "@/app/sso/entities/sso.entity";
         { name: ROLE_SCHEMA_NAME, schema: RoleSchema },
         { name: SESSION_SCHEMA_NAME, schema: SessionSchema },
         { name: SSO_SCHEMA_NAME, schema: SSOSchema },
+        { name: USER_SCHEMA_NAME, schema: UserSchema },
       ],
       MONGOOSE_DB_CONNECTION.BASIC,
     ),

@@ -1,14 +1,5 @@
 import { Column } from "@tanstack/react-table";
-import {
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
-  ChevronsUpDown,
-  EyeOff,
-  Minus,
-  MinusCircle,
-  MoveVertical,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react";
 
 import { cn } from "@workspace/ui/lib/utils";
 import { Button } from "@workspace/ui/components/button";
@@ -64,7 +55,7 @@ export function DataTableColumnHeader<TData, TValue>({
             Desc
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.clearSorting()}>
-            <MoveVertical className="text-muted-foreground/70 h-3.5 w-3.5" />
+            <ChevronsUpDown className="text-muted-foreground/70 h-3.5 w-3.5" />
             None
           </DropdownMenuItem>
           <DropdownMenuSeparator />

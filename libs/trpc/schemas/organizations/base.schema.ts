@@ -4,7 +4,7 @@ import { STATUS_ENUM } from ".";
 export const organizationInputSchema = z.object({
   _id: z.string().optional(),
   uuid: z.string().uuid().optional(),
-  client_id: z.string().optional(),
+  user_id: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
   status: STATUS_ENUM.optional(),
@@ -14,7 +14,7 @@ export type OrganizationInputSchema = z.infer<typeof organizationInputSchema>;
 export const organizationOutputSchema = z.object({
   _id: z.custom<any>(),
   uuid: z.string().uuid().nonempty(),
-  client_id: z.string().nonempty(),
+  user_id: z.string().nonempty(),
   name: z.string().nonempty(),
   description: z.string().optional(),
   status: STATUS_ENUM,
@@ -25,7 +25,7 @@ export const organizationOutputSchema = z.object({
 export type OrganizationOutputSchema = z.infer<typeof organizationOutputSchema>;
 
 export const organizationInsertInputSchema = z.object({
-  client_id: z.string().nonempty(),
+  user_id: z.string().nonempty(),
   name: z.string().nonempty(),
   description: z.string().optional(),
 });
@@ -44,7 +44,7 @@ export type OrganizationIdInputSchema = z.infer<
 >;
 
 export const organizationUpdateInputSchema = z.object({
-  client_id: z.string().optional(),
+  user_id: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
   status: STATUS_ENUM.optional(),

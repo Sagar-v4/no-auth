@@ -4,7 +4,7 @@ import { STATUS_ENUM } from ".";
 export const permissionInputSchema = z.object({
   _id: z.string().optional(),
   uuid: z.string().uuid().optional(),
-  client_id: z.string().optional(),
+  user_id: z.string().optional(),
   organization_id: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
@@ -16,7 +16,7 @@ export type PermissionInputSchema = z.infer<typeof permissionInputSchema>;
 export const permissionOutputSchema = z.object({
   _id: z.custom<any>(),
   uuid: z.string().uuid().nonempty(),
-  client_id: z.string().nonempty(),
+  user_id: z.string().nonempty(),
   organization_id: z.string().nonempty(),
   name: z.string().nonempty(),
   description: z.string().optional(),
@@ -29,7 +29,7 @@ export const permissionOutputSchema = z.object({
 export type PermissionOutputSchema = z.infer<typeof permissionOutputSchema>;
 
 export const permissionInsertInputSchema = z.object({
-  client_id: z.string().nonempty(),
+  user_id: z.string().nonempty(),
   organization_id: z.string().nonempty(),
   name: z.string().nonempty(),
   description: z.string().optional(),
@@ -47,7 +47,7 @@ export const permissionIdInputSchema = z
 export type PermissionIdInputSchema = z.infer<typeof permissionIdInputSchema>;
 
 export const permissionUpdateInputSchema = z.object({
-  client_id: z.string().optional(),
+  user_id: z.string().optional(),
   organization_id: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),

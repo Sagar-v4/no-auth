@@ -1,8 +1,8 @@
 "use client";
 
-import { getCookie, setCookie } from "cookies-next/client";
 import { createOneDevice } from "@/trpc/routers/devices";
 import { useEffect } from "react";
+import { useDevice } from "@/hooks/use-device";
 
 export function DeviceProvider({
   children,
@@ -10,14 +10,15 @@ export function DeviceProvider({
   children: React.ReactNode;
 }>) {
   const { data, exec } = createOneDevice();
-  const device_uuid = getCookie("device_uuid");
+  const { device_uuid, set_device_uuid } = useDevice();
 
   useEffect(() => {
-    if (!device_uuid && !data) {
+    if (device_uuid) return;
+
+    if (!data) {
       exec({ doc: {} });
-    }
-    if (!device_uuid && data) {
-      setCookie("device_uuid", data.uuid);
+    } else {
+      set_device_uuid(data.uuid);
     }
   }, [data, device_uuid]);
 

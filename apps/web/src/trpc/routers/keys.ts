@@ -113,12 +113,19 @@ export function getKeysByData(input: FindByKeyDataInputType) {
   const queryOptions = keys.findByData.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
-    enabled: false,
+    // enabled: false,
     staleTime: 1000 * 60 * 10, // 10 min
     refetchInterval: 1000 * 60 * 10, // 10 min
     trpc: {
       abortOnUnmount: true,
       ssr: true,
+    },
+    select(data) {
+      return data.map((d) => ({
+        ...d,
+        createdAt: new Date(d.createdAt),
+        updatedAt: new Date(d.updatedAt),
+      }));
     },
   });
 

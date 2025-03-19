@@ -1,5 +1,3 @@
-import { ClientInsertInputSchema } from "@/lib/trpc/schemas/clients";
-import { ClienteleInsertInputSchema } from "@/lib/trpc/schemas/clienteles";
 import { DeviceInsertInputSchema } from "@/lib/trpc/schemas/devices";
 import { EmailServiceInsertInputSchema } from "@/lib/trpc/schemas/email/services";
 import { KeyInsertInputSchema } from "@/lib/trpc/schemas/keys";
@@ -8,16 +6,7 @@ import { PermissionInsertInputSchema } from "@/lib/trpc/schemas/permissions";
 import { RoleInsertInputSchema } from "@/lib/trpc/schemas/roles";
 import { SessionInsertInputSchema } from "@/lib/trpc/schemas/sessions";
 import { SSOInsertInputSchema } from "@/lib/trpc/schemas/sso";
-
-export type ClienteleInsertInput = {
-  schema: "Clientele";
-  doc: ClienteleInsertInputSchema;
-};
-
-export type ClientInsertInput = {
-  schema: "Client";
-  doc: ClientInsertInputSchema;
-};
+import { UserInsertInputSchema } from "@/lib/trpc/schemas/users";
 
 export type DeviceInsertInput = {
   schema: "Device";
@@ -59,9 +48,12 @@ export type SSOInsertInput = {
   doc: SSOInsertInputSchema;
 };
 
+export type UserInsertInput = {
+  schema: "User";
+  doc: UserInsertInputSchema;
+};
+
 export type InsertInput =
-  | ClienteleInsertInput
-  | ClientInsertInput
   | DeviceInsertInput
   | EmailServiceInsertInput
   | KeyInsertInput
@@ -69,4 +61,5 @@ export type InsertInput =
   | PermissionInsertInput
   | RoleInsertInput
   | SessionInsertInput
-  | SSOInsertInput;
+  | SSOInsertInput
+  | UserInsertInput;

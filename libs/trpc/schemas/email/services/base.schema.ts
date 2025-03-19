@@ -1,12 +1,9 @@
 import { z } from "zod";
 
-import { USER_TYPE_ENUM } from ".";
-
 export const emailServiceInputSchema = z.object({
   _id: z.string().optional(),
   uuid: z.string().uuid().optional(),
   user_id: z.string().optional(),
-  user_type: USER_TYPE_ENUM.optional(),
   device_id: z.string().optional(),
 });
 export type EmailServiceInputSchema = z.infer<typeof emailServiceInputSchema>;
@@ -15,7 +12,6 @@ export const emailServiceOutputSchema = z.object({
   _id: z.custom<any>(),
   uuid: z.string().uuid().nonempty(),
   user_id: z.string().nonempty(),
-  user_type: USER_TYPE_ENUM,
   device_id: z.string().nonempty(),
   metadata: z.object({}).optional(),
   createdAt: z.date(),
@@ -25,7 +21,6 @@ export type EmailServiceOutputSchema = z.infer<typeof emailServiceOutputSchema>;
 
 export const emailServiceInsertInputSchema = z.object({
   user_id: z.string().nonempty(),
-  user_type: USER_TYPE_ENUM,
   device_id: z.string().nonempty(),
   metadata: z.object({}),
 });
@@ -45,7 +40,6 @@ export type EmailServiceIdInputSchema = z.infer<
 
 export const emailServiceUpdateInputSchema = z.object({
   user_id: z.string().optional(),
-  user_type: USER_TYPE_ENUM.optional(),
   device_id: z.string().optional(),
 });
 export type EmailServiceUpdateInputSchema = z.infer<

@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Logger, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
 import { AppController } from "@/app.controller";
@@ -7,8 +7,6 @@ import { envConfig } from "@/env/env.config";
 import { MongooseDatabaseModule } from "@/database/mongo/database.module";
 import { MongooseModelsModule } from "@/database/mongo/mongoose-models.module";
 import { EnvModule } from "@/env/env.module";
-import { ClientsModule } from "@/app/clients/clients.module";
-import { ClientelesModule } from "@/app/clienteles/clienteles.module";
 import { OrganizationsModule } from "@/app/organizations/organizations.module";
 import { EmailServicesModule } from "@/app/email/services/services.module";
 import { KeysModule } from "@/app/keys/keys.module";
@@ -19,6 +17,7 @@ import { SSOModule } from "@/app/sso/sso.module";
 import { RolesModule } from "@/app/roles/roles.module";
 import { PermissionsModule } from "@/app/permissions/permissions.module";
 import { BasicModule } from "@/app/basic/basic.module";
+import { UsersModule } from "@/app/users/users.module";
 
 @Module({
   imports: [
@@ -28,11 +27,11 @@ import { BasicModule } from "@/app/basic/basic.module";
       validate: envConfig,
       expandVariables: true,
     }),
-    TrpcModule,
     EnvModule,
+    MongooseModelsModule,
+    MongooseDatabaseModule,
+    TrpcModule,
     BasicModule,
-    ClientelesModule,
-    ClientsModule,
     DevicesModule,
     EmailServicesModule,
     KeysModule,
@@ -41,8 +40,7 @@ import { BasicModule } from "@/app/basic/basic.module";
     RolesModule,
     SessionsModule,
     SSOModule,
-    MongooseModelsModule,
-    MongooseDatabaseModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

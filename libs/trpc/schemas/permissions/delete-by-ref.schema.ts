@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { clientInputSchema } from "../clients";
+import { userInputSchema } from "../users";
 import { organizationInputSchema } from "../organizations";
 import { permissionInputSchema } from ".";
 
 export const deleteByPermissionRefInputSchema = z.object({
   filter: z.object({
-    client: clientInputSchema,
+    user: userInputSchema,
     organization: organizationInputSchema,
     permission: permissionInputSchema,
   }),

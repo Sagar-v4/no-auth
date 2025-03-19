@@ -43,8 +43,6 @@ import {
   deleteByPermissionRefOutputSchema,
   DeleteByPermissionRefOutputType,
 } from "../../../../../libs/trpc/schemas/permissions";
-import { ClientsService } from "@/app/clients/clients.service";
-import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
 import { BasicService } from "@/app/basic/basic.service";
@@ -264,11 +262,11 @@ export class PermissionsRouter {
         },
       });
 
-      const client_ids = concatIds(
-        [findByPermissionRefInputData.filter.permission.client_id],
+      const user_ids = concatIds(
+        [findByPermissionRefInputData.filter.permission.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: findByPermissionRefInputData.filter.client,
+          schema: "User",
+          filter: findByPermissionRefInputData.filter.user,
         }),
       );
       const organization_ids = concatIds(
@@ -280,9 +278,9 @@ export class PermissionsRouter {
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
       if (organization_ids.length > 0) {
@@ -315,7 +313,7 @@ export class PermissionsRouter {
           ...Object.fromEntries(references_ids),
         },
         select: [],
-        populate: ["client_id", "organization_id"],
+        populate: ["user_id", "organization_id"],
       });
 
       this.logger.log({
@@ -494,11 +492,11 @@ export class PermissionsRouter {
         },
       });
 
-      const client_ids = concatIds(
-        [deleteByPermissionRefInputData.filter.permission.client_id],
+      const user_ids = concatIds(
+        [deleteByPermissionRefInputData.filter.permission.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: deleteByPermissionRefInputData.filter.client,
+          schema: "User",
+          filter: deleteByPermissionRefInputData.filter.user,
         }),
       );
       const organization_ids = concatIds(
@@ -510,9 +508,9 @@ export class PermissionsRouter {
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
       if (organization_ids.length > 0) {

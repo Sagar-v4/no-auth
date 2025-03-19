@@ -43,11 +43,7 @@ import {
   deleteBySessionRefOutputSchema,
   DeleteBySessionRefOutputType,
 } from "../../../../../libs/trpc/schemas/sessions";
-import { ClientsService } from "@/app/clients/clients.service";
-import { ClientDocument } from "@/app/clients/entities/client.entity";
-import { ClientelesService } from "@/app/clienteles/clienteles.service";
-import { ClienteleDocument } from "@/app/clienteles/entities/clientele.entity";
-import { DevicesService } from "@/app/devices/devices.service";
+import { UserDocument } from "@/app/users/entities/user.entity";
 import { DeviceDocument } from "@/app/devices/entities/device.entity";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
@@ -275,17 +271,12 @@ export class SessionsRouter {
           filter: findBySessionRefInputData.filter.device,
         }),
       );
-      const client_ids = await this.basicService.getIds({
-        schema: "Client",
-        filter: findBySessionRefInputData.filter.client,
-      });
-      const clientele_ids = await this.basicService.getIds({
-        schema: "Clientele",
-        filter: findBySessionRefInputData.filter.clientele,
-      });
       const user_ids = concatIds(
         [findBySessionRefInputData.filter.session.user_id],
-        [...client_ids, ...clientele_ids],
+        await this.basicService.getIds({
+          schema: "User",
+          filter: findBySessionRefInputData.filter.user,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
@@ -315,34 +306,16 @@ export class SessionsRouter {
         return [];
       }
 
-      if (Object.keys(findBySessionRefInputData.filter.client).length > 0) {
-        const clients: ClientDocument[] = await this.basicService.find({
-          schema: "Client",
-          filter: findBySessionRefInputData.filter.client,
-          select: ["_id"],
-          populate: [],
-        });
-        const client_ids = clients.map((client) => client._id.toString());
-        const entry = references_ids.get("user_id") || { $in: [] };
-        references_ids.set("user_id", {
-          $in: [...entry.$in, ...client_ids],
-        });
-      }
-
-      if (Object.keys(findBySessionRefInputData.filter.clientele).length > 0) {
-        const clienteles: ClienteleDocument[] = await this.basicService.find({
-          schema: "Clientele",
-          filter: findBySessionRefInputData.filter.clientele,
+      if (Object.keys(findBySessionRefInputData.filter.user).length > 0) {
+        const users: UserDocument[] = await this.basicService.find({
+          schema: "User",
+          filter: findBySessionRefInputData.filter.user,
           select: ["_id"],
           populate: [],
         });
 
-        const clientele_ids = clienteles.map((clientele) =>
-          clientele._id.toString(),
-        );
-        const entry = references_ids.get("user_id") || { $in: [] };
         references_ids.set("user_id", {
-          $in: [...entry.$in, ...clientele_ids],
+          $in: users.map((user) => user._id.toString()),
         });
       }
 
@@ -564,17 +537,12 @@ export class SessionsRouter {
           filter: deleteBySessionRefInputData.filter.device,
         }),
       );
-      const client_ids = await this.basicService.getIds({
-        schema: "Client",
-        filter: deleteBySessionRefInputData.filter.client,
-      });
-      const clientele_ids = await this.basicService.getIds({
-        schema: "Clientele",
-        filter: deleteBySessionRefInputData.filter.clientele,
-      });
       const user_ids = concatIds(
         [deleteBySessionRefInputData.filter.session.user_id],
-        [...client_ids, ...clientele_ids],
+        await this.basicService.getIds({
+          schema: "User",
+          filter: deleteBySessionRefInputData.filter.user,
+        }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();

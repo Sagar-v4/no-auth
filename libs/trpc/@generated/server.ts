@@ -5,322 +5,6 @@ const t = initTRPC.create();
 const publicProcedure = t.procedure;
 
 const appRouter = t.router({
-  clienteles: t.router({
-    insertOne: publicProcedure.input(z.object({
-      doc: z.object({
-        email: z.string().email().nonempty(),
-        organization_id: z.string().nonempty(),
-      }),
-    })).output(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      email: z.string().email().nonempty(),
-      organization_id: z.string().optional(),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    insertMany: publicProcedure.input(z.object({
-      doc: z.array(z.object({
-        email: z.string().email().nonempty(),
-        organization_id: z.string().nonempty(),
-      })),
-    })).output(z.object({
-      acknowledged: z.boolean(),
-      insertedCount: z.number(),
-      insertedIds: z.record(z.string().nonempty(), z.custom<any>()),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    findById: publicProcedure.input(z.object({
-      filter: z
-        .object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-        })
-        .refine((data) => !Object.values(data).every((value) => !value)),
-    })).output(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      email: z.string().email().nonempty(),
-      organization_id: z.string().optional(),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    }).or(
-      z.undefined(),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    findByData: publicProcedure.input(z.object({
-      filter: z.array(z.object({
-        _id: z.string().optional(),
-        uuid: z.string().uuid().optional(),
-        email: z.string().email().optional(),
-        organization_id: z.string().optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      })),
-    })).output(z.array(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      email: z.string().email().nonempty(),
-      organization_id: z.string().optional(),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    findByRef: publicProcedure.input(z.object({
-      filter: z.object({
-        organization: z.object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
-          name: z.string().optional(),
-          description: z.string().optional(),
-          status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
-        }),
-        clientele: z.object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-          email: z.string().email().optional(),
-          organization_id: z.string().optional(),
-          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-        }),
-      }),
-    })).output(z.array(
-      z.object({
-        _id: z.custom<any>(),
-        uuid: z.string().uuid().nonempty(),
-        email: z.string().email().nonempty(),
-        organization_id: z.string().optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-        metadata: z.object({}).optional(),
-        createdAt: z.date(),
-        updatedAt: z.date(),
-      }).merge(
-        z.object({
-          organization_id: z.object({
-            _id: z.custom<any>(),
-            uuid: z.string().uuid().nonempty(),
-            client_id: z.string().nonempty(),
-            name: z.string().nonempty(),
-            description: z.string().optional(),
-            status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
-            metadata: z.object({}).optional(),
-            createdAt: z.date(),
-            updatedAt: z.date(),
-          })
-        }),
-      ),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    updateById: publicProcedure.input(z.object({
-      filter: z
-        .object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-        })
-        .refine((data) => !Object.values(data).every((value) => !value)),
-      update: z.object({
-        email: z.string().email().optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      }),
-    })).output(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      email: z.string().email().nonempty(),
-      organization_id: z.string().optional(),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    updateByData: publicProcedure.input(z.object({
-      filter: z.array(z.object({
-        _id: z.string().optional(),
-        uuid: z.string().uuid().optional(),
-        email: z.string().email().optional(),
-        organization_id: z.string().optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      })),
-      update: z.object({
-        email: z.string().email().optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      }),
-    })).output(z.object({
-      acknowledged: z.boolean(),
-      modifiedCount: z.number(),
-      upsertedCount: z.number(),
-      matchedCount: z.number(),
-      upsertedId: z.custom<any>(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    deleteByData: publicProcedure.input(z.object({
-      filter: z.array(z.object({
-        _id: z.string().optional(),
-        uuid: z.string().uuid().optional(),
-        email: z.string().email().optional(),
-        organization_id: z.string().optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-      })),
-    })).output(z.object({
-      acknowledged: z.boolean(),
-      deletedCount: z.number(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    deleteByRef: publicProcedure.input(z.object({
-      filter: z.object({
-        organization: z.object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
-          name: z.string().optional(),
-          description: z.string().optional(),
-          status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
-        }),
-        clientele: z.object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-          email: z.string().email().optional(),
-          organization_id: z.string().optional(),
-          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-        }),
-      }),
-    })).output(z.object({
-      acknowledged: z.boolean(),
-      deletedCount: z.number(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
-  }),
-  clients: t.router({
-    insertOne: publicProcedure.input(z.object({
-      doc: z.object({
-        name: z.string().nonempty(),
-        email: z.string().email().nonempty(),
-      }),
-    })).output(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      name: z.string().nonempty(),
-      email: z.string().email().nonempty(),
-      login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    insertMany: publicProcedure.input(z.object({
-      doc: z.array(z.object({
-        name: z.string().nonempty(),
-        email: z.string().email().nonempty(),
-      })),
-    })).output(z.object({
-      acknowledged: z.boolean(),
-      insertedCount: z.number(),
-      insertedIds: z.record(z.string().nonempty(), z.custom<any>()),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    findById: publicProcedure.input(z.object({
-      filter: z
-        .object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-        })
-        .refine((data) => !Object.values(data).every((value) => !value)),
-    })).output(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      name: z.string().nonempty(),
-      email: z.string().email().nonempty(),
-      login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    }).or(z.undefined())).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    findByData: publicProcedure.input(z.object({
-      filter: z.array(z.object({
-        _id: z.string().optional(),
-        uuid: z.string().uuid().optional(),
-        name: z.string().optional(),
-        email: z.string().email().optional(),
-        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-        roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
-      })),
-    })).output(z.array(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      name: z.string().nonempty(),
-      email: z.string().email().nonempty(),
-      login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    updateById: publicProcedure.input(z.object({
-      filter: z
-        .object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-        })
-        .refine((data) => !Object.values(data).every((value) => !value)),
-      update: z.object({
-        name: z.string().optional(),
-        email: z.string().email().optional(),
-        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-        roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
-      }),
-    })).output(z.object({
-      _id: z.custom<any>(),
-      uuid: z.string().uuid().nonempty(),
-      name: z.string().nonempty(),
-      email: z.string().email().nonempty(),
-      login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
-      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-      roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
-      metadata: z.object({}).optional(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    updateByData: publicProcedure.input(z.object({
-      filter: z.array(z.object({
-        _id: z.string().optional(),
-        uuid: z.string().uuid().optional(),
-        name: z.string().optional(),
-        email: z.string().email().optional(),
-        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-        roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
-      })),
-      update: z.object({
-        name: z.string().optional(),
-        email: z.string().email().optional(),
-        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-        roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
-      }),
-    })).output(z.object({
-      acknowledged: z.boolean(),
-      modifiedCount: z.number(),
-      upsertedCount: z.number(),
-      matchedCount: z.number(),
-      upsertedId: z.custom<any>(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    deleteByData: publicProcedure.input(z.object({
-      filter: z.array(z.object({
-        _id: z.string().optional(),
-        uuid: z.string().uuid().optional(),
-        name: z.string().optional(),
-        email: z.string().email().optional(),
-        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
-        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-        roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
-      })),
-    })).output(z.object({
-      acknowledged: z.boolean(),
-      deletedCount: z.number(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
-  }),
   devices: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({}),
@@ -417,7 +101,6 @@ const appRouter = t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
-        user_type: z.enum(["Client", "Clientele"] as const),
         device_id: z.string().nonempty(),
         metadata: z.object({}),
       }),
@@ -425,7 +108,6 @@ const appRouter = t.router({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
       user_id: z.string().nonempty(),
-      user_type: z.enum(["Client", "Clientele"] as const),
       device_id: z.string().nonempty(),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
@@ -434,7 +116,6 @@ const appRouter = t.router({
     insertMany: publicProcedure.input(z.object({
       doc: z.array(z.object({
         user_id: z.string().nonempty(),
-        user_type: z.enum(["Client", "Clientele"] as const),
         device_id: z.string().nonempty(),
         metadata: z.object({}),
       })),
@@ -454,7 +135,6 @@ const appRouter = t.router({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
       user_id: z.string().nonempty(),
-      user_type: z.enum(["Client", "Clientele"] as const),
       device_id: z.string().nonempty(),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
@@ -467,7 +147,6 @@ const appRouter = t.router({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
       })),
     })).output(z.array(
@@ -475,7 +154,6 @@ const appRouter = t.router({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
         user_id: z.string().nonempty(),
-        user_type: z.enum(["Client", "Clientele"] as const),
         device_id: z.string().nonempty(),
         metadata: z.object({}).optional(),
         createdAt: z.date(),
@@ -484,21 +162,15 @@ const appRouter = t.router({
     )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
-        }),
-        clientele: z.object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-          email: z.string().email().optional(),
-          organization_id: z.string().optional(),
-          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         device: z.object({
           _id: z.string().optional(),
@@ -509,7 +181,6 @@ const appRouter = t.router({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           user_id: z.string().optional(),
-          user_type: z.enum(["Client", "Clientele"] as const).optional(),
           device_id: z.string().optional(),
         }),
       }),
@@ -518,36 +189,25 @@ const appRouter = t.router({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
         user_id: z.string().nonempty(),
-        user_type: z.enum(["Client", "Clientele"] as const),
         device_id: z.string().nonempty(),
         metadata: z.object({}).optional(),
         createdAt: z.date(),
         updatedAt: z.date(),
-      }).merge(
-        z.object({
-          user_id: z.union([z.object({
-            _id: z.custom<any>(),
-            uuid: z.string().uuid().nonempty(),
-            name: z.string().nonempty(),
-            email: z.string().email().nonempty(),
-            login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
-            status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-            roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
-            metadata: z.object({}).optional(),
-            createdAt: z.date(),
-            updatedAt: z.date(),
-          }), z.object({
-            _id: z.custom<any>(),
-            uuid: z.string().uuid().nonempty(),
-            email: z.string().email().nonempty(),
-            organization_id: z.string().optional(),
-            status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-            metadata: z.object({}).optional(),
-            createdAt: z.date(),
-            updatedAt: z.date(),
-          })]),
-        }),
-      ).merge(z.object({
+      }).merge(z.object({
+        user_id: z.object({
+          _id: z.custom<any>(),
+          uuid: z.string().uuid().nonempty(),
+          name: z.string().optional(),
+          email: z.string().email().nonempty(),
+          organization_id: z.string().optional(),
+          login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
+          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+          roles: z.array(z.string()).optional(),
+          metadata: z.object({}).optional(),
+          createdAt: z.date(),
+          updatedAt: z.date(),
+        })
+      })).merge(z.object({
         device_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
@@ -567,14 +227,12 @@ const appRouter = t.router({
         .refine((data) => !Object.values(data).every((value) => !value)),
       update: z.object({
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
       }),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
       user_id: z.string().nonempty(),
-      user_type: z.enum(["Client", "Clientele"] as const),
       device_id: z.string().nonempty(),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
@@ -585,12 +243,10 @@ const appRouter = t.router({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
       })),
       update: z.object({
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
       }),
     })).output(z.object({
@@ -605,7 +261,6 @@ const appRouter = t.router({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
       })),
     })).output(z.object({
@@ -614,21 +269,15 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     deleteByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
-        }),
-        clientele: z.object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-          email: z.string().email().optional(),
-          organization_id: z.string().optional(),
-          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         device: z.object({
           _id: z.string().optional(),
@@ -639,7 +288,6 @@ const appRouter = t.router({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           user_id: z.string().optional(),
-          user_type: z.enum(["Client", "Clientele"] as const).optional(),
           device_id: z.string().optional(),
         }),
       }),
@@ -658,7 +306,8 @@ const appRouter = t.router({
   keys: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
-        client_id: z.string().nonempty(),
+        secret: z.string().nanoid().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
@@ -666,25 +315,21 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      secret: z.string().nanoid().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       expiry: z.number(),
-      status: z.enum([
-        "PREACTIVE",
-        "ACTIVE",
-        "DEACTIVATED",
-        "EXPIRED",
-        "DELETED",
-      ] as const),
+      status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
       updatedAt: z.date(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     insertMany: publicProcedure.input(z.object({
       doc: z.array(z.object({
-        client_id: z.string().nonempty(),
+        secret: z.string().nanoid().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
@@ -699,23 +344,19 @@ const appRouter = t.router({
         .object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
+          secret: z.string().nanoid().optional(),
         })
         .refine((data) => !Object.values(data).every((value) => !value)),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      secret: z.string().nanoid().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       expiry: z.number(),
-      status: z.enum([
-        "PREACTIVE",
-        "ACTIVE",
-        "DEACTIVATED",
-        "EXPIRED",
-        "DELETED",
-      ] as const),
+      status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
       updatedAt: z.date(),
@@ -724,53 +365,44 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        secret: z.string().nanoid().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         expiry: z.number().optional(),
-        status: z.enum([
-          "PREACTIVE",
-          "ACTIVE",
-          "DEACTIVATED",
-          "EXPIRED",
-          "DELETED",
-        ] as const).optional(),
+        status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const).optional(),
       })),
     })).output(z.array(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      secret: z.string().nanoid().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       expiry: z.number(),
-      status: z.enum([
-        "PREACTIVE",
-        "ACTIVE",
-        "DEACTIVATED",
-        "EXPIRED",
-        "DELETED",
-      ] as const),
+      status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
       updatedAt: z.date(),
     }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -778,48 +410,39 @@ const appRouter = t.router({
         key: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          secret: z.string().nanoid().optional(),
+          user_id: z.string().optional(),
           organization_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           expiry: z.number().optional(),
-          status: z.enum([
-            "PREACTIVE",
-            "ACTIVE",
-            "DEACTIVATED",
-            "EXPIRED",
-            "DELETED",
-          ] as const).optional(),
+          status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const).optional(),
         }),
       }),
     })).output(z.array(
       z.object({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
-        client_id: z.string().nonempty(),
+        secret: z.string().nanoid().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
         expiry: z.number(),
-        status: z.enum([
-          "PREACTIVE",
-          "ACTIVE",
-          "DEACTIVATED",
-          "EXPIRED",
-          "DELETED",
-        ] as const),
+        status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const),
         metadata: z.object({}).optional(),
         createdAt: z.date(),
         updatedAt: z.date(),
       }).merge(z.object({
-        client_id: z.object({
+        user_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
-          name: z.string().nonempty(),
+          name: z.string().optional(),
           email: z.string().email().nonempty(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-          roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
+          roles: z.array(z.string()).optional(),
           metadata: z.object({}).optional(),
           createdAt: z.date(),
           updatedAt: z.date(),
@@ -828,7 +451,7 @@ const appRouter = t.router({
         organization_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
-          client_id: z.string().nonempty(),
+          user_id: z.string().nonempty(),
           name: z.string().nonempty(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
@@ -843,35 +466,26 @@ const appRouter = t.router({
         .object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
+          secret: z.string().nanoid().optional(),
         })
         .refine((data) => !Object.values(data).every((value) => !value)),
       update: z.object({
+        secret: z.string().nanoid().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         expiry: z.number().optional(),
-        status: z.enum([
-          "PREACTIVE",
-          "ACTIVE",
-          "DEACTIVATED",
-          "EXPIRED",
-          "DELETED",
-        ] as const).optional(),
+        status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const).optional(),
       }),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      secret: z.string().nanoid().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       expiry: z.number(),
-      status: z.enum([
-        "PREACTIVE",
-        "ACTIVE",
-        "DEACTIVATED",
-        "EXPIRED",
-        "DELETED",
-      ] as const),
+      status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
       updatedAt: z.date(),
@@ -880,30 +494,20 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        secret: z.string().nanoid().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         expiry: z.number().optional(),
-        status: z.enum([
-          "PREACTIVE",
-          "ACTIVE",
-          "DEACTIVATED",
-          "EXPIRED",
-          "DELETED",
-        ] as const).optional(),
+        status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const).optional(),
       })),
       update: z.object({
+        secret: z.string().nanoid().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         expiry: z.number().optional(),
-        status: z.enum([
-          "PREACTIVE",
-          "ACTIVE",
-          "DEACTIVATED",
-          "EXPIRED",
-          "DELETED",
-        ] as const).optional(),
+        status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const).optional(),
       }),
     })).output(z.object({
       acknowledged: z.boolean(),
@@ -916,18 +520,13 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        secret: z.string().nanoid().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         expiry: z.number().optional(),
-        status: z.enum([
-          "PREACTIVE",
-          "ACTIVE",
-          "DEACTIVATED",
-          "EXPIRED",
-          "DELETED",
-        ] as const).optional(),
+        status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const).optional(),
       })),
     })).output(z.object({
       acknowledged: z.boolean(),
@@ -935,19 +534,20 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     deleteByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -955,18 +555,13 @@ const appRouter = t.router({
         key: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          secret: z.string().nanoid().optional(),
+          user_id: z.string().optional(),
           organization_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           expiry: z.number().optional(),
-          status: z.enum([
-            "PREACTIVE",
-            "ACTIVE",
-            "DEACTIVATED",
-            "EXPIRED",
-            "DELETED",
-          ] as const).optional(),
+          status: z.enum(["ACTIVE", "DEACTIVE", "DELETED"] as const).optional(),
         }),
       }),
     })).output(z.object({
@@ -977,14 +572,14 @@ const appRouter = t.router({
   organizations: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
       }),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
@@ -994,7 +589,7 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     insertMany: publicProcedure.input(z.object({
       doc: z.array(z.object({
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
       })),
@@ -1013,7 +608,7 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
@@ -1027,7 +622,7 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1036,7 +631,7 @@ const appRouter = t.router({
       z.object({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
         status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
@@ -1047,19 +642,20 @@ const appRouter = t.router({
     )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1069,7 +665,7 @@ const appRouter = t.router({
       z.object({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
         status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
@@ -1077,14 +673,15 @@ const appRouter = t.router({
         createdAt: z.date(),
         updatedAt: z.date(),
       }).merge(z.object({
-        client_id: z.object({
+        user_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
-          name: z.string().nonempty(),
+          name: z.string().optional(),
           email: z.string().email().nonempty(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-          roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
+          roles: z.array(z.string()).optional(),
           metadata: z.object({}).optional(),
           createdAt: z.date(),
           updatedAt: z.date(),
@@ -1099,7 +696,7 @@ const appRouter = t.router({
         })
         .refine((data) => !Object.values(data).every((value) => !value)),
       update: z.object({
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1107,7 +704,7 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
@@ -1119,13 +716,13 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
       })),
       update: z.object({
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1141,7 +738,7 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1152,19 +749,20 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     deleteByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1178,7 +776,7 @@ const appRouter = t.router({
   permissions: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
@@ -1186,7 +784,7 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
@@ -1198,7 +796,7 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     insertMany: publicProcedure.input(z.object({
       doc: z.array(z.object({
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
@@ -1218,7 +816,7 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
@@ -1234,7 +832,7 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
@@ -1244,7 +842,7 @@ const appRouter = t.router({
     })).output(z.array(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
@@ -1256,19 +854,20 @@ const appRouter = t.router({
     }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1276,7 +875,7 @@ const appRouter = t.router({
         permission: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           organization_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
@@ -1288,7 +887,7 @@ const appRouter = t.router({
       z.object({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
@@ -1298,14 +897,15 @@ const appRouter = t.router({
         createdAt: z.date(),
         updatedAt: z.date(),
       }).merge(z.object({
-        client_id: z.object({
+        user_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
-          name: z.string().nonempty(),
+          name: z.string().optional(),
           email: z.string().email().nonempty(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-          roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
+          roles: z.array(z.string()).optional(),
           metadata: z.object({}).optional(),
           createdAt: z.date(),
           updatedAt: z.date(),
@@ -1314,7 +914,7 @@ const appRouter = t.router({
         organization_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
-          client_id: z.string().nonempty(),
+          user_id: z.string().nonempty(),
           name: z.string().nonempty(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
@@ -1332,7 +932,7 @@ const appRouter = t.router({
         })
         .refine((data) => !Object.values(data).every((value) => !value)),
       update: z.object({
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
@@ -1342,7 +942,7 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
@@ -1356,7 +956,7 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
@@ -1364,7 +964,7 @@ const appRouter = t.router({
         status: z.enum(["ACTIVE", "INACTIVE", "DELETED"] as const).optional(),
       })),
       update: z.object({
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
@@ -1382,7 +982,7 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
@@ -1395,19 +995,20 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     deleteByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1415,7 +1016,7 @@ const appRouter = t.router({
         permission: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           organization_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
@@ -1431,7 +1032,7 @@ const appRouter = t.router({
   roles: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
@@ -1439,14 +1040,12 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       active_permission_ids: z.array(z.string()).nonempty(),
       inactive_permission_ids: z.array(z.string()).nonempty(),
-      active_permission_group_ids: z.array(z.string()).nonempty(),
-      inactive_permission_group_ids: z.array(z.string()).nonempty(),
       status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
@@ -1454,7 +1053,7 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     insertMany: publicProcedure.input(z.object({
       doc: z.array(z.object({
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
@@ -1474,14 +1073,12 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       active_permission_ids: z.array(z.string()).nonempty(),
       inactive_permission_ids: z.array(z.string()).nonempty(),
-      active_permission_group_ids: z.array(z.string()).nonempty(),
-      inactive_permission_group_ids: z.array(z.string()).nonempty(),
       status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
@@ -1491,27 +1088,23 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         active_permission_ids: z.array(z.string()).optional(),
         inactive_permission_ids: z.array(z.string()).optional(),
-        active_permission_group_ids: z.array(z.string()).optional(),
-        inactive_permission_group_ids: z.array(z.string()).optional(),
         status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const).optional(),
       })),
     })).output(z.array(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       active_permission_ids: z.array(z.string()).nonempty(),
       inactive_permission_ids: z.array(z.string()).nonempty(),
-      active_permission_group_ids: z.array(z.string()).nonempty(),
-      inactive_permission_group_ids: z.array(z.string()).nonempty(),
       status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
@@ -1519,19 +1112,20 @@ const appRouter = t.router({
     }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1539,14 +1133,12 @@ const appRouter = t.router({
         role: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           organization_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           active_permission_ids: z.array(z.string()).optional(),
           inactive_permission_ids: z.array(z.string()).optional(),
-          active_permission_group_ids: z.array(z.string()).optional(),
-          inactive_permission_group_ids: z.array(z.string()).optional(),
           status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const).optional(),
         }),
       }),
@@ -1554,27 +1146,26 @@ const appRouter = t.router({
       z.object({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
-        client_id: z.string().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
         name: z.string().nonempty(),
         description: z.string().optional(),
         active_permission_ids: z.array(z.string()).nonempty(),
         inactive_permission_ids: z.array(z.string()).nonempty(),
-        active_permission_group_ids: z.array(z.string()).nonempty(),
-        inactive_permission_group_ids: z.array(z.string()).nonempty(),
         status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const),
         metadata: z.object({}).optional(),
         createdAt: z.date(),
         updatedAt: z.date(),
       }).merge(z.object({
-        client_id: z.object({
+        user_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
-          name: z.string().nonempty(),
+          name: z.string().optional(),
           email: z.string().email().nonempty(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-          roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
+          roles: z.array(z.string()).optional(),
           metadata: z.object({}).optional(),
           createdAt: z.date(),
           updatedAt: z.date(),
@@ -1583,7 +1174,7 @@ const appRouter = t.router({
         organization_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
-          client_id: z.string().nonempty(),
+          user_id: z.string().nonempty(),
           name: z.string().nonempty(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
@@ -1601,27 +1192,23 @@ const appRouter = t.router({
         })
         .refine((data) => !Object.values(data).every((value) => !value)),
       update: z.object({
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         active_permission_ids: z.array(z.string()).optional(),
         inactive_permission_ids: z.array(z.string()).optional(),
-        active_permission_group_ids: z.array(z.string()).optional(),
-        inactive_permission_group_ids: z.array(z.string()).optional(),
         status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const).optional(),
       }),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
       name: z.string().nonempty(),
       description: z.string().optional(),
       active_permission_ids: z.array(z.string()).nonempty(),
       inactive_permission_ids: z.array(z.string()).nonempty(),
-      active_permission_group_ids: z.array(z.string()).nonempty(),
-      inactive_permission_group_ids: z.array(z.string()).nonempty(),
       status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const),
       metadata: z.object({}).optional(),
       createdAt: z.date(),
@@ -1631,25 +1218,21 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         active_permission_ids: z.array(z.string()).optional(),
         inactive_permission_ids: z.array(z.string()).optional(),
-        active_permission_group_ids: z.array(z.string()).optional(),
-        inactive_permission_group_ids: z.array(z.string()).optional(),
         status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const).optional(),
       })),
       update: z.object({
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         active_permission_ids: z.array(z.string()).optional(),
         inactive_permission_ids: z.array(z.string()).optional(),
-        active_permission_group_ids: z.array(z.string()).optional(),
-        inactive_permission_group_ids: z.array(z.string()).optional(),
         status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const).optional(),
       }),
     })).output(z.object({
@@ -1663,14 +1246,12 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         active_permission_ids: z.array(z.string()).optional(),
         inactive_permission_ids: z.array(z.string()).optional(),
-        active_permission_group_ids: z.array(z.string()).optional(),
-        inactive_permission_group_ids: z.array(z.string()).optional(),
         status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const).optional(),
       })),
     })).output(z.object({
@@ -1679,19 +1260,20 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     deleteByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -1699,14 +1281,12 @@ const appRouter = t.router({
         role: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           organization_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           active_permission_ids: z.array(z.string()).optional(),
           inactive_permission_ids: z.array(z.string()).optional(),
-          active_permission_group_ids: z.array(z.string()).optional(),
-          inactive_permission_group_ids: z.array(z.string()).optional(),
           status: z.enum(["ACTIVE", "DEACTIVED", "DELETED"] as const).optional(),
         }),
       }),
@@ -1719,14 +1299,12 @@ const appRouter = t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
-        user_type: z.enum(["Client", "Clientele"] as const),
         device_id: z.string().nonempty(),
       }),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
       user_id: z.string().nonempty(),
-      user_type: z.enum(["Client", "Clientele"] as const),
       device_id: z.string().nonempty(),
       status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const),
       metadata: z.object({}).optional(),
@@ -1736,7 +1314,6 @@ const appRouter = t.router({
     insertMany: publicProcedure.input(z.object({
       doc: z.array(z.object({
         user_id: z.string().nonempty(),
-        user_type: z.enum(["Client", "Clientele"] as const),
         device_id: z.string().nonempty(),
       })),
     })).output(z.object({
@@ -1755,7 +1332,6 @@ const appRouter = t.router({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
       user_id: z.string().nonempty(),
-      user_type: z.enum(["Client", "Clientele"] as const),
       device_id: z.string().nonempty(),
       status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const),
       metadata: z.object({}).optional(),
@@ -1769,7 +1345,6 @@ const appRouter = t.router({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
         status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const).optional(),
       })),
@@ -1777,7 +1352,6 @@ const appRouter = t.router({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
       user_id: z.string().nonempty(),
-      user_type: z.enum(["Client", "Clientele"] as const),
       device_id: z.string().nonempty(),
       status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const),
       metadata: z.object({}).optional(),
@@ -1786,21 +1360,15 @@ const appRouter = t.router({
     }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
-        }),
-        clientele: z.object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-          email: z.string().email().optional(),
-          organization_id: z.string().optional(),
-          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         device: z.object({
           _id: z.string().optional(),
@@ -1811,7 +1379,6 @@ const appRouter = t.router({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           user_id: z.string().optional(),
-          user_type: z.enum(["Client", "Clientele"] as const).optional(),
           device_id: z.string().optional(),
           status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const).optional(),
         }),
@@ -1821,37 +1388,26 @@ const appRouter = t.router({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
         user_id: z.string().nonempty(),
-        user_type: z.enum(["Client", "Clientele"] as const),
         device_id: z.string().nonempty(),
         status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const),
         metadata: z.object({}).optional(),
         createdAt: z.date(),
         updatedAt: z.date(),
-      }).merge(
-        z.object({
-          user_id: z.union([z.object({
-            _id: z.custom<any>(),
-            uuid: z.string().uuid().nonempty(),
-            name: z.string().nonempty(),
-            email: z.string().email().nonempty(),
-            login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
-            status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-            roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
-            metadata: z.object({}).optional(),
-            createdAt: z.date(),
-            updatedAt: z.date(),
-          }), z.object({
-            _id: z.custom<any>(),
-            uuid: z.string().uuid().nonempty(),
-            email: z.string().email().nonempty(),
-            organization_id: z.string().optional(),
-            status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-            metadata: z.object({}).optional(),
-            createdAt: z.date(),
-            updatedAt: z.date(),
-          })]),
-        }),
-      ).merge(z.object({
+      }).merge(z.object({
+        user_id: z.object({
+          _id: z.custom<any>(),
+          uuid: z.string().uuid().nonempty(),
+          name: z.string().optional(),
+          email: z.string().email().nonempty(),
+          organization_id: z.string().optional(),
+          login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
+          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+          roles: z.array(z.string()).optional(),
+          metadata: z.object({}).optional(),
+          createdAt: z.date(),
+          updatedAt: z.date(),
+        })
+      })).merge(z.object({
         device_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
@@ -1871,7 +1427,6 @@ const appRouter = t.router({
         .refine((data) => !Object.values(data).every((value) => !value)),
       update: z.object({
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
         status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const).optional(),
       }),
@@ -1879,7 +1434,6 @@ const appRouter = t.router({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
       user_id: z.string().nonempty(),
-      user_type: z.enum(["Client", "Clientele"] as const),
       device_id: z.string().nonempty(),
       status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const),
       metadata: z.object({}).optional(),
@@ -1891,13 +1445,11 @@ const appRouter = t.router({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
         status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const).optional(),
       })),
       update: z.object({
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
         status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const).optional(),
       }),
@@ -1913,7 +1465,6 @@ const appRouter = t.router({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
         user_id: z.string().optional(),
-        user_type: z.enum(["Client", "Clientele"] as const).optional(),
         device_id: z.string().optional(),
         status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const).optional(),
       })),
@@ -1923,21 +1474,15 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     deleteByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
-        }),
-        clientele: z.object({
-          _id: z.string().optional(),
-          uuid: z.string().uuid().optional(),
-          email: z.string().email().optional(),
-          organization_id: z.string().optional(),
-          status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         device: z.object({
           _id: z.string().optional(),
@@ -1948,7 +1493,6 @@ const appRouter = t.router({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           user_id: z.string().optional(),
-          user_type: z.enum(["Client", "Clientele"] as const).optional(),
           device_id: z.string().optional(),
           status: z.enum(["ACTIVE", "DEACTIVATED", "EXPIRED", "DELETED"] as const).optional(),
         }),
@@ -1961,22 +1505,16 @@ const appRouter = t.router({
   sso: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
-        client_id: z.string().nonempty(),
+        secret: z.string().nanoid().optional(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
-        name: z.string().nonempty(),
-        description: z.string().optional(),
-        redirect_url: z.string().url().nonempty(),
-        webhook_url: z.string().url().nonempty(),
       }),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      secret: z.string().nanoid().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
-      name: z.string().nonempty(),
-      description: z.string().optional(),
-      redirect_url: z.string().url().nonempty(),
-      webhook_url: z.string().url().nonempty(),
       status: z.enum([
         "PREACTIVE",
         "ACTIVE",
@@ -1989,12 +1527,9 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     insertMany: publicProcedure.input(z.object({
       doc: z.array(z.object({
-        client_id: z.string().nonempty(),
+        secret: z.string().nanoid().optional(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
-        name: z.string().nonempty(),
-        description: z.string().optional(),
-        redirect_url: z.string().url().nonempty(),
-        webhook_url: z.string().url().nonempty(),
       })),
     })).output(z.object({
       acknowledged: z.boolean(),
@@ -2006,17 +1541,15 @@ const appRouter = t.router({
         .object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
+          secret: z.string().nanoid().optional(),
         })
         .refine((data) => !Object.values(data).every((value) => !value)),
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      secret: z.string().nanoid().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
-      name: z.string().nonempty(),
-      description: z.string().optional(),
-      redirect_url: z.string().url().nonempty(),
-      webhook_url: z.string().url().nonempty(),
       status: z.enum([
         "PREACTIVE",
         "ACTIVE",
@@ -2031,12 +1564,9 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        secret: z.string().nanoid().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
-        name: z.string().optional(),
-        description: z.string().optional(),
-        redirect_url: z.string().url().optional(),
-        webhook_url: z.string().url().optional(),
         status: z.enum([
           "PREACTIVE",
           "ACTIVE",
@@ -2047,12 +1577,9 @@ const appRouter = t.router({
     })).output(z.array(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      secret: z.string().nanoid().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
-      name: z.string().nonempty(),
-      description: z.string().optional(),
-      redirect_url: z.string().url().nonempty(),
-      webhook_url: z.string().url().nonempty(),
       status: z.enum([
         "PREACTIVE",
         "ACTIVE",
@@ -2065,19 +1592,20 @@ const appRouter = t.router({
     }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -2085,12 +1613,9 @@ const appRouter = t.router({
         sso: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          secret: z.string().nanoid().optional(),
+          user_id: z.string().optional(),
           organization_id: z.string().optional(),
-          name: z.string().optional(),
-          description: z.string().optional(),
-          redirect_url: z.string().url().optional(),
-          webhook_url: z.string().url().optional(),
           status: z.enum([
             "PREACTIVE",
             "ACTIVE",
@@ -2103,12 +1628,9 @@ const appRouter = t.router({
       z.object({
         _id: z.custom<any>(),
         uuid: z.string().uuid().nonempty(),
-        client_id: z.string().nonempty(),
+        secret: z.string().nanoid().nonempty(),
+        user_id: z.string().nonempty(),
         organization_id: z.string().nonempty(),
-        name: z.string().nonempty(),
-        description: z.string().optional(),
-        redirect_url: z.string().url().nonempty(),
-        webhook_url: z.string().url().nonempty(),
         status: z.enum([
           "PREACTIVE",
           "ACTIVE",
@@ -2119,14 +1641,15 @@ const appRouter = t.router({
         createdAt: z.date(),
         updatedAt: z.date(),
       }).merge(z.object({
-        client_id: z.object({
+        user_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
-          name: z.string().nonempty(),
+          name: z.string().optional(),
           email: z.string().email().nonempty(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
-          roles: z.array(z.enum(["CLIENT", "ADMIN"] as const)),
+          roles: z.array(z.string()).optional(),
           metadata: z.object({}).optional(),
           createdAt: z.date(),
           updatedAt: z.date(),
@@ -2135,7 +1658,7 @@ const appRouter = t.router({
         organization_id: z.object({
           _id: z.custom<any>(),
           uuid: z.string().uuid().nonempty(),
-          client_id: z.string().nonempty(),
+          user_id: z.string().nonempty(),
           name: z.string().nonempty(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
@@ -2150,15 +1673,12 @@ const appRouter = t.router({
         .object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
+          secret: z.string().nanoid().optional(),
         })
         .refine((data) => !Object.values(data).every((value) => !value)),
       update: z.object({
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
-        name: z.string().optional(),
-        description: z.string().optional(),
-        redirect_url: z.string().url().optional(),
-        webhook_url: z.string().url().optional(),
         status: z.enum([
           "PREACTIVE",
           "ACTIVE",
@@ -2169,12 +1689,9 @@ const appRouter = t.router({
     })).output(z.object({
       _id: z.custom<any>(),
       uuid: z.string().uuid().nonempty(),
-      client_id: z.string().nonempty(),
+      secret: z.string().nanoid().nonempty(),
+      user_id: z.string().nonempty(),
       organization_id: z.string().nonempty(),
-      name: z.string().nonempty(),
-      description: z.string().optional(),
-      redirect_url: z.string().url().nonempty(),
-      webhook_url: z.string().url().nonempty(),
       status: z.enum([
         "PREACTIVE",
         "ACTIVE",
@@ -2189,12 +1706,9 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        secret: z.string().nanoid().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
-        name: z.string().optional(),
-        description: z.string().optional(),
-        redirect_url: z.string().url().optional(),
-        webhook_url: z.string().url().optional(),
         status: z.enum([
           "PREACTIVE",
           "ACTIVE",
@@ -2203,12 +1717,8 @@ const appRouter = t.router({
         ] as const).optional(),
       })),
       update: z.object({
-        client_id: z.string().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
-        name: z.string().optional(),
-        description: z.string().optional(),
-        redirect_url: z.string().url().optional(),
-        webhook_url: z.string().url().optional(),
         status: z.enum([
           "PREACTIVE",
           "ACTIVE",
@@ -2227,12 +1737,9 @@ const appRouter = t.router({
       filter: z.array(z.object({
         _id: z.string().optional(),
         uuid: z.string().uuid().optional(),
-        client_id: z.string().optional(),
+        secret: z.string().nanoid().optional(),
+        user_id: z.string().optional(),
         organization_id: z.string().optional(),
-        name: z.string().optional(),
-        description: z.string().optional(),
-        redirect_url: z.string().url().optional(),
-        webhook_url: z.string().url().optional(),
         status: z.enum([
           "PREACTIVE",
           "ACTIVE",
@@ -2246,19 +1753,20 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     deleteByRef: publicProcedure.input(z.object({
       filter: z.object({
-        client: z.object({
+        user: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
           name: z.string().optional(),
           email: z.string().email().optional(),
+          organization_id: z.string().optional(),
           login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
           status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
-          roles: z.enum(["CLIENT", "ADMIN"] as const).optional(),
+          roles: z.array(z.string()).optional(),
         }),
         organization: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          user_id: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
@@ -2266,12 +1774,9 @@ const appRouter = t.router({
         sso: z.object({
           _id: z.string().optional(),
           uuid: z.string().uuid().optional(),
-          client_id: z.string().optional(),
+          secret: z.string().nanoid().optional(),
+          user_id: z.string().optional(),
           organization_id: z.string().optional(),
-          name: z.string().optional(),
-          description: z.string().optional(),
-          redirect_url: z.string().url().optional(),
-          webhook_url: z.string().url().optional(),
           status: z.enum([
             "PREACTIVE",
             "ACTIVE",
@@ -2296,6 +1801,153 @@ const appRouter = t.router({
       otp: z.number(),
     })).output(z.object({
       is_otp_correct: z.boolean(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+  }),
+  users: t.router({
+    insertOne: publicProcedure.input(z.object({
+      doc: z.object({
+        name: z.string().optional(),
+        email: z.string().email().nonempty(),
+        organization_id: z.string().optional(),
+        roles: z.array(z.string()).optional(),
+      }),
+    })).output(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      name: z.string().optional(),
+      email: z.string().email().nonempty(),
+      organization_id: z.string().optional(),
+      login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
+      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+      roles: z.array(z.string()).optional(),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    insertMany: publicProcedure.input(z.object({
+      doc: z.array(z.object({
+        name: z.string().optional(),
+        email: z.string().email().nonempty(),
+        organization_id: z.string().optional(),
+        roles: z.array(z.string()).optional(),
+      })),
+    })).output(z.object({
+      acknowledged: z.boolean(),
+      insertedCount: z.number(),
+      insertedIds: z.record(z.string().nonempty(), z.custom<any>()),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    findById: publicProcedure.input(z.object({
+      filter: z
+        .object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+        })
+        .refine((data) => !Object.values(data).every((value) => !value)),
+    })).output(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      name: z.string().optional(),
+      email: z.string().email().nonempty(),
+      organization_id: z.string().optional(),
+      login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
+      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+      roles: z.array(z.string()).optional(),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }).or(z.undefined())).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    findByData: publicProcedure.input(z.object({
+      filter: z.array(z.object({
+        _id: z.string().optional(),
+        uuid: z.string().uuid().optional(),
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+        organization_id: z.string().optional(),
+        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+        roles: z.array(z.string()).optional(),
+      })),
+    })).output(z.array(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      name: z.string().optional(),
+      email: z.string().email().nonempty(),
+      organization_id: z.string().optional(),
+      login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
+      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+      roles: z.array(z.string()).optional(),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    updateById: publicProcedure.input(z.object({
+      filter: z
+        .object({
+          _id: z.string().optional(),
+          uuid: z.string().uuid().optional(),
+        })
+        .refine((data) => !Object.values(data).every((value) => !value)),
+      update: z.object({
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+        organization_id: z.string().optional(),
+        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+        roles: z.array(z.string()).optional(),
+      }),
+    })).output(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      name: z.string().optional(),
+      email: z.string().email().nonempty(),
+      organization_id: z.string().optional(),
+      login_method: z.enum(["OTP", "MAGIC_LINK"] as const),
+      status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const),
+      roles: z.array(z.string()).optional(),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    updateByData: publicProcedure.input(z.object({
+      filter: z.array(z.object({
+        _id: z.string().optional(),
+        uuid: z.string().uuid().optional(),
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+        organization_id: z.string().optional(),
+        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+        roles: z.array(z.string()).optional(),
+      })),
+      update: z.object({
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+        organization_id: z.string().optional(),
+        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+        roles: z.array(z.string()).optional(),
+      }),
+    })).output(z.object({
+      acknowledged: z.boolean(),
+      modifiedCount: z.number(),
+      upsertedCount: z.number(),
+      matchedCount: z.number(),
+      upsertedId: z.custom<any>(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    deleteByData: publicProcedure.input(z.object({
+      filter: z.array(z.object({
+        _id: z.string().optional(),
+        uuid: z.string().uuid().optional(),
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+        organization_id: z.string().optional(),
+        login_method: z.enum(["OTP", "MAGIC_LINK"] as const).optional(),
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"] as const).optional(),
+        roles: z.array(z.string()).optional(),
+      })),
+    })).output(z.object({
+      acknowledged: z.boolean(),
+      deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });

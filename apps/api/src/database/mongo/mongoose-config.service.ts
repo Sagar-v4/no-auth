@@ -27,14 +27,14 @@ export const createMongooseConfigServiceClass = (
           connection.on("open", () =>
             console.log(`🙌🏻 open: ${connectionName}`),
           );
+          connection.on("disconnecting", () =>
+            console.log(`🧨 disconnecting: ${connectionName}`),
+          );
           connection.on("disconnected", () =>
             console.log(`💥 disconnected: ${connectionName}`),
           );
           connection.on("reconnected", () =>
             console.log(`✅ reconnected: ${connectionName}`),
-          );
-          connection.on("disconnecting", () =>
-            console.log(`🧨 disconnecting: ${connectionName}`),
           );
           return connection;
         },

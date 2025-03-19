@@ -5,7 +5,6 @@ import {
   Settings,
   Building2,
   Building,
-  FileLock,
   ShieldCheck,
   UserRoundCheck,
   Cloud,

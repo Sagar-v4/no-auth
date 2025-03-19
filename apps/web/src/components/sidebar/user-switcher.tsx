@@ -1,4 +1,4 @@
-"use client";
+"use user";
 
 import * as React from "react";
 import Link from "next/link";
@@ -30,34 +30,47 @@ import { useURL } from "@/hooks/use-url";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
 import { USERS } from "@/registry/sidebar";
-import { ROLES_ENUM } from "@/lib/trpc/schemas/clients";
+import { NO_AUTH_USER_ROLES_ENUM } from "@/lib/trpc/schemas/users";
+import { Button } from "@workspace/ui/components/button";
 
 export function SidebarUserSwitcher() {
   const { isMobile } = useSidebar();
   const { user_type, page_name } = useURL();
-  const { client, organization } = useCurrentUser();
+  const { user, organization, localUser } = useCurrentUser();
 
-  const { data: organizations } = getOrganizationsByData({
+  const { data, isLoading, isError } = getOrganizationsByData({
     filter: [
       {
-        client_id: client._id,
+        user_id: user._id,
       },
     ],
   });
 
-  if (!organizations) return <UserSwitcherSkeleton />;
+  const Reload = () => {
+    return (
+      <Button
+        className="bg-sidebar-primary hover:bg-sidebar-primary text-sidebar-primary-foreground m-1.5"
+        onClick={() => window.location.reload()}
+      >
+        Reload
+      </Button>
+    );
+  };
+
+  if (isLoading) return <UserSwitcherSkeleton />;
+  if (!data || isError) return <Reload />;
 
   const User = () => {
     return (
       <>
         <Avatar className="h-8 w-8 rounded-lg">
           <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground rounded-lg">
-            {client.name.toUpperCase()[0]}
+            {user.name.toUpperCase()[0]}
           </AvatarFallback>
         </Avatar>
         <div className="grid flex-1 text-left text-sm leading-tight">
-          <span className="truncate font-medium">{client.name}</span>
-          <span className="truncate text-xs">{client.email}</span>
+          <span className="truncate font-medium">{user.name}</span>
+          <span className="truncate text-xs">{user.email}</span>
         </div>
       </>
     );
@@ -101,7 +114,7 @@ export function SidebarUserSwitcher() {
               Organizations
             </DropdownMenuLabel>
             <DropdownMenuGroup>
-              {organizations.map((organization) => (
+              {data.map((organization) => (
                 <Link
                   href={
                     user_type === USERS.ORGANIZATION
@@ -116,7 +129,7 @@ export function SidebarUserSwitcher() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {client.roles.includes(ROLES_ENUM.enum.ADMIN) && (
+              {user.roles.includes(NO_AUTH_USER_ROLES_ENUM.Enum.ADMIN) && (
                 <>
                   <DropdownMenuItem>
                     <ExternalLink />

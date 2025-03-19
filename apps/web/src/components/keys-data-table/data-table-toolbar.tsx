@@ -1,15 +1,16 @@
 "use client";
 
+import { JSX } from "react";
 import { Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
 
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 
-import { AddKey } from "@/components/keys-data-table/add-key";
 import { status } from "@/components/keys-data-table/data";
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
+import { cn } from "@workspace/ui/lib/utils";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -17,19 +18,25 @@ interface DataTableToolbarProps<TData> {
 
 export function DataTableToolbar<TData>({
   table,
-}: DataTableToolbarProps<TData>) {
+  Refresh,
+  Add,
+}: DataTableToolbarProps<TData> & {
+  Refresh?: () => JSX.Element;
+  Add?: () => JSX.Element;
+}) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2 overflow-scroll p-1">
+    <div className="flex justify-between">
+      <div className="flex gap-x-2 overflow-scroll py-1">
+        {Refresh ? <Refresh /> : null}
         <Input
-          placeholder="Filter keys..."
+          placeholder="Search..."
           value={[table.getColumn("name")?.getFilterValue() as string]}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[150px] lg:w-[250px]"
+          className={cn(!Refresh ? "ml-1" : null, "h-8 w-[150px] lg:w-[250px]")}
         />
         {table.getColumn("status") && (
           <DataTableFacetedFilter
@@ -49,8 +56,10 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
-      <AddKey />
+      <div className="ml-2 flex gap-x-2 py-1">
+        <DataTableViewOptions table={table} />
+        {Add ? <Add /> : null}
+      </div>
     </div>
   );
 }

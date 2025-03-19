@@ -51,25 +51,16 @@ import {
   verifyEmailOTPSSOOutputSchema,
   VerifyEmailOTPSSOOutputType,
 } from "../../../../../libs/trpc/schemas/sso";
-import { ClientsService } from "@/app/clients/clients.service";
-import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
 import { generateOTP } from "@/utils/otp-generator";
 import { EmailServicesService } from "@/app/email/services/services.service";
-import { DevicesService } from "@/app/devices/devices.service";
 import { EmailServiceDocument } from "@/app/email/services/entities/service.entity";
 import { DeviceDocument } from "@/app/devices/entities/device.entity";
 import {
-  CLIENTELE_SCHEMA_NAME,
-  ClienteleDocument,
-} from "@/app/clienteles/entities/clientele.entity";
-import {
-  CLIENT_SCHEMA_NAME,
-  ClientDocument,
-} from "@/app/clients/entities/client.entity";
-import { generateEmailID } from "@/utils/clientele-id-generator";
-import { ClientelesService } from "@/app/clienteles/clienteles.service";
+  USER_SCHEMA_NAME,
+  UserDocument,
+} from "@/app/users/entities/user.entity";
 import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
@@ -287,11 +278,11 @@ export class SSORouter {
         },
       });
 
-      const client_ids = concatIds(
-        [findBySSORefInputData.filter.sso.client_id],
+      const user_ids = concatIds(
+        [findBySSORefInputData.filter.sso.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: findBySSORefInputData.filter.client,
+          schema: "User",
+          filter: findBySSORefInputData.filter.user,
         }),
       );
       const organization_ids = concatIds(
@@ -303,9 +294,9 @@ export class SSORouter {
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
       if (organization_ids.length > 0) {
@@ -336,7 +327,7 @@ export class SSORouter {
           ...Object.fromEntries(references_ids),
         },
         select: [],
-        populate: ["client_id", "organization_id"],
+        populate: ["user_id", "organization_id"],
       });
 
       this.logger.log({
@@ -515,11 +506,11 @@ export class SSORouter {
         },
       });
 
-      const client_ids = concatIds(
-        [deleteBySSORefInputData.filter.sso.client_id],
+      const user_ids = concatIds(
+        [deleteBySSORefInputData.filter.sso.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: deleteBySSORefInputData.filter.client,
+          schema: "User",
+          filter: deleteBySSORefInputData.filter.user,
         }),
       );
       const organization_ids = concatIds(
@@ -531,9 +522,9 @@ export class SSORouter {
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
       if (organization_ids.length > 0) {
@@ -588,67 +579,28 @@ export class SSORouter {
         },
       });
 
-      const user_type = sendEmailOTPSSOInputData.sso_uuid
-        ? CLIENTELE_SCHEMA_NAME
-        : CLIENT_SCHEMA_NAME;
-
       let user_id: string;
 
-      if (sendEmailOTPSSOInputData.sso_uuid) {
-        const [sso] = await this.findByRef({
-          filter: {
-            client: {},
-            organization: {},
-            sso: {
-              uuid: sendEmailOTPSSOInputData.sso_uuid,
-            },
-          },
-        });
+      const [user]: UserDocument[] = await this.basicService.find({
+        schema: "User",
+        filter: {
+          email: sendEmailOTPSSOInputData.email,
+        },
+        populate: [],
+        select: ["_id"],
+      });
 
-        const [clientele]: ClienteleDocument[] = await this.basicService.find({
-          schema: "Clientele",
-          filter: {
+      if (!user) {
+        const newUser = await this.basicService.insertOne({
+          schema: "User",
+          doc: {
             email: sendEmailOTPSSOInputData.email,
-            organization_id: sso.organization_id._id,
+            name: sendEmailOTPSSOInputData.email.split("@")[0],
           },
-          populate: [],
-          select: ["_id"],
         });
-
-        if (!clientele) {
-          const newClientele = await this.basicService.insertOne({
-            schema: "Clientele",
-            doc: {
-              organization_id: sso.organization_id._id,
-              email: sendEmailOTPSSOInputData.email,
-            },
-          });
-          user_id = newClientele._id.toString();
-        } else {
-          user_id = clientele._id.toString();
-        }
+        user_id = newUser._id.toString();
       } else {
-        const [client]: ClientDocument[] = await this.basicService.find({
-          schema: "Client",
-          filter: {
-            email: sendEmailOTPSSOInputData.email,
-          },
-          populate: [],
-          select: ["_id"],
-        });
-
-        if (!client) {
-          const newClient = await this.basicService.insertOne({
-            schema: "Client",
-            doc: {
-              email: sendEmailOTPSSOInputData.email,
-              name: sendEmailOTPSSOInputData.email.split("@")[0],
-            },
-          });
-          user_id = newClient._id.toString();
-        } else {
-          user_id = client._id.toString();
-        }
+        user_id = user._id.toString();
       }
 
       const otp = generateOTP(6);
@@ -673,7 +625,6 @@ export class SSORouter {
           schema: "Email_Service",
           doc: {
             user_id: user_id,
-            user_type: user_type,
             device_id: device.uuid,
             metadata: {
               otp: otp,

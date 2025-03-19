@@ -17,16 +17,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarRail,
 } from "@workspace/ui/components/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@workspace/ui/components/collapsible";
 import { Label } from "@workspace/ui/components/label";
 import { getSidebarLinks } from "@/registry/sidebar";
 import { SidebarThemes } from "@/components/sidebar/themes";
@@ -88,7 +80,6 @@ export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarThemes />
-        {/* <SidebarUsers /> */}
       </SidebarFooter>
       <SidebarRail className="hover:after:!bg-sidebar-primary" />
     </Sidebar>

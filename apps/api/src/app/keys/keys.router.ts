@@ -43,8 +43,6 @@ import {
   deleteByKeyRefOutputSchema,
   DeleteByKeyRefOutputType,
 } from "../../../../../libs/trpc/schemas/keys";
-import { ClientsService } from "@/app/clients/clients.service";
-import { OrganizationsService } from "@/app/organizations/organizations.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
 import { BasicService } from "@/app/basic/basic.service";
@@ -264,11 +262,11 @@ export class KeysRouter {
         },
       });
 
-      const client_ids = concatIds(
-        [findByKeyRefInputData.filter.key.client_id],
+      const user_ids = concatIds(
+        [findByKeyRefInputData.filter.key.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: findByKeyRefInputData.filter.client,
+          schema: "User",
+          filter: findByKeyRefInputData.filter.user,
         }),
       );
       const organization_ids = concatIds(
@@ -280,9 +278,9 @@ export class KeysRouter {
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
       if (organization_ids.length > 0) {
@@ -313,7 +311,7 @@ export class KeysRouter {
           ...Object.fromEntries(references_ids),
         },
         select: [],
-        populate: ["client_id", "organization_id"],
+        populate: ["user_id", "organization_id"],
       });
 
       this.logger.log({
@@ -492,11 +490,11 @@ export class KeysRouter {
         },
       });
 
-      const client_ids = concatIds(
-        [deleteByKeyRefInputData.filter.key.client_id],
+      const user_ids = concatIds(
+        [deleteByKeyRefInputData.filter.key.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: deleteByKeyRefInputData.filter.client,
+          schema: "User",
+          filter: deleteByKeyRefInputData.filter.user,
         }),
       );
       const organization_ids = concatIds(
@@ -508,9 +506,9 @@ export class KeysRouter {
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
       if (organization_ids.length > 0) {

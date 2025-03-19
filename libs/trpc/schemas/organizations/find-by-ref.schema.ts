@@ -1,10 +1,10 @@
-import { clientInputSchema, clientOutputSchema } from "../clients";
+import { userInputSchema, userOutputSchema } from "../users";
 import { z } from "zod";
 import { organizationInputSchema, organizationOutputSchema } from ".";
 
 export const findByOrganizationRefInputSchema = z.object({
   filter: z.object({
-    client: clientInputSchema,
+    user: userInputSchema,
     organization: organizationInputSchema,
   }),
 });
@@ -13,7 +13,7 @@ export type FindByOrganizationRefInputType = z.infer<
 >;
 
 export const findByOrganizationRefOutputSchema = z.array(
-  organizationOutputSchema.merge(z.object({ client_id: clientOutputSchema })),
+  organizationOutputSchema.merge(z.object({ user_id: userOutputSchema })),
 );
 export type FindByOrganizationRefOutputType = z.infer<
   typeof findByOrganizationRefOutputSchema

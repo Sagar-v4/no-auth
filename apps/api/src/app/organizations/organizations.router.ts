@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { DeleteResult, InsertManyResult, PopulateOptions } from "mongoose";
+import { DeleteResult, InsertManyResult } from "mongoose";
 import { Input, Mutation, Query, Router, UseMiddlewares } from "nestjs-trpc";
 
 import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
@@ -43,7 +43,6 @@ import {
   deleteByOrganizationRefOutputSchema,
   DeleteByOrganizationRefOutputType,
 } from "../../../../../libs/trpc/schemas/organizations";
-import { ClientsService } from "@/app/clients/clients.service";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
 import { BasicService } from "@/app/basic/basic.service";
@@ -265,18 +264,18 @@ export class OrganizationsRouter {
         },
       });
 
-      const client_ids = concatIds(
-        [findByOrganizationRefInputData.filter.organization.client_id],
+      const user_ids = concatIds(
+        [findByOrganizationRefInputData.filter.organization.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: findByOrganizationRefInputData.filter.client,
+          schema: "User",
+          filter: findByOrganizationRefInputData.filter.user,
         }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
 
@@ -306,7 +305,7 @@ export class OrganizationsRouter {
             ...Object.fromEntries(references_ids),
           },
           select: [],
-          populate: ["client_id"],
+          populate: ["user_id"],
         });
 
       this.logger.log({
@@ -485,18 +484,18 @@ export class OrganizationsRouter {
         },
       });
 
-      const client_ids = concatIds(
-        [deleteByOrganizationRefInputData.filter.organization.client_id],
+      const user_ids = concatIds(
+        [deleteByOrganizationRefInputData.filter.organization.user_id],
         await this.basicService.getIds({
-          schema: "Client",
-          filter: deleteByOrganizationRefInputData.filter.client,
+          schema: "User",
+          filter: deleteByOrganizationRefInputData.filter.user,
         }),
       );
 
       const references_ids = new Map<string, { $in: string[] }>();
-      if (client_ids.length > 0) {
-        references_ids.set("client_id", {
-          $in: client_ids,
+      if (user_ids.length > 0) {
+        references_ids.set("user_id", {
+          $in: user_ids,
         });
       }
 

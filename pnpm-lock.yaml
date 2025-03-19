@@ -125,6 +125,9 @@ importers:
       mongoose:
         specifier: ^8.10.0
         version: 8.11.0(socks@2.8.4)
+      nanoid:
+        specifier: ^5.1.4
+        version: 5.1.4
       nestjs-trpc:
         specifier: ^1.6.1
         version: 1.6.1(@nestjs/common@11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.11)(@trpc/server@10.45.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)(zod@3.24.2)
@@ -8748,6 +8751,14 @@ packages:
         integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==,
       }
     engines: { node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1 }
+    hasBin: true
+
+  nanoid@5.1.4:
+    resolution:
+      {
+        integrity: sha512-GTFcMIDgR7tqji/LpSY8rtg464VnJl/j6ypoehYnuGb+Y8qZUdtKB8WVCXon0UEZgFDbuUxpIl//6FHLHgXSNA==,
+      }
+    engines: { node: ^18 || >=20 }
     hasBin: true
 
   natural-compare@1.4.0:
@@ -17523,6 +17534,8 @@ snapshots:
   mute-stream@2.0.0: {}
 
   nanoid@3.3.8: {}
+
+  nanoid@5.1.4: {}
 
   natural-compare@1.4.0: {}
 

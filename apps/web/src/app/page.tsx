@@ -19,7 +19,7 @@ export default function Page() {
   return (
     <div className="flex min-h-svh items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold">{data?.createdAt}</h1>
+        <h1 className="text-2xl font-bold">{data?.name}</h1>
         <Button size="sm" onClick={exec}>
           Fetch
         </Button>

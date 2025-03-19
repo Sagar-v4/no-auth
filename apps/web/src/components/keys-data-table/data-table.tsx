@@ -36,7 +36,12 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+  Refresh,
+  Add,
+}: DataTableProps<TData, TValue> & {
+  Refresh?: () => React.JSX.Element;
+  Add?: () => React.JSX.Element;
+}) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -68,8 +73,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="my-2 grid w-full grid-cols-1">
-      <DataTableToolbar table={table} />
+    <div className="grid w-full grid-cols-1">
+      <DataTableToolbar table={table} Refresh={Refresh} Add={Add} />
       <div className="my-2 rounded-md border">
         <Table>
           <TableHeader>
