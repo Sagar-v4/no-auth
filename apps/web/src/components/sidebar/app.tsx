@@ -1,9 +1,8 @@
 "use client";
 
-import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ChevronRight, Search } from "lucide-react";
+import * as React from "react";
+import { Search } from "lucide-react";
 
 import {
   Sidebar,

@@ -7,6 +7,7 @@ import {
   Building,
   ChevronsUpDown,
   ExternalLink,
+  RefreshCw,
 } from "lucide-react";
 
 import {
@@ -31,7 +32,6 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
 import { USERS } from "@/registry/sidebar";
 import { NO_AUTH_USER_ROLES_ENUM } from "@/lib/trpc/schemas/users";
-import { Button } from "@workspace/ui/components/button";
 
 export function SidebarUserSwitcher() {
   const { isMobile } = useSidebar();
@@ -48,12 +48,22 @@ export function SidebarUserSwitcher() {
 
   const Reload = () => {
     return (
-      <Button
-        className="bg-sidebar-primary hover:bg-sidebar-primary text-sidebar-primary-foreground m-1.5"
-        onClick={() => window.location.reload()}
-      >
-        Reload
-      </Button>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            size="lg"
+            className="bg-destructive hover:bg-destructive"
+            onClick={() => window.location.reload()}
+          >
+            <div className="flex aspect-square size-8 items-center justify-center">
+              <RefreshCw className="size-4" />
+            </div>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              Reload
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
     );
   };
 
@@ -76,6 +86,20 @@ export function SidebarUserSwitcher() {
     );
   };
 
+  const Organization = () => {
+    return (
+      <>
+        <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+          <Building className="size-4" />
+        </div>
+        <div className="grid flex-1 text-left text-sm leading-tight">
+          <span className="truncate font-medium">{organization.name}</span>
+          <span className="truncate text-xs">{organization.status}</span>
+        </div>
+      </>
+    );
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -86,21 +110,7 @@ export function SidebarUserSwitcher() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               {user_type === USERS.CLIENT ? <User /> : null}
-              {user_type === USERS.ORGANIZATION ? (
-                <>
-                  <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                    <Building className="size-4" />
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">
-                      {organization.name}
-                    </span>
-                    <span className="truncate text-xs">
-                      {organization.status}
-                    </span>
-                  </div>
-                </>
-              ) : null}
+              {user_type === USERS.ORGANIZATION ? <Organization /> : null}
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
