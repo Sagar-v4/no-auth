@@ -52,7 +52,7 @@ export function SidebarUserSwitcher() {
         <SidebarMenuItem>
           <SidebarMenuButton
             size="lg"
-            className="bg-destructive hover:bg-destructive"
+            className="bg-destructive hover:bg-destructive text-white"
             onClick={() => window.location.reload()}
           >
             <div className="flex aspect-square size-8 items-center justify-center">
