@@ -1,0 +1,29 @@
+{
+  "name": "@no-auth/client",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "homepage": "https://github.com/Sagar-v4/no-auth/blob/master/packages/client/README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sagar-v4/no-auth.git"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "publish:npm": "npm publish --access public"
+  },
+  "keywords": [
+    "no auth",
+    "auth",
+    "client"
+  ],
+  "author": "sv4dev",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2"
+  }
+}
