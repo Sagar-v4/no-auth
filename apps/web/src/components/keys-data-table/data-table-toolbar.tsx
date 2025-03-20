@@ -27,8 +27,8 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex justify-between">
-      <div className="flex gap-x-2 overflow-scroll py-1">
+    <span className="flex w-full justify-between gap-x-2 overflow-x-scroll p-1">
+      <div className="flex gap-x-2">
         {Refresh ? <Refresh /> : null}
         <Input
           placeholder="Search..."
@@ -36,7 +36,7 @@ export function DataTableToolbar<TData>({
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className={cn(!Refresh ? "ml-1" : null, "h-8 w-[150px] lg:w-[250px]")}
+          className={cn("h-8 w-[150px] lg:w-[250px]")}
         />
         {table.getColumn("status") && (
           <DataTableFacetedFilter
@@ -56,10 +56,10 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <div className="ml-2 flex gap-x-2 py-1">
+      <div className="flex gap-x-2">
         <DataTableViewOptions table={table} />
         {Add ? <Add /> : null}
       </div>
-    </div>
+    </span>
   );
 }

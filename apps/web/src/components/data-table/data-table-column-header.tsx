@@ -1,5 +1,5 @@
 import { Column } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff, X } from "lucide-react";
 
 import { cn } from "@workspace/ui/lib/utils";
 import { Button } from "@workspace/ui/components/button";
@@ -26,6 +26,16 @@ export function DataTableColumnHeader<TData, TValue>({
     return <div className={cn(className)}>{title}</div>;
   }
 
+  const SortingIcon = () => {
+    return column.getIsSorted() === "asc" ? (
+      <ArrowUp />
+    ) : column.getIsSorted() === "desc" ? (
+      <ArrowDown />
+    ) : (
+      <ChevronsUpDown />
+    );
+  };
+
   return (
     <div className={cn("flex items-center space-x-2", className)}>
       <DropdownMenu>
@@ -36,13 +46,7 @@ export function DataTableColumnHeader<TData, TValue>({
             className="data-[state=open]:bg-accent -ml-3 h-8"
           >
             <span>{title}</span>
-            {column.getIsSorted() === "desc" ? (
-              <ArrowDown />
-            ) : column.getIsSorted() === "asc" ? (
-              <ArrowUp />
-            ) : (
-              <ChevronsUpDown />
-            )}
+            <SortingIcon />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
@@ -55,8 +59,8 @@ export function DataTableColumnHeader<TData, TValue>({
             Desc
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.clearSorting()}>
-            <ChevronsUpDown className="text-muted-foreground/70 h-3.5 w-3.5" />
-            None
+            <X className="text-muted-foreground/70 h-3.5 w-3.5" />
+            Reset
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
