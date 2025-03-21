@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { getDeviceById } from "@/trpc/routers/devices";
+import { getDeviceByIdV1 } from "@/trpc/routers/devices";
 import { getCookie, setCookie } from "cookies-next/client";
 
 export function useDevice() {
   const KEY = "device_uuid";
   const device_uuid = getCookie(KEY);
 
-  const { data: device_data, exec } = getDeviceById({
+  const { data: device_data, exec } = getDeviceByIdV1({
     filter: {
       uuid: String(device_uuid),
     },

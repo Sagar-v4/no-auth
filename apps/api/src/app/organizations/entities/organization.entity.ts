@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 import { USER_SCHEMA_NAME } from "@/app/users/entities/user.entity";
 import { randomUUID } from "crypto";
-import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/organizations";
+import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/v1/organizations";
 
 @Schema({
   timestamps: true,

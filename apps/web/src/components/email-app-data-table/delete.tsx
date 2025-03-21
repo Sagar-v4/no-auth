@@ -3,7 +3,7 @@ import * as React from "react";
 import { Button } from "@workspace/ui/components/button";
 import { ResponsiveAlertDialog } from "@workspace/ui/components/responsive-alert-dialog";
 import { deleteEmailAppsByData } from "@/trpc/routers/email-apps";
-import { EmailAppIdInputSchema } from "@/lib/trpc/schemas/email/apps";
+import { EmailAppIdInputSchema } from "@/lib/trpc/schemas/v1/email/apps";
 
 export function DeleteEmailApp(ids: EmailAppIdInputSchema) {
   const { exec } = deleteEmailAppsByData();

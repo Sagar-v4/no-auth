@@ -4,7 +4,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import { DEVICE_SCHEMA_NAME } from "@/app/devices/entities/device.entity";
 import { USER_SCHEMA_NAME } from "@/app/users/entities/user.entity";
-import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/sessions";
+import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/v1/sessions";
 
 @Schema({
   timestamps: true,

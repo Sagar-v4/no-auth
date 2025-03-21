@@ -17,7 +17,7 @@ import {
 import {
   emailAppInsertInputSchema,
   EmailAppOutputSchema,
-} from "@/lib/trpc/schemas/email/apps";
+} from "@/lib/trpc/schemas/v1/email/apps";
 import { DialogTrigger } from "@workspace/ui/components/dialog";
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile";
 import { DrawerTrigger } from "@workspace/ui/components/drawer";

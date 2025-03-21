@@ -6,11 +6,11 @@ import {
   EmailServiceSchema,
 } from "@/app/email/services/entities/service.entity";
 import { MONGOOSE_DB_CONNECTION } from "@/database/connections";
-import { EmailServicesService } from "@/app/email/services/services.service";
-import { EmailServicesController } from "@/app/email/services/services.controller";
-import { EmailServicesRouter } from "@/app/email/services/services.router";
 import { EnvModule } from "@/env/env.module";
 import { BasicModule } from "@/app/basic/basic.module";
+import { EmailServicesV1Controller } from "@/app/email/services/controllers/services.v1.controller";
+import { EmailServicesV1Service } from "@/app/email/services/services/services.v1.service";
+import { EmailServicesV1Router } from "@/app/email/services/routers/services.v1.router";
 
 @Module({
   imports: [
@@ -21,8 +21,8 @@ import { BasicModule } from "@/app/basic/basic.module";
     EnvModule,
     BasicModule,
   ],
-  controllers: [EmailServicesController],
-  providers: [EmailServicesService, EmailServicesRouter],
-  exports: [EmailServicesService],
+  controllers: [EmailServicesV1Controller],
+  providers: [EmailServicesV1Service, EmailServicesV1Router],
+  exports: [EmailServicesV1Service],
 })
 export class EmailServicesModule {}

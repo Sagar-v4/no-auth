@@ -5,7 +5,7 @@ const t = initTRPC.create();
 const publicProcedure = t.procedure;
 
 const appRouter = t.router({
-  devices: t.router({
+  devicesV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({}),
     })).output(z.object({
@@ -97,7 +97,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  emailServices: t.router({
+  emailServicesV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -303,7 +303,7 @@ const appRouter = t.router({
       html: z.string().optional(),
     })).output(z.any()).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  keys: t.router({
+  keysV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         secret: z.string().nanoid().nonempty(),
@@ -569,7 +569,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  organizations: t.router({
+  organizationsV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -773,7 +773,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  permissions: t.router({
+  permissionsV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -1029,7 +1029,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  roles: t.router({
+  rolesV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -1295,7 +1295,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  sessions: t.router({
+  sessionsV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -1502,7 +1502,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  sso: t.router({
+  ssoV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         secret: z.string().nanoid().optional(),
@@ -1803,7 +1803,7 @@ const appRouter = t.router({
       is_otp_correct: z.boolean(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  users: t.router({
+  usersV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         name: z.string().optional(),

@@ -4,7 +4,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import { USER_SCHEMA_NAME } from "@/app/users/entities/user.entity";
 import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
-import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/permissions";
+import { STATUS, STATUS_ENUM } from "@/lib/trpc/schemas/v1/permissions";
 
 @Schema({
   timestamps: true,

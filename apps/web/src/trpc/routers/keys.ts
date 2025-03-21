@@ -2,36 +2,36 @@ import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
-  InsertOneKeyInputType,
-  InsertManyKeyInputType,
-  FindByKeyIdInputType,
-  FindByKeyDataInputType,
-  FindByKeyRefInputType,
-  UpdateByKeyIdInputType,
-  UpdateByKeyDataInputType,
-  DeleteByKeyDataInputType,
-  DeleteByKeyRefInputType,
-} from "@/lib/trpc/schemas/keys";
+  InsertOneKeyInput,
+  InsertManyKeyInput,
+  FindByKeyIdInput,
+  FindByKeyDataInput,
+  FindByKeyRefInput,
+  UpdateByKeyIdInput,
+  UpdateByKeyDataInput,
+  DeleteByKeyDataInput,
+  DeleteByKeyRefInput,
+} from "@/lib/trpc/schemas/v1/keys";
 import { useTRPC } from "@/trpc/server";
 import { queryClient } from "@/trpc/provider";
 
-export function createOneKey() {
-  const { keys } = useTRPC();
+export function createOneKeyV1() {
+  const { keysV1 } = useTRPC();
 
-  const mutationOptions = keys.insertOne.mutationOptions({
+  const mutationOptions = keysV1.insertOne.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = keys.findByData.queryKey();
-      const findById = keys.findById.queryKey();
-      const findByRef = keys.findByRef.queryKey();
+      const findByData = keysV1.findByData.queryKey();
+      const findById = keysV1.findById.queryKey();
+      const findByRef = keysV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertOneKeyInputType) => {
+  const exec = async (input: InsertOneKeyInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -45,23 +45,23 @@ export function createOneKey() {
   return { exec, ...mutation };
 }
 
-export function createManyKey() {
-  const { keys } = useTRPC();
+export function createManyKeyV1() {
+  const { keysV1 } = useTRPC();
 
-  const mutationOptions = keys.insertMany.mutationOptions({
+  const mutationOptions = keysV1.insertMany.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = keys.findByData.queryKey();
-      const findById = keys.findById.queryKey();
-      const findByRef = keys.findByRef.queryKey();
+      const findByData = keysV1.findByData.queryKey();
+      const findById = keysV1.findById.queryKey();
+      const findByRef = keysV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertManyKeyInputType) => {
+  const exec = async (input: InsertManyKeyInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -75,10 +75,10 @@ export function createManyKey() {
   return { exec, ...mutation };
 }
 
-export function getKeyById(input: FindByKeyIdInputType) {
-  const { keys } = useTRPC();
+export function getKeyByIdV1(input: FindByKeyIdInput) {
+  const { keysV1 } = useTRPC();
 
-  const queryOptions = keys.findById.queryOptions(input, {
+  const queryOptions = keysV1.findById.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -107,10 +107,10 @@ export function getKeyById(input: FindByKeyIdInputType) {
   return { exec, ...query };
 }
 
-export function getKeysByData(input: FindByKeyDataInputType) {
-  const { keys } = useTRPC();
+export function getKeysByDataV1(input: FindByKeyDataInput) {
+  const { keysV1 } = useTRPC();
 
-  const queryOptions = keys.findByData.queryOptions(input, {
+  const queryOptions = keysV1.findByData.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     // enabled: false,
@@ -146,10 +146,10 @@ export function getKeysByData(input: FindByKeyDataInputType) {
   return { exec, ...query };
 }
 
-export function getKeysByRef(input: FindByKeyRefInputType) {
-  const { keys } = useTRPC();
+export function getKeysByRefV1(input: FindByKeyRefInput) {
+  const { keysV1 } = useTRPC();
 
-  const queryOptions = keys.findByRef.queryOptions(input, {
+  const queryOptions = keysV1.findByRef.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -178,23 +178,23 @@ export function getKeysByRef(input: FindByKeyRefInputType) {
   return { exec, ...query };
 }
 
-export function updateKeyById() {
-  const { keys } = useTRPC();
+export function updateKeyByIdV1() {
+  const { keysV1 } = useTRPC();
 
-  const mutationOptions = keys.updateById.mutationOptions({
+  const mutationOptions = keysV1.updateById.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = keys.findByData.queryKey();
-      const findById = keys.findById.queryKey();
-      const findByRef = keys.findByRef.queryKey();
+      const findByData = keysV1.findByData.queryKey();
+      const findById = keysV1.findById.queryKey();
+      const findByRef = keysV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateByKeyIdInputType) => {
+  const exec = async (input: UpdateByKeyIdInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -208,23 +208,23 @@ export function updateKeyById() {
   return { exec, ...mutation };
 }
 
-export function updateKeysByData() {
-  const { keys } = useTRPC();
+export function updateKeysByDataV1() {
+  const { keysV1 } = useTRPC();
 
-  const mutationOptions = keys.updateByData.mutationOptions({
+  const mutationOptions = keysV1.updateByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = keys.findByData.queryKey();
-      const findById = keys.findById.queryKey();
-      const findByRef = keys.findByRef.queryKey();
+      const findByData = keysV1.findByData.queryKey();
+      const findById = keysV1.findById.queryKey();
+      const findByRef = keysV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateByKeyDataInputType) => {
+  const exec = async (input: UpdateByKeyDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -238,23 +238,23 @@ export function updateKeysByData() {
   return { exec, ...mutation };
 }
 
-export function deleteKeysByData() {
-  const { keys } = useTRPC();
+export function deleteKeysByDataV1() {
+  const { keysV1 } = useTRPC();
 
-  const mutationOptions = keys.deleteByData.mutationOptions({
+  const mutationOptions = keysV1.deleteByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = keys.findByData.queryKey();
-      const findById = keys.findById.queryKey();
-      const findByRef = keys.findByRef.queryKey();
+      const findByData = keysV1.findByData.queryKey();
+      const findById = keysV1.findById.queryKey();
+      const findByRef = keysV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteByKeyDataInputType) => {
+  const exec = async (input: DeleteByKeyDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -268,23 +268,23 @@ export function deleteKeysByData() {
   return { exec, ...mutation };
 }
 
-export function deleteKeysByRef() {
-  const { keys } = useTRPC();
+export function deleteKeysByRefV1() {
+  const { keysV1 } = useTRPC();
 
-  const mutationOptions = keys.deleteByRef.mutationOptions({
+  const mutationOptions = keysV1.deleteByRef.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = keys.findByData.queryKey();
-      const findById = keys.findById.queryKey();
-      const findByRef = keys.findByRef.queryKey();
+      const findByData = keysV1.findByData.queryKey();
+      const findById = keysV1.findById.queryKey();
+      const findByRef = keysV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteByKeyRefInputType) => {
+  const exec = async (input: DeleteByKeyRefInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {

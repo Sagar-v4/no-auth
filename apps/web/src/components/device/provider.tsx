@@ -1,6 +1,6 @@
 "use client";
 
-import { createOneDevice } from "@/trpc/routers/devices";
+import { createOneDeviceV1 } from "@/trpc/routers/devices";
 import { useEffect } from "react";
 import { useDevice } from "@/hooks/use-device";
 
@@ -9,7 +9,7 @@ export function DeviceProvider({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data, exec } = createOneDevice();
+  const { data, exec } = createOneDeviceV1();
   const { device_uuid, set_device_uuid } = useDevice();
 
   useEffect(() => {

@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
 
-import { SessionsService } from "@/app/sessions/sessions.service";
-import { SessionsController } from "@/app/sessions/sessions.controller";
-import { SessionsRouter } from "@/app/sessions/sessions.router";
+import { SessionsV1Service } from "@/app/sessions/services/sessions.v1.service";
+import { SessionsV1Controller } from "@/app/sessions/controllers/sessions.v1.controller";
+import { SessionsV1Router } from "@/app/sessions/routers/sessions.v1.router";
 import { BasicModule } from "@/app/basic/basic.module";
 
 @Module({
   imports: [BasicModule],
-  controllers: [SessionsController],
-  providers: [SessionsService, SessionsRouter],
-  exports: [SessionsService],
+  controllers: [SessionsV1Controller],
+  providers: [SessionsV1Service, SessionsV1Router],
+  exports: [SessionsV1Service],
 })
 export class SessionsModule {}

@@ -1,4 +1,4 @@
-import { StatusEnum } from "@/lib/trpc/schemas/users";
+import { StatusEnum } from "@/lib/trpc/schemas/v1/users";
 import { CircleCheck, CircleX, Mail } from "lucide-react";
 
 export const status = [

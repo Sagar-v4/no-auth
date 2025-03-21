@@ -18,7 +18,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 
 import { status } from "@/components/email-app-data-table/data";
-import { emailAppOutputSchema } from "@/lib/trpc/schemas/email/apps";
+import { emailAppOutputSchema } from "@/lib/trpc/schemas/v1/email/apps";
 import { EditEmailApp } from "@/components/email-app-data-table/update";
 import { DeleteEmailApp } from "@/components/email-app-data-table/delete";
 import { EmailAppStatusChange } from "@/components/email-app-data-table/status-change";

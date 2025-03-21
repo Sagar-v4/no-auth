@@ -10,7 +10,7 @@ import {
 import { App } from "@/components/email-app-data-table/schema";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableRowActions } from "@/components/email-app-data-table/row-actions";
-import { EmailAppOutputSchema } from "@/lib/trpc/schemas/email/apps";
+import { EmailAppOutputSchema } from "@/lib/trpc/schemas/v1/email/apps";
 
 export const columns: ColumnDef<EmailAppOutputSchema>[] = [
   // {

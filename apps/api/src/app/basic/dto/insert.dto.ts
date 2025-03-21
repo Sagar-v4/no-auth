@@ -1,65 +1,65 @@
-import { DeviceInsertInputSchema } from "@/lib/trpc/schemas/devices";
-import { EmailServiceInsertInputSchema } from "@/lib/trpc/schemas/email/services";
-import { KeyInsertInputSchema } from "@/lib/trpc/schemas/keys";
-import { OrganizationInsertInputSchema } from "@/lib/trpc/schemas/organizations";
-import { PermissionInsertInputSchema } from "@/lib/trpc/schemas/permissions";
-import { RoleInsertInputSchema } from "@/lib/trpc/schemas/roles";
-import { SessionInsertInputSchema } from "@/lib/trpc/schemas/sessions";
-import { SSOInsertInputSchema } from "@/lib/trpc/schemas/sso";
-import { UserInsertInputSchema } from "@/lib/trpc/schemas/users";
+import { DeviceInsertInput } from "@/lib/trpc/schemas/v1/devices";
+import { EmailServiceInsertInput } from "@/lib/trpc/schemas/v1/email/services";
+import { KeyInsertInput } from "@/lib/trpc/schemas/v1/keys";
+import { OrganizationInsertInput } from "@/lib/trpc/schemas/v1/organizations";
+import { PermissionInsertInput } from "@/lib/trpc/schemas/v1/permissions";
+import { RoleInsertInput } from "@/lib/trpc/schemas/v1/roles";
+import { SessionInsertInput } from "@/lib/trpc/schemas/v1/sessions";
+import { SSOInsertInput } from "@/lib/trpc/schemas/v1/sso";
+import { UserInsertInput } from "@/lib/trpc/schemas/v1/users";
 
-export type DeviceInsertInput = {
+export type DeviceInsertInputDto = {
   schema: "Device";
-  doc: DeviceInsertInputSchema;
+  doc: DeviceInsertInput;
 };
 
-export type EmailServiceInsertInput = {
+export type EmailServiceInsertInputDto = {
   schema: "Email_Service";
-  doc: EmailServiceInsertInputSchema;
+  doc: EmailServiceInsertInput;
 };
 
-export type KeyInsertInput = {
+export type KeyInsertInputDto = {
   schema: "Key";
-  doc: KeyInsertInputSchema;
+  doc: KeyInsertInput;
 };
 
-export type OrganizationInsertInput = {
+export type OrganizationInsertInputDto = {
   schema: "Organization";
-  doc: OrganizationInsertInputSchema;
+  doc: OrganizationInsertInput;
 };
 
-export type PermissionInsertInput = {
+export type PermissionInsertInputDto = {
   schema: "Permission";
-  doc: PermissionInsertInputSchema;
+  doc: PermissionInsertInput;
 };
 
-export type RoleInsertInput = {
+export type RoleInsertInputDto = {
   schema: "Role";
-  doc: RoleInsertInputSchema;
+  doc: RoleInsertInput;
 };
 
-export type SessionInsertInput = {
+export type SessionInsertInputDto = {
   schema: "Session";
-  doc: SessionInsertInputSchema;
+  doc: SessionInsertInput;
 };
 
-export type SSOInsertInput = {
+export type SSOInsertInputDto = {
   schema: "SSO";
-  doc: SSOInsertInputSchema;
+  doc: SSOInsertInput;
 };
 
-export type UserInsertInput = {
+export type UserInsertInputDto = {
   schema: "User";
-  doc: UserInsertInputSchema;
+  doc: UserInsertInput;
 };
 
 export type InsertInput =
-  | DeviceInsertInput
-  | EmailServiceInsertInput
-  | KeyInsertInput
-  | OrganizationInsertInput
-  | PermissionInsertInput
-  | RoleInsertInput
-  | SessionInsertInput
-  | SSOInsertInput
-  | UserInsertInput;
+  | DeviceInsertInputDto
+  | EmailServiceInsertInputDto
+  | KeyInsertInputDto
+  | OrganizationInsertInputDto
+  | PermissionInsertInputDto
+  | RoleInsertInputDto
+  | SessionInsertInputDto
+  | SSOInsertInputDto
+  | UserInsertInputDto;

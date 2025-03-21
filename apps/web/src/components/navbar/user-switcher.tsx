@@ -18,12 +18,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
-import { getOrganizationsByData } from "@/trpc/routers/organizations";
+import { getOrganizationsByDataV1 } from "@/trpc/routers/organizations";
 import { useURL } from "@/hooks/use-url";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
 import { USERS } from "@/registry/sidebar";
-import { NO_AUTH_USER_ROLES_ENUM } from "@/lib/trpc/schemas/users";
+import { NO_AUTH_USER_ROLES_ENUM } from "@/lib/trpc/schemas/v1/users";
 import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
@@ -31,7 +31,7 @@ export function NavbarUserSwitcher() {
   const { user_type, page_name } = useURL();
   const { user, organization, localUser } = useCurrentUser();
 
-  const { data, isLoading, isError } = getOrganizationsByData({
+  const { data, isLoading, isError } = getOrganizationsByDataV1({
     filter: [
       {
         user_id: user._id,

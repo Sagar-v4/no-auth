@@ -1,12 +1,12 @@
 "use client";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { getOrganizationById } from "@/trpc/routers/organizations";
+import { getOrganizationByIdV1 } from "@/trpc/routers/organizations";
 import { Button } from "@workspace/ui/components/button";
 
 export default function Page() {
   const { organization } = useCurrentUser();
-  const { exec, data, isError, error } = getOrganizationById({
+  const { exec, data, isError, error } = getOrganizationByIdV1({
     filter: {
       _id: organization._id,
     },

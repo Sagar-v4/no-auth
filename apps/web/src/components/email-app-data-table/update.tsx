@@ -3,7 +3,7 @@ import * as React from "react";
 import { Button } from "@workspace/ui/components/button";
 import { ResponsiveDialog } from "@workspace/ui/components/responsive-dialog";
 import { getEmailAppById } from "@/trpc/routers/email-apps";
-import { EmailAppIdInputSchema } from "@/lib/trpc/schemas/email/apps";
+import { EmailAppIdInputSchema } from "@/lib/trpc/schemas/v1/email/apps";
 import { ACTIONS, Form } from "@/components/email-app-data-table/form";
 import { ResponsiveDialogSkeleton } from "@/skeletons/forms/responsive-dialog";
 

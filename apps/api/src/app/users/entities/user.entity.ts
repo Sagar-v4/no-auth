@@ -7,8 +7,7 @@ import {
   LOGIN_METHODS_ENUM,
   STATUS,
   STATUS_ENUM,
-} from "@/lib/trpc/schemas/users";
-import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
+} from "@/lib/trpc/schemas/v1/users";
 
 @Schema({
   timestamps: true,

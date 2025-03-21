@@ -7,13 +7,13 @@ import {
   LOGIN_METHODS_ENUM,
   NO_AUTH_USER_ROLES_ENUM,
   STATUS_ENUM as USER_STATUS_ENUM,
-} from "@/lib/trpc/schemas/users";
+} from "@/lib/trpc/schemas/v1/users";
 import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
-import { STATUS_ENUM as ORGANIZATION_STATUS_ENUM } from "@/lib/trpc/schemas/organizations";
+import { STATUS_ENUM as ORGANIZATION_STATUS_ENUM } from "@/lib/trpc/schemas/v1/organizations";
 import { SSODocument } from "@/app/sso/entities/sso.entity";
-import { STATUS_ENUM as SSO_STATUS_ENUM } from "@/lib/trpc/schemas/sso";
+import { STATUS_ENUM as SSO_STATUS_ENUM } from "@/lib/trpc/schemas/v1/sso";
 import { KeyDocument } from "@/app/keys/entities/key.entity";
-import { STATUS_ENUM as KEY_STATUS_ENUM } from "@/lib/trpc/schemas/keys";
+import { STATUS_ENUM as KEY_STATUS_ENUM } from "@/lib/trpc/schemas/v1/keys";
 
 @Injectable()
 export class AppService implements OnApplicationBootstrap {

@@ -2,36 +2,36 @@ import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
-  InsertOneSessionInputType,
-  InsertManySessionInputType,
-  FindBySessionIdInputType,
-  FindBySessionDataInputType,
-  FindBySessionRefInputType,
-  UpdateBySessionIdInputType,
-  UpdateBySessionDataInputType,
-  DeleteBySessionDataInputType,
-  DeleteBySessionRefInputType,
-} from "@/lib/trpc/schemas/sessions";
+  InsertOneSessionInput,
+  InsertManySessionInput,
+  FindBySessionIdInput,
+  FindBySessionDataInput,
+  FindBySessionRefInput,
+  UpdateBySessionIdInput,
+  UpdateBySessionDataInput,
+  DeleteBySessionDataInput,
+  DeleteBySessionRefInput,
+} from "@/lib/trpc/schemas/v1/sessions";
 import { useTRPC } from "@/trpc/server";
 import { queryClient } from "@/trpc/provider";
 
-export function createOneSession() {
-  const { sessions } = useTRPC();
+export function createOneSessionV1() {
+  const { sessionsV1 } = useTRPC();
 
-  const mutationOptions = sessions.insertOne.mutationOptions({
+  const mutationOptions = sessionsV1.insertOne.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sessions.findByData.queryKey();
-      const findById = sessions.findById.queryKey();
-      const findByRef = sessions.findByRef.queryKey();
+      const findByData = sessionsV1.findByData.queryKey();
+      const findById = sessionsV1.findById.queryKey();
+      const findByRef = sessionsV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertOneSessionInputType) => {
+  const exec = async (input: InsertOneSessionInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -45,23 +45,23 @@ export function createOneSession() {
   return { exec, ...mutation };
 }
 
-export function createManySession() {
-  const { sessions } = useTRPC();
+export function createManySessionV1() {
+  const { sessionsV1 } = useTRPC();
 
-  const mutationOptions = sessions.insertMany.mutationOptions({
+  const mutationOptions = sessionsV1.insertMany.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sessions.findByData.queryKey();
-      const findById = sessions.findById.queryKey();
-      const findByRef = sessions.findByRef.queryKey();
+      const findByData = sessionsV1.findByData.queryKey();
+      const findById = sessionsV1.findById.queryKey();
+      const findByRef = sessionsV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertManySessionInputType) => {
+  const exec = async (input: InsertManySessionInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -75,10 +75,10 @@ export function createManySession() {
   return { exec, ...mutation };
 }
 
-export function getSessionById(input: FindBySessionIdInputType) {
-  const { sessions } = useTRPC();
+export function getSessionByIdV1(input: FindBySessionIdInput) {
+  const { sessionsV1 } = useTRPC();
 
-  const queryOptions = sessions.findById.queryOptions(input, {
+  const queryOptions = sessionsV1.findById.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -107,10 +107,10 @@ export function getSessionById(input: FindBySessionIdInputType) {
   return { exec, ...query };
 }
 
-export function getSessionsByData(input: FindBySessionDataInputType) {
-  const { sessions } = useTRPC();
+export function getSessionsByDataV1(input: FindBySessionDataInput) {
+  const { sessionsV1 } = useTRPC();
 
-  const queryOptions = sessions.findByData.queryOptions(input, {
+  const queryOptions = sessionsV1.findByData.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -139,10 +139,10 @@ export function getSessionsByData(input: FindBySessionDataInputType) {
   return { exec, ...query };
 }
 
-export function getSessionsByRef(input: FindBySessionRefInputType) {
-  const { sessions } = useTRPC();
+export function getSessionsByRefV1(input: FindBySessionRefInput) {
+  const { sessionsV1 } = useTRPC();
 
-  const queryOptions = sessions.findByRef.queryOptions(input, {
+  const queryOptions = sessionsV1.findByRef.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -171,23 +171,23 @@ export function getSessionsByRef(input: FindBySessionRefInputType) {
   return { exec, ...query };
 }
 
-export function updateSessionById() {
-  const { sessions } = useTRPC();
+export function updateSessionByIdV1() {
+  const { sessionsV1 } = useTRPC();
 
-  const mutationOptions = sessions.updateById.mutationOptions({
+  const mutationOptions = sessionsV1.updateById.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sessions.findByData.queryKey();
-      const findById = sessions.findById.queryKey();
-      const findByRef = sessions.findByRef.queryKey();
+      const findByData = sessionsV1.findByData.queryKey();
+      const findById = sessionsV1.findById.queryKey();
+      const findByRef = sessionsV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateBySessionIdInputType) => {
+  const exec = async (input: UpdateBySessionIdInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -201,23 +201,23 @@ export function updateSessionById() {
   return { exec, ...mutation };
 }
 
-export function updateSessionsByData() {
-  const { sessions } = useTRPC();
+export function updateSessionsByDataV1() {
+  const { sessionsV1 } = useTRPC();
 
-  const mutationOptions = sessions.updateByData.mutationOptions({
+  const mutationOptions = sessionsV1.updateByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sessions.findByData.queryKey();
-      const findById = sessions.findById.queryKey();
-      const findByRef = sessions.findByRef.queryKey();
+      const findByData = sessionsV1.findByData.queryKey();
+      const findById = sessionsV1.findById.queryKey();
+      const findByRef = sessionsV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateBySessionDataInputType) => {
+  const exec = async (input: UpdateBySessionDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -231,23 +231,23 @@ export function updateSessionsByData() {
   return { exec, ...mutation };
 }
 
-export function deleteSessionsByData() {
-  const { sessions } = useTRPC();
+export function deleteSessionsByDataV1() {
+  const { sessionsV1 } = useTRPC();
 
-  const mutationOptions = sessions.deleteByData.mutationOptions({
+  const mutationOptions = sessionsV1.deleteByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sessions.findByData.queryKey();
-      const findById = sessions.findById.queryKey();
-      const findByRef = sessions.findByRef.queryKey();
+      const findByData = sessionsV1.findByData.queryKey();
+      const findById = sessionsV1.findById.queryKey();
+      const findByRef = sessionsV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteBySessionDataInputType) => {
+  const exec = async (input: DeleteBySessionDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -261,23 +261,23 @@ export function deleteSessionsByData() {
   return { exec, ...mutation };
 }
 
-export function deleteSessionsByRef() {
-  const { sessions } = useTRPC();
+export function deleteSessionsByRefV1() {
+  const { sessionsV1 } = useTRPC();
 
-  const mutationOptions = sessions.deleteByRef.mutationOptions({
+  const mutationOptions = sessionsV1.deleteByRef.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sessions.findByData.queryKey();
-      const findById = sessions.findById.queryKey();
-      const findByRef = sessions.findByRef.queryKey();
+      const findByData = sessionsV1.findByData.queryKey();
+      const findById = sessionsV1.findById.queryKey();
+      const findByRef = sessionsV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteBySessionRefInputType) => {
+  const exec = async (input: DeleteBySessionRefInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
