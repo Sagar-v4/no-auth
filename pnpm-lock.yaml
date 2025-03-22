@@ -101,6 +101,12 @@ importers:
       "@fastify/static":
         specifier: ^8.1.1
         version: 8.1.1
+      "@keyv/redis":
+        specifier: ^4.3.2
+        version: 4.3.2
+      "@nestjs/cache-manager":
+        specifier: ^3.0.0
+        version: 3.0.0(@nestjs/common@11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.11)(cache-manager@6.4.1)(rxjs@7.8.2)
       "@nestjs/common":
         specifier: ^11.0.9
         version: 11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -122,6 +128,12 @@ importers:
       "@nestjs/serve-static":
         specifier: ^5.0.3
         version: 5.0.3(@fastify/static@8.1.1)(@nestjs/common@11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.11)(express@5.0.1)(fastify@5.2.1)
+      cache-manager:
+        specifier: ^6.4.1
+        version: 6.4.1
+      cacheable:
+        specifier: ^1.8.9
+        version: 1.8.9
       fastify:
         specifier: ^5.2.1
         version: 5.2.1
@@ -417,6 +429,9 @@ importers:
       cmdk:
         specifier: ^1.0.4
         version: 1.0.4(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      embla-carousel-react:
+        specifier: ^8.5.2
+        version: 8.5.2(react@19.0.0)
       input-otp:
         specifier: ^1.4.2
         version: 1.4.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -457,9 +472,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.3)
-      embla-carousel-react:
-        specifier: ^8.5.2
-        version: 8.5.2(react@19.0.0)
 
 packages:
   "@alloc/quick-lru@5.2.0":
@@ -2024,6 +2036,19 @@ packages:
         integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==,
       }
 
+  "@keyv/redis@4.3.2":
+    resolution:
+      {
+        integrity: sha512-9LtpIiRArUIg+hj1hV87d0G+1/229S0Ybi2bupc497oRzHOhYojUkApfubHjMDnYcNuEY7JQTdHlYYCPxhaZfg==,
+      }
+    engines: { node: ">= 18" }
+
+  "@keyv/serialize@1.0.3":
+    resolution:
+      {
+        integrity: sha512-qnEovoOp5Np2JDGonIDL6Ayihw0RhnRh6vxPuHo4RDn1UOzwEo4AeIfpL6UGIrsceWrCMiVPgwRjbHu4vYFc3g==,
+      }
+
   "@lukeed/csprng@1.1.0":
     resolution:
       {
@@ -2332,6 +2357,17 @@ packages:
         optional: true
       "@nestjs/swagger":
         optional: true
+
+  "@nestjs/cache-manager@3.0.0":
+    resolution:
+      {
+        integrity: sha512-csKvxHSQWfC0OiDo0bNEhLqrmYDopHEvRyC81MxV9xFj1AO+rOKocpHa4M1ZGH//6uKFIPGN9oiR0mvZY77APA==,
+      }
+    peerDependencies:
+      "@nestjs/common": ^9.0.0 || ^10.0.0 || ^11.0.0
+      "@nestjs/core": ^9.0.0 || ^10.0.0 || ^11.0.0
+      cache-manager: ">=6"
+      rxjs: ^7.8.1
 
   "@nestjs/cli@11.0.5":
     resolution:
@@ -3534,6 +3570,53 @@ packages:
       {
         integrity: sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==,
       }
+
+  "@redis/bloom@1.2.0":
+    resolution:
+      {
+        integrity: sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==,
+      }
+    peerDependencies:
+      "@redis/client": ^1.0.0
+
+  "@redis/client@1.6.0":
+    resolution:
+      {
+        integrity: sha512-aR0uffYI700OEEH4gYnitAnv3vzVGXCFvYfdpu/CJKvk4pHfLPEy/JSZyrpQ+15WhXe1yJRXLtfQ84s4mEXnPg==,
+      }
+    engines: { node: ">=14" }
+
+  "@redis/graph@1.1.1":
+    resolution:
+      {
+        integrity: sha512-FEMTcTHZozZciLRl6GiiIB4zGm5z5F3F6a6FZCyrfxdKOhFlGkiAqlexWMBzCi4DcRoyiOsuLfW+cjlGWyExOw==,
+      }
+    peerDependencies:
+      "@redis/client": ^1.0.0
+
+  "@redis/json@1.0.7":
+    resolution:
+      {
+        integrity: sha512-6UyXfjVaTBTJtKNG4/9Z8PSpKE6XgSyEb8iwaqDcy+uKrd/DGYHTWkUdnQDyzm727V7p21WUMhsqz5oy65kPcQ==,
+      }
+    peerDependencies:
+      "@redis/client": ^1.0.0
+
+  "@redis/search@1.2.0":
+    resolution:
+      {
+        integrity: sha512-tYoDBbtqOVigEDMAcTGsRlMycIIjwMCgD8eR2t0NANeQmgK/lvxNAvYyb6bZDD4frHRhIHkJu2TBRvB0ERkOmw==,
+      }
+    peerDependencies:
+      "@redis/client": ^1.0.0
+
+  "@redis/time-series@1.1.0":
+    resolution:
+      {
+        integrity: sha512-c1Q99M5ljsIuc4YdaCwfUEXsofakb9c8+Zse2qxTadu8TalLXuAESzLvFAvNVbkmSlvlzIQOLpBCmWI9wTOt+g==,
+      }
+    peerDependencies:
+      "@redis/client": ^1.0.0
 
   "@release-it/conventional-changelog@10.0.0":
     resolution:
@@ -5474,6 +5557,12 @@ packages:
         integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==,
       }
 
+  buffer@6.0.3:
+    resolution:
+      {
+        integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==,
+      }
+
   bundle-name@4.1.0:
     resolution:
       {
@@ -5511,6 +5600,12 @@ packages:
       }
     engines: { node: ">=8" }
 
+  cache-manager@6.4.1:
+    resolution:
+      {
+        integrity: sha512-DVy28v0FbeBp2SmFgKTa4o6muKP3T78Id0nht5D6mBAar1Nuc5z4nL6G0jpnEbYq8FS10dtrBNzQri5l9uJ/zA==,
+      }
+
   cacheable-lookup@7.0.0:
     resolution:
       {
@@ -5524,6 +5619,12 @@ packages:
         integrity: sha512-zkDT5WAF4hSSoUgyfg5tFIxz8XQK+25W/TLVojJTMKBaxevLBBtLxgqguAuVQB8PVW79FVjHcU+GJ9tVbDZ9mQ==,
       }
     engines: { node: ">=14.16" }
+
+  cacheable@1.8.9:
+    resolution:
+      {
+        integrity: sha512-FicwAUyWnrtnd4QqYAoRlNs44/a1jTL7XDKqm5gJ90wz1DQPlC7U2Rd1Tydpv+E7WAr4sQHuw8Q8M3nZMAyecQ==,
+      }
 
   cachedir@2.3.0:
     resolution:
@@ -5806,6 +5907,13 @@ packages:
         integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==,
       }
     engines: { node: ">=6" }
+
+  cluster-key-slot@1.1.2:
+    resolution:
+      {
+        integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==,
+      }
+    engines: { node: ">=0.10.0" }
 
   cmdk@1.0.4:
     resolution:
@@ -7664,6 +7772,13 @@ packages:
         integrity: sha512-Api1mJL+Ad7W7vnDZnWq5pGaXJjyencT+iKGia2PlHUcSsSzWwIQ3S1isiMpwpavjYtGd2FzhUIhnnhOULZgDw==,
       }
 
+  generic-pool@3.9.0:
+    resolution:
+      {
+        integrity: sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==,
+      }
+    engines: { node: ">= 4" }
+
   gensync@1.0.0-beta.2:
     resolution:
       {
@@ -8042,6 +8157,12 @@ packages:
         integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==,
       }
     engines: { node: ">=0.10.0" }
+
+  hookified@1.8.1:
+    resolution:
+      {
+        integrity: sha512-GrO2l93P8xCWBSTBX9l2BxI78VU/MAAYag+pG8curS3aBGy0++ZlxrQ7PdUOUVMbn5BwkGb6+eRrnf43ipnFEA==,
+      }
 
   hosted-git-info@7.0.2:
     resolution:
@@ -9217,6 +9338,12 @@ packages:
     resolution:
       {
         integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==,
+      }
+
+  keyv@5.3.2:
+    resolution:
+      {
+        integrity: sha512-Lji2XRxqqa5Wg+CHLVfFKBImfJZ4pCSccu9eVWK6w4c2SDFLd8JAn1zqTuSFnsxb7ope6rMsnIHfp+eBbRBRZQ==,
       }
 
   kind-of@6.0.3:
@@ -11441,6 +11568,12 @@ packages:
       }
     engines: { node: ">= 0.10" }
 
+  redis@4.7.0:
+    resolution:
+      {
+        integrity: sha512-zvmkHEAdGMn+hMRXuMBtu4Vo5P6rHQjLoHftu+lBqq8ZTA3RCVC/WzD790bkKKiNFp7d5/9PcSD19fJyyRvOdQ==,
+      }
+
   reflect-metadata@0.2.2:
     resolution:
       {
@@ -13560,6 +13693,12 @@ packages:
         integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==,
       }
 
+  yallist@4.0.0:
+    resolution:
+      {
+        integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==,
+      }
+
   yaml@1.10.2:
     resolution:
       {
@@ -14769,6 +14908,16 @@ snapshots:
       "@jridgewell/resolve-uri": 3.1.2
       "@jridgewell/sourcemap-codec": 1.5.0
 
+  "@keyv/redis@4.3.2":
+    dependencies:
+      cluster-key-slot: 1.1.2
+      keyv: 5.3.2
+      redis: 4.7.0
+
+  "@keyv/serialize@1.0.3":
+    dependencies:
+      buffer: 6.0.3
+
   "@lukeed/csprng@1.1.0": {}
 
   "@lukeed/ms@2.0.2": {}
@@ -14940,6 +15089,13 @@ snapshots:
       "@nestjs/common": 11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2)
       "@nestjs/core": 11.0.11(@nestjs/common@11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.0.11)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       "@nestjs/swagger": 11.0.7(@fastify/static@8.1.1)(@nestjs/common@11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.11)(reflect-metadata@0.2.2)
+
+  "@nestjs/cache-manager@3.0.0(@nestjs/common@11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.11)(cache-manager@6.4.1)(rxjs@7.8.2)":
+    dependencies:
+      "@nestjs/common": 11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      "@nestjs/core": 11.0.11(@nestjs/common@11.0.11(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.0.11)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      cache-manager: 6.4.1
+      rxjs: 7.8.2
 
   "@nestjs/cli@11.0.5(@swc/cli@0.6.0(@swc/core@1.11.5(@swc/helpers@0.5.15))(chokidar@4.0.3))(@swc/core@1.11.5(@swc/helpers@0.5.15))(@types/node@22.13.8)":
     dependencies:
@@ -15878,6 +16034,32 @@ snapshots:
       "@types/react-dom": 19.0.3(@types/react@19.0.8)
 
   "@radix-ui/rect@1.1.0": {}
+
+  "@redis/bloom@1.2.0(@redis/client@1.6.0)":
+    dependencies:
+      "@redis/client": 1.6.0
+
+  "@redis/client@1.6.0":
+    dependencies:
+      cluster-key-slot: 1.1.2
+      generic-pool: 3.9.0
+      yallist: 4.0.0
+
+  "@redis/graph@1.1.1(@redis/client@1.6.0)":
+    dependencies:
+      "@redis/client": 1.6.0
+
+  "@redis/json@1.0.7(@redis/client@1.6.0)":
+    dependencies:
+      "@redis/client": 1.6.0
+
+  "@redis/search@1.2.0(@redis/client@1.6.0)":
+    dependencies:
+      "@redis/client": 1.6.0
+
+  "@redis/time-series@1.1.0(@redis/client@1.6.0)":
+    dependencies:
+      "@redis/client": 1.6.0
 
   "@release-it/conventional-changelog@10.0.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.1.0)(release-it@18.1.2(@types/node@22.13.8)(typescript@5.7.3))":
     dependencies:
@@ -17126,6 +17308,11 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
+  buffer@6.0.3:
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
+
   bundle-name@4.1.0:
     dependencies:
       run-applescript: 7.0.0
@@ -17144,6 +17331,10 @@ snapshots:
 
   cac@6.7.14: {}
 
+  cache-manager@6.4.1:
+    dependencies:
+      keyv: 5.3.2
+
   cacheable-lookup@7.0.0: {}
 
   cacheable-request@10.2.14:
@@ -17155,6 +17346,11 @@ snapshots:
       mimic-response: 4.0.0
       normalize-url: 8.0.1
       responselike: 3.0.0
+
+  cacheable@1.8.9:
+    dependencies:
+      hookified: 1.8.1
+      keyv: 5.3.2
 
   cachedir@2.3.0: {}
 
@@ -17311,6 +17507,8 @@ snapshots:
   clone@1.0.4: {}
 
   clsx@2.1.1: {}
+
+  cluster-key-slot@1.1.2: {}
 
   cmdk@1.0.4(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -18582,6 +18780,8 @@ snapshots:
 
   fuzzysort@2.0.4: {}
 
+  generic-pool@3.9.0: {}
+
   gensync@1.0.0-beta.2: {}
 
   get-caller-file@2.0.5: {}
@@ -18852,6 +19052,8 @@ snapshots:
   homedir-polyfill@1.0.3:
     dependencies:
       parse-passwd: 1.0.0
+
+  hookified@1.8.1: {}
 
   hosted-git-info@7.0.2:
     dependencies:
@@ -19713,6 +19915,10 @@ snapshots:
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
+
+  keyv@5.3.2:
+    dependencies:
+      "@keyv/serialize": 1.0.3
 
   kind-of@6.0.3: {}
 
@@ -21065,6 +21271,15 @@ snapshots:
   rechoir@0.6.2:
     dependencies:
       resolve: 1.22.10
+
+  redis@4.7.0:
+    dependencies:
+      "@redis/bloom": 1.2.0(@redis/client@1.6.0)
+      "@redis/client": 1.6.0
+      "@redis/graph": 1.1.1(@redis/client@1.6.0)
+      "@redis/json": 1.0.7(@redis/client@1.6.0)
+      "@redis/search": 1.2.0(@redis/client@1.6.0)
+      "@redis/time-series": 1.1.0(@redis/client@1.6.0)
 
   reflect-metadata@0.2.2: {}
 
@@ -22530,6 +22745,8 @@ snapshots:
   y18n@5.0.8: {}
 
   yallist@3.1.1: {}
+
+  yallist@4.0.0: {}
 
   yaml@1.10.2: {}
 

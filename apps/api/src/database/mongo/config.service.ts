@@ -16,7 +16,7 @@ export const createMongooseConfigServiceClass = (
     createMongooseOptions():
       | MongooseModuleOptions
       | Promise<MongooseModuleOptions> {
-      const uri: string = this.envService.get("MONGO_URI");
+      const uri = this.envService.get("MONGO_URI");
 
       return {
         uri: uri,

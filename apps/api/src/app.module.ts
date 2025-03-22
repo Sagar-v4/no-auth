@@ -1,11 +1,13 @@
-import { APP_PIPE } from "@nestjs/core";
-import { ZodValidationPipe } from "nestjs-zod";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { ZodValidationPipe } from "nestjs-zod";
+import { CacheInterceptor } from "@nestjs/cache-manager";
+import { APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 
 import { AppController } from "@/app.controller";
 import { AppService } from "@/app.service";
 import { envConfig } from "@/env/env.config";
+import { RedisDatabaseModule } from "@/database/redis/database.module";
 import { MongooseDatabaseModule } from "@/database/mongo/database.module";
 import { MongooseModelsModule } from "@/database/mongo/mongoose-models.module";
 import { EnvModule } from "@/env/env.module";
@@ -30,6 +32,7 @@ import { UsersModule } from "@/app/users/users.module";
       expandVariables: true,
     }),
     EnvModule,
+    RedisDatabaseModule,
     MongooseModelsModule,
     MongooseDatabaseModule,
     TrpcModule,
@@ -50,6 +53,10 @@ import { UsersModule } from "@/app/users/users.module";
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
     },
   ],
 })
