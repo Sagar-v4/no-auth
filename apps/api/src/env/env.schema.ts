@@ -9,6 +9,7 @@ export const envSchema = z.object({
       z.literal("production"),
     ])
     .default("development"),
+  REDIS_URI: z.string().url().nonempty(),
   MONGO_URI: z.string().url().nonempty(),
   GMAIL_USER: z.string().email().nonempty(),
   GMAIL_PASS: z.string().nonempty(),
