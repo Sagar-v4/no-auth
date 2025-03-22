@@ -4,11 +4,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 
 import { status as statuses } from "@/components/keys-data-table/data";
-import { KeyOutputSchema } from "@/lib/trpc/schemas/keys";
+import { KeyOutput } from "@/lib/trpc/schemas/v1/keys";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableRowActions } from "@/components/keys-data-table/data-table-row-actions";
 
-export const columns: ColumnDef<KeyOutputSchema>[] = [
+export const columns: ColumnDef<KeyOutput>[] = [
   {
     id: "select",
     header: ({ table }) => (

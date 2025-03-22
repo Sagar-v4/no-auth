@@ -5,18 +5,18 @@ import { RefreshCw } from "lucide-react";
 import { TabsContent } from "@workspace/ui/components/tabs";
 import { TABS } from "@/registry/sidebar";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { getKeysByData } from "@/trpc/routers/keys";
+import { getKeysByDataV1 } from "@/trpc/routers/keys";
 import { Button } from "@workspace/ui/components/button";
 import { columns } from "@/components/keys-data-table/columns";
 import { DataTable } from "@/components/keys-data-table/data-table";
-import { keyOutputSchema } from "@/lib/trpc/schemas/keys";
+import { keyOutput } from "@/lib/trpc/schemas/v1/keys";
 import { cn } from "@workspace/ui/lib/utils";
 import { Add } from "@/components/keys-data-table/add";
 import { LoadingCircle } from "@/skeletons/loading";
 
 export default function Page() {
   const { organization } = useCurrentUser();
-  const { data, isLoading, isError, isRefetching, refetch } = getKeysByData({
+  const { data, isLoading, isError, isRefetching, refetch } = getKeysByDataV1({
     filter: [
       {
         organization_id: organization._id,
@@ -39,7 +39,7 @@ export default function Page() {
     <>
       <TabsContent value={TABS.KEY.value} asChild>
         <DataTable
-          data={z.array(keyOutputSchema).parse(data)}
+          data={z.array(keyOutput).parse(data)}
           columns={columns}
           Refresh={Refresh}
           Add={Add}

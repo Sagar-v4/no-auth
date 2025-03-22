@@ -1,4 +1,4 @@
-import { STATUS_ENUM } from "@/lib/trpc/schemas/keys";
+import { STATUS_ENUM } from "@/lib/trpc/schemas/v1/keys";
 import { CircleCheck, CircleX } from "lucide-react";
 
 export const status = [

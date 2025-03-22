@@ -5,7 +5,7 @@ import { updateEmailAppById } from "@/trpc/routers/email-apps";
 import {
   EmailAppIdInputSchema,
   StatusEnum,
-} from "@/lib/trpc/schemas/email/apps";
+} from "@/lib/trpc/schemas/v1/email/apps";
 
 export function EmailAppStatusChange({
   ids,

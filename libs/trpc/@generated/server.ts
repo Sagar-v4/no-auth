@@ -5,7 +5,7 @@ const t = initTRPC.create();
 const publicProcedure = t.procedure;
 
 const appRouter = t.router({
-  devices: t.router({
+  devicesV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({}),
     })).output(z.object({
@@ -97,7 +97,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  emailServices: t.router({
+  emailServicesV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -139,9 +139,7 @@ const appRouter = t.router({
       metadata: z.object({}).optional(),
       createdAt: z.date(),
       updatedAt: z.date(),
-    }).or(
-      z.undefined(),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    }).or(z.undefined())).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByData: publicProcedure.input(z.object({
       filter: z.array(z.object({
         _id: z.string().optional(),
@@ -149,17 +147,15 @@ const appRouter = t.router({
         user_id: z.string().optional(),
         device_id: z.string().optional(),
       })),
-    })).output(z.array(
-      z.object({
-        _id: z.custom<any>(),
-        uuid: z.string().uuid().nonempty(),
-        user_id: z.string().nonempty(),
-        device_id: z.string().nonempty(),
-        metadata: z.object({}).optional(),
-        createdAt: z.date(),
-        updatedAt: z.date(),
-      }),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    })).output(z.array(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      user_id: z.string().nonempty(),
+      device_id: z.string().nonempty(),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByRef: publicProcedure.input(z.object({
       filter: z.object({
         user: z.object({
@@ -303,7 +299,7 @@ const appRouter = t.router({
       html: z.string().optional(),
     })).output(z.any()).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  keys: t.router({
+  keysV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         secret: z.string().nanoid().nonempty(),
@@ -569,7 +565,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  organizations: t.router({
+  organizationsV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -615,9 +611,7 @@ const appRouter = t.router({
       metadata: z.object({}).optional(),
       createdAt: z.date(),
       updatedAt: z.date(),
-    }).or(
-      z.undefined(),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    }).or(z.undefined())).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByData: publicProcedure.input(z.object({
       filter: z.array(z.object({
         _id: z.string().optional(),
@@ -627,19 +621,17 @@ const appRouter = t.router({
         description: z.string().optional(),
         status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const).optional(),
       })),
-    })).output(z.array(
-      z.object({
-        _id: z.custom<any>(),
-        uuid: z.string().uuid().nonempty(),
-        user_id: z.string().nonempty(),
-        name: z.string().nonempty(),
-        description: z.string().optional(),
-        status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
-        metadata: z.object({}).optional(),
-        createdAt: z.date(),
-        updatedAt: z.date(),
-      }),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    })).output(z.array(z.object({
+      _id: z.custom<any>(),
+      uuid: z.string().uuid().nonempty(),
+      user_id: z.string().nonempty(),
+      name: z.string().nonempty(),
+      description: z.string().optional(),
+      status: z.enum(["ACTIVE", "ARCHIVED", "DELETED"] as const),
+      metadata: z.object({}).optional(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByRef: publicProcedure.input(z.object({
       filter: z.object({
         user: z.object({
@@ -773,7 +765,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  permissions: t.router({
+  permissionsV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -825,9 +817,7 @@ const appRouter = t.router({
       metadata: z.object({}).optional(),
       createdAt: z.date(),
       updatedAt: z.date(),
-    }).or(
-      z.undefined(),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    }).or(z.undefined())).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByData: publicProcedure.input(z.object({
       filter: z.array(z.object({
         _id: z.string().optional(),
@@ -1029,7 +1019,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  roles: t.router({
+  rolesV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -1295,7 +1285,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  sessions: t.router({
+  sessionsV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         user_id: z.string().nonempty(),
@@ -1337,9 +1327,7 @@ const appRouter = t.router({
       metadata: z.object({}).optional(),
       createdAt: z.date(),
       updatedAt: z.date(),
-    }).or(
-      z.undefined(),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    }).or(z.undefined())).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     findByData: publicProcedure.input(z.object({
       filter: z.array(z.object({
         _id: z.string().optional(),
@@ -1502,7 +1490,7 @@ const appRouter = t.router({
       deletedCount: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  sso: t.router({
+  ssoV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         secret: z.string().nanoid().optional(),
@@ -1803,7 +1791,7 @@ const appRouter = t.router({
       is_otp_correct: z.boolean(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
-  users: t.router({
+  usersV1: t.router({
     insertOne: publicProcedure.input(z.object({
       doc: z.object({
         name: z.string().optional(),

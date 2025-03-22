@@ -2,38 +2,38 @@ import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
-  InsertOneSSOInputType,
-  InsertManySSOInputType,
-  FindBySSOIdInputType,
-  FindBySSODataInputType,
-  FindBySSORefInputType,
-  UpdateBySSOIdInputType,
-  UpdateBySSODataInputType,
-  DeleteBySSODataInputType,
-  DeleteBySSORefInputType,
-  SendEmailOTPSSOInputType,
-  VerifyEmailOTPSSOInputType,
-} from "@/lib/trpc/schemas/sso";
+  InsertOneSSOInput,
+  InsertManySSOInput,
+  FindBySSOIdInput,
+  FindBySSODataInput,
+  FindBySSORefInput,
+  UpdateBySSOIdInput,
+  UpdateBySSODataInput,
+  DeleteBySSODataInput,
+  DeleteBySSORefInput,
+  SendEmailOTPSSOInput,
+  VerifyEmailOTPSSOInput,
+} from "@/lib/trpc/schemas/v1/sso";
 import { useTRPC } from "@/trpc/server";
 import { queryClient } from "@/trpc/provider";
 
-export function createOneSSO() {
-  const { sso } = useTRPC();
+export function createOneSSOV1() {
+  const { ssoV1 } = useTRPC();
 
-  const mutationOptions = sso.insertOne.mutationOptions({
+  const mutationOptions = ssoV1.insertOne.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sso.findByData.queryKey();
-      const findById = sso.findById.queryKey();
-      const findByRef = sso.findByRef.queryKey();
+      const findByData = ssoV1.findByData.queryKey();
+      const findById = ssoV1.findById.queryKey();
+      const findByRef = ssoV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertOneSSOInputType) => {
+  const exec = async (input: InsertOneSSOInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -47,23 +47,23 @@ export function createOneSSO() {
   return { exec, ...mutation };
 }
 
-export function createManySSO() {
-  const { sso } = useTRPC();
+export function createManySSOV1() {
+  const { ssoV1 } = useTRPC();
 
-  const mutationOptions = sso.insertMany.mutationOptions({
+  const mutationOptions = ssoV1.insertMany.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sso.findByData.queryKey();
-      const findById = sso.findById.queryKey();
-      const findByRef = sso.findByRef.queryKey();
+      const findByData = ssoV1.findByData.queryKey();
+      const findById = ssoV1.findById.queryKey();
+      const findByRef = ssoV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertManySSOInputType) => {
+  const exec = async (input: InsertManySSOInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -77,10 +77,10 @@ export function createManySSO() {
   return { exec, ...mutation };
 }
 
-export function getSSOById(input: FindBySSOIdInputType) {
-  const { sso } = useTRPC();
+export function getSSOByIdV1(input: FindBySSOIdInput) {
+  const { ssoV1 } = useTRPC();
 
-  const queryOptions = sso.findById.queryOptions(input, {
+  const queryOptions = ssoV1.findById.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -109,10 +109,10 @@ export function getSSOById(input: FindBySSOIdInputType) {
   return { exec, ...query };
 }
 
-export function getSSOByData(input: FindBySSODataInputType) {
-  const { sso } = useTRPC();
+export function getSSOByDataV1(input: FindBySSODataInput) {
+  const { ssoV1 } = useTRPC();
 
-  const queryOptions = sso.findByData.queryOptions(input, {
+  const queryOptions = ssoV1.findByData.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -141,10 +141,10 @@ export function getSSOByData(input: FindBySSODataInputType) {
   return { exec, ...query };
 }
 
-export function getSSOByRef(input: FindBySSORefInputType) {
-  const { sso } = useTRPC();
+export function getSSOByRefV1(input: FindBySSORefInput) {
+  const { ssoV1 } = useTRPC();
 
-  const queryOptions = sso.findByRef.queryOptions(input, {
+  const queryOptions = ssoV1.findByRef.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -173,23 +173,23 @@ export function getSSOByRef(input: FindBySSORefInputType) {
   return { exec, ...query };
 }
 
-export function updateSSOById() {
-  const { sso } = useTRPC();
+export function updateSSOByIdV1() {
+  const { ssoV1 } = useTRPC();
 
-  const mutationOptions = sso.updateById.mutationOptions({
+  const mutationOptions = ssoV1.updateById.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sso.findByData.queryKey();
-      const findById = sso.findById.queryKey();
-      const findByRef = sso.findByRef.queryKey();
+      const findByData = ssoV1.findByData.queryKey();
+      const findById = ssoV1.findById.queryKey();
+      const findByRef = ssoV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateBySSOIdInputType) => {
+  const exec = async (input: UpdateBySSOIdInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -203,23 +203,23 @@ export function updateSSOById() {
   return { exec, ...mutation };
 }
 
-export function updateSSOByData() {
-  const { sso } = useTRPC();
+export function updateSSOByDataV1() {
+  const { ssoV1 } = useTRPC();
 
-  const mutationOptions = sso.updateByData.mutationOptions({
+  const mutationOptions = ssoV1.updateByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sso.findByData.queryKey();
-      const findById = sso.findById.queryKey();
-      const findByRef = sso.findByRef.queryKey();
+      const findByData = ssoV1.findByData.queryKey();
+      const findById = ssoV1.findById.queryKey();
+      const findByRef = ssoV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateBySSODataInputType) => {
+  const exec = async (input: UpdateBySSODataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -233,23 +233,23 @@ export function updateSSOByData() {
   return { exec, ...mutation };
 }
 
-export function deleteSSOByData() {
-  const { sso } = useTRPC();
+export function deleteSSOByDataV1() {
+  const { ssoV1 } = useTRPC();
 
-  const mutationOptions = sso.deleteByData.mutationOptions({
+  const mutationOptions = ssoV1.deleteByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sso.findByData.queryKey();
-      const findById = sso.findById.queryKey();
-      const findByRef = sso.findByRef.queryKey();
+      const findByData = ssoV1.findByData.queryKey();
+      const findById = ssoV1.findById.queryKey();
+      const findByRef = ssoV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteBySSODataInputType) => {
+  const exec = async (input: DeleteBySSODataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -263,23 +263,23 @@ export function deleteSSOByData() {
   return { exec, ...mutation };
 }
 
-export function deleteSSOByRef() {
-  const { sso } = useTRPC();
+export function deleteSSOByRefV1() {
+  const { ssoV1 } = useTRPC();
 
-  const mutationOptions = sso.deleteByRef.mutationOptions({
+  const mutationOptions = ssoV1.deleteByRef.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = sso.findByData.queryKey();
-      const findById = sso.findById.queryKey();
-      const findByRef = sso.findByRef.queryKey();
+      const findByData = ssoV1.findByData.queryKey();
+      const findById = ssoV1.findById.queryKey();
+      const findByRef = ssoV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteBySSORefInputType) => {
+  const exec = async (input: DeleteBySSORefInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -293,10 +293,10 @@ export function deleteSSOByRef() {
   return { exec, ...mutation };
 }
 
-export function sendEmailOTP() {
-  const { sso } = useTRPC();
+export function sendEmailOTPV1() {
+  const { ssoV1 } = useTRPC();
 
-  const mutationOptions = sso.sendEmailOTP.mutationOptions({
+  const mutationOptions = ssoV1.sendEmailOTP.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     gcTime: 0,
@@ -305,7 +305,7 @@ export function sendEmailOTP() {
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: SendEmailOTPSSOInputType) => {
+  const exec = async (input: SendEmailOTPSSOInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -318,17 +318,17 @@ export function sendEmailOTP() {
 
   return { exec, ...mutation };
 }
-export function verifyEmailOTP() {
-  const { sso } = useTRPC();
+export function verifyEmailOTPV1() {
+  const { ssoV1 } = useTRPC();
 
-  const mutationOptions = sso.verifyEmailOTP.mutationOptions({
+  const mutationOptions = ssoV1.verifyEmailOTP.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: VerifyEmailOTPSSOInputType) => {
+  const exec = async (input: VerifyEmailOTPSSOInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {

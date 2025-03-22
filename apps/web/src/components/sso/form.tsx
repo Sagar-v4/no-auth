@@ -15,14 +15,14 @@ import { OTP_LENGTH } from "@/registry/constants";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
-import { sendEmailOTP, verifyEmailOTP } from "@/trpc/routers/sso";
+import { sendEmailOTPV1, verifyEmailOTPV1 } from "@/trpc/routers/sso";
 
 export function SSOForm({ sso_uuid }: { sso_uuid: string }) {
   const { device_uuid } = useDevice();
   const [service_uuid, set_service_uuid] = useState<string | null>(null);
 
-  const { data: sendEmailData, exec: sendEmailExec } = sendEmailOTP();
-  const { data: verifyEmailData, exec: verifyEmailExec } = verifyEmailOTP();
+  const { data: sendEmailData, exec: sendEmailExec } = sendEmailOTPV1();
+  const { data: verifyEmailData, exec: verifyEmailExec } = verifyEmailOTPV1();
 
   if (!service_uuid && sendEmailData) {
     set_service_uuid(sendEmailData.service_id);

@@ -2,21 +2,21 @@ import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
-  InsertOneDeviceInputType,
-  InsertManyDeviceInputType,
-  FindByDeviceIdInputType,
-  FindByDeviceDataInputType,
-  UpdateByDeviceIdInputType,
-  UpdateByDeviceDataInputType,
-  DeleteByDeviceDataInputType,
-} from "@/lib/trpc/schemas/devices";
+  InsertOneDeviceInput,
+  InsertManyDeviceInput,
+  FindByDeviceIdInput,
+  FindByDeviceDataInput,
+  UpdateByDeviceIdInput,
+  UpdateByDeviceDataInput,
+  DeleteByDeviceDataInput,
+} from "@/lib/trpc/schemas/v1/devices";
 import { useTRPC } from "@/trpc/server";
 import { queryClient } from "@/trpc/provider";
 
-export function createOneDevice() {
-  const { devices } = useTRPC();
+export function createOneDeviceV1() {
+  const { devicesV1 } = useTRPC();
 
-  const mutationOptions = devices.insertOne.mutationOptions({
+  const mutationOptions = devicesV1.insertOne.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     trpc: {
@@ -24,15 +24,15 @@ export function createOneDevice() {
       ssr: false,
     },
     onSettled: () => {
-      const findByData = devices.findByData.queryKey();
-      const findById = devices.findById.queryKey();
+      const findByData = devicesV1.findByData.queryKey();
+      const findById = devicesV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertOneDeviceInputType) => {
+  const exec = async (input: InsertOneDeviceInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -46,22 +46,22 @@ export function createOneDevice() {
   return { exec, ...mutation };
 }
 
-export function createManyDevice() {
-  const { devices } = useTRPC();
+export function createManyDeviceV1() {
+  const { devicesV1 } = useTRPC();
 
-  const mutationOptions = devices.insertMany.mutationOptions({
+  const mutationOptions = devicesV1.insertMany.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = devices.findByData.queryKey();
-      const findById = devices.findById.queryKey();
+      const findByData = devicesV1.findByData.queryKey();
+      const findById = devicesV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertManyDeviceInputType) => {
+  const exec = async (input: InsertManyDeviceInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -75,10 +75,10 @@ export function createManyDevice() {
   return { exec, ...mutation };
 }
 
-export function getDeviceById(input: FindByDeviceIdInputType) {
-  const { devices } = useTRPC();
+export function getDeviceByIdV1(input: FindByDeviceIdInput) {
+  const { devicesV1 } = useTRPC();
 
-  const queryOptions = devices.findById.queryOptions(input, {
+  const queryOptions = devicesV1.findById.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -107,10 +107,10 @@ export function getDeviceById(input: FindByDeviceIdInputType) {
   return { exec, ...query };
 }
 
-export function getDevicesByData(input: FindByDeviceDataInputType) {
-  const { devices } = useTRPC();
+export function getDevicesByDataV1(input: FindByDeviceDataInput) {
+  const { devicesV1 } = useTRPC();
 
-  const queryOptions = devices.findByData.queryOptions(input, {
+  const queryOptions = devicesV1.findByData.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -139,22 +139,22 @@ export function getDevicesByData(input: FindByDeviceDataInputType) {
   return { exec, ...query };
 }
 
-export function updateDeviceById() {
-  const { devices } = useTRPC();
+export function updateDeviceByIdV1() {
+  const { devicesV1 } = useTRPC();
 
-  const mutationOptions = devices.updateById.mutationOptions({
+  const mutationOptions = devicesV1.updateById.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = devices.findByData.queryKey();
-      const findById = devices.findById.queryKey();
+      const findByData = devicesV1.findByData.queryKey();
+      const findById = devicesV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateByDeviceIdInputType) => {
+  const exec = async (input: UpdateByDeviceIdInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -168,22 +168,22 @@ export function updateDeviceById() {
   return { exec, ...mutation };
 }
 
-export function updateDevicesByData() {
-  const { devices } = useTRPC();
+export function updateDevicesByDataV1() {
+  const { devicesV1 } = useTRPC();
 
-  const mutationOptions = devices.updateByData.mutationOptions({
+  const mutationOptions = devicesV1.updateByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = devices.findByData.queryKey();
-      const findById = devices.findById.queryKey();
+      const findByData = devicesV1.findByData.queryKey();
+      const findById = devicesV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateByDeviceDataInputType) => {
+  const exec = async (input: UpdateByDeviceDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -197,22 +197,22 @@ export function updateDevicesByData() {
   return { exec, ...mutation };
 }
 
-export function deleteDevicesByData() {
-  const { devices } = useTRPC();
+export function deleteDevicesByDataV1() {
+  const { devicesV1 } = useTRPC();
 
-  const mutationOptions = devices.deleteByData.mutationOptions({
+  const mutationOptions = devicesV1.deleteByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = devices.findByData.queryKey();
-      const findById = devices.findById.queryKey();
+      const findByData = devicesV1.findByData.queryKey();
+      const findById = devicesV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteByDeviceDataInputType) => {
+  const exec = async (input: DeleteByDeviceDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {

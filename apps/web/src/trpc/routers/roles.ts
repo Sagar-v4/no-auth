@@ -2,36 +2,36 @@ import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
-  InsertOneRoleInputType,
-  InsertManyRoleInputType,
-  FindByRoleIdInputType,
-  FindByRoleDataInputType,
-  FindByRoleRefInputType,
-  UpdateByRoleIdInputType,
-  UpdateByRoleDataInputType,
-  DeleteByRoleDataInputType,
-  DeleteByRoleRefInputType,
-} from "@/lib/trpc/schemas/roles";
+  InsertOneRoleInput,
+  InsertManyRoleInput,
+  FindByRoleIdInput,
+  FindByRoleDataInput,
+  FindByRoleRefInput,
+  UpdateByRoleIdInput,
+  UpdateByRoleDataInput,
+  DeleteByRoleDataInput,
+  DeleteByRoleRefInput,
+} from "@/lib/trpc/schemas/v1/roles";
 import { useTRPC } from "@/trpc/server";
 import { queryClient } from "@/trpc/provider";
 
-export function createOneRole() {
-  const { roles } = useTRPC();
+export function createOneRoleV1() {
+  const { rolesV1 } = useTRPC();
 
-  const mutationOptions = roles.insertOne.mutationOptions({
+  const mutationOptions = rolesV1.insertOne.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = roles.findByData.queryKey();
-      const findById = roles.findById.queryKey();
-      const findByRef = roles.findByRef.queryKey();
+      const findByData = rolesV1.findByData.queryKey();
+      const findById = rolesV1.findById.queryKey();
+      const findByRef = rolesV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertOneRoleInputType) => {
+  const exec = async (input: InsertOneRoleInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -45,23 +45,23 @@ export function createOneRole() {
   return { exec, ...mutation };
 }
 
-export function createManyRole() {
-  const { roles } = useTRPC();
+export function createManyRoleV1() {
+  const { rolesV1 } = useTRPC();
 
-  const mutationOptions = roles.insertMany.mutationOptions({
+  const mutationOptions = rolesV1.insertMany.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = roles.findByData.queryKey();
-      const findById = roles.findById.queryKey();
-      const findByRef = roles.findByRef.queryKey();
+      const findByData = rolesV1.findByData.queryKey();
+      const findById = rolesV1.findById.queryKey();
+      const findByRef = rolesV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertManyRoleInputType) => {
+  const exec = async (input: InsertManyRoleInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -75,10 +75,10 @@ export function createManyRole() {
   return { exec, ...mutation };
 }
 
-export function getRoleById(input: FindByRoleIdInputType) {
-  const { roles } = useTRPC();
+export function getRoleByIdV1(input: FindByRoleIdInput) {
+  const { rolesV1 } = useTRPC();
 
-  const queryOptions = roles.findById.queryOptions(input, {
+  const queryOptions = rolesV1.findById.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -107,10 +107,10 @@ export function getRoleById(input: FindByRoleIdInputType) {
   return { exec, ...query };
 }
 
-export function getRolesByData(input: FindByRoleDataInputType) {
-  const { roles } = useTRPC();
+export function getRolesByDataV1(input: FindByRoleDataInput) {
+  const { rolesV1 } = useTRPC();
 
-  const queryOptions = roles.findByData.queryOptions(input, {
+  const queryOptions = rolesV1.findByData.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -139,10 +139,10 @@ export function getRolesByData(input: FindByRoleDataInputType) {
   return { exec, ...query };
 }
 
-export function getRolesByRef(input: FindByRoleRefInputType) {
-  const { roles } = useTRPC();
+export function getRolesByRefV1(input: FindByRoleRefInput) {
+  const { rolesV1 } = useTRPC();
 
-  const queryOptions = roles.findByRef.queryOptions(input, {
+  const queryOptions = rolesV1.findByRef.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -171,23 +171,23 @@ export function getRolesByRef(input: FindByRoleRefInputType) {
   return { exec, ...query };
 }
 
-export function updateRoleById() {
-  const { roles } = useTRPC();
+export function updateRoleByIdV1() {
+  const { rolesV1 } = useTRPC();
 
-  const mutationOptions = roles.updateById.mutationOptions({
+  const mutationOptions = rolesV1.updateById.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = roles.findByData.queryKey();
-      const findById = roles.findById.queryKey();
-      const findByRef = roles.findByRef.queryKey();
+      const findByData = rolesV1.findByData.queryKey();
+      const findById = rolesV1.findById.queryKey();
+      const findByRef = rolesV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateByRoleIdInputType) => {
+  const exec = async (input: UpdateByRoleIdInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -201,23 +201,23 @@ export function updateRoleById() {
   return { exec, ...mutation };
 }
 
-export function updateRolesByData() {
-  const { roles } = useTRPC();
+export function updateRolesByDataV1() {
+  const { rolesV1 } = useTRPC();
 
-  const mutationOptions = roles.updateByData.mutationOptions({
+  const mutationOptions = rolesV1.updateByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = roles.findByData.queryKey();
-      const findById = roles.findById.queryKey();
-      const findByRef = roles.findByRef.queryKey();
+      const findByData = rolesV1.findByData.queryKey();
+      const findById = rolesV1.findById.queryKey();
+      const findByRef = rolesV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateByRoleDataInputType) => {
+  const exec = async (input: UpdateByRoleDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -231,23 +231,23 @@ export function updateRolesByData() {
   return { exec, ...mutation };
 }
 
-export function deleteRolesByData() {
-  const { roles } = useTRPC();
+export function deleteRolesByDataV1() {
+  const { rolesV1 } = useTRPC();
 
-  const mutationOptions = roles.deleteByData.mutationOptions({
+  const mutationOptions = rolesV1.deleteByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = roles.findByData.queryKey();
-      const findById = roles.findById.queryKey();
-      const findByRef = roles.findByRef.queryKey();
+      const findByData = rolesV1.findByData.queryKey();
+      const findById = rolesV1.findById.queryKey();
+      const findByRef = rolesV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteByRoleDataInputType) => {
+  const exec = async (input: DeleteByRoleDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -261,23 +261,23 @@ export function deleteRolesByData() {
   return { exec, ...mutation };
 }
 
-export function deleteRolesByRef() {
-  const { roles } = useTRPC();
+export function deleteRolesByRefV1() {
+  const { rolesV1 } = useTRPC();
 
-  const mutationOptions = roles.deleteByRef.mutationOptions({
+  const mutationOptions = rolesV1.deleteByRef.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = roles.findByData.queryKey();
-      const findById = roles.findById.queryKey();
-      const findByRef = roles.findByRef.queryKey();
+      const findByData = rolesV1.findByData.queryKey();
+      const findById = rolesV1.findById.queryKey();
+      const findByRef = rolesV1.findByRef.queryKey();
       queryClient.invalidateQueries([findByData, findById, findByRef] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteByRoleRefInputType) => {
+  const exec = async (input: DeleteByRoleRefInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {

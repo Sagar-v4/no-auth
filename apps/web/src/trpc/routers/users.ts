@@ -2,33 +2,33 @@ import { toast } from "sonner";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 import {
-  InsertOneUserInputType,
-  InsertManyUserInputType,
-  FindByUserIdInputType,
-  FindByUserDataInputType,
-  UpdateByUserIdInputType,
-  UpdateByUserDataInputType,
-  DeleteByUserDataInputType,
-} from "@/lib/trpc/schemas/users";
+  InsertOneUserInput,
+  InsertManyUserInput,
+  FindByUserIdInput,
+  FindByUserDataInput,
+  UpdateByUserIdInput,
+  UpdateByUserDataInput,
+  DeleteByUserDataInput,
+} from "@/lib/trpc/schemas/v1/users";
 import { useTRPC } from "@/trpc/server";
 import { queryClient } from "@/trpc/provider";
 
-export function createOneUser() {
-  const { users } = useTRPC();
+export function createOneUserV1() {
+  const { usersV1 } = useTRPC();
 
-  const mutationOptions = users.insertOne.mutationOptions({
+  const mutationOptions = usersV1.insertOne.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = users.findByData.queryKey();
-      const findById = users.findById.queryKey();
+      const findByData = usersV1.findByData.queryKey();
+      const findById = usersV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertOneUserInputType) => {
+  const exec = async (input: InsertOneUserInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -42,22 +42,22 @@ export function createOneUser() {
   return { exec, ...mutation };
 }
 
-export function createManyUser() {
-  const { users } = useTRPC();
+export function createManyUserV1() {
+  const { usersV1 } = useTRPC();
 
-  const mutationOptions = users.insertMany.mutationOptions({
+  const mutationOptions = usersV1.insertMany.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = users.findByData.queryKey();
-      const findById = users.findById.queryKey();
+      const findByData = usersV1.findByData.queryKey();
+      const findById = usersV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: InsertManyUserInputType) => {
+  const exec = async (input: InsertManyUserInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -71,10 +71,10 @@ export function createManyUser() {
   return { exec, ...mutation };
 }
 
-export function getUserById(input: FindByUserIdInputType) {
-  const { users } = useTRPC();
+export function getUserByIdV1(input: FindByUserIdInput) {
+  const { usersV1 } = useTRPC();
 
-  const queryOptions = users.findById.queryOptions(input, {
+  const queryOptions = usersV1.findById.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -103,10 +103,10 @@ export function getUserById(input: FindByUserIdInputType) {
   return { exec, ...query };
 }
 
-export function getUsersByData(input: FindByUserDataInputType) {
-  const { users } = useTRPC();
+export function getUsersByDataV1(input: FindByUserDataInput) {
+  const { usersV1 } = useTRPC();
 
-  const queryOptions = users.findByData.queryOptions(input, {
+  const queryOptions = usersV1.findByData.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
@@ -135,22 +135,22 @@ export function getUsersByData(input: FindByUserDataInputType) {
   return { exec, ...query };
 }
 
-export function updateUserById() {
-  const { users } = useTRPC();
+export function updateUserByIdV1() {
+  const { usersV1 } = useTRPC();
 
-  const mutationOptions = users.updateById.mutationOptions({
+  const mutationOptions = usersV1.updateById.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = users.findByData.queryKey();
-      const findById = users.findById.queryKey();
+      const findByData = usersV1.findByData.queryKey();
+      const findById = usersV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateByUserIdInputType) => {
+  const exec = async (input: UpdateByUserIdInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -164,22 +164,22 @@ export function updateUserById() {
   return { exec, ...mutation };
 }
 
-export function updateUsersByData() {
-  const { users } = useTRPC();
+export function updateUsersByDataV1() {
+  const { usersV1 } = useTRPC();
 
-  const mutationOptions = users.updateByData.mutationOptions({
+  const mutationOptions = usersV1.updateByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = users.findByData.queryKey();
-      const findById = users.findById.queryKey();
+      const findByData = usersV1.findByData.queryKey();
+      const findById = usersV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: UpdateByUserDataInputType) => {
+  const exec = async (input: UpdateByUserDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {
@@ -193,22 +193,22 @@ export function updateUsersByData() {
   return { exec, ...mutation };
 }
 
-export function deleteUsersByData() {
-  const { users } = useTRPC();
+export function deleteUsersByDataV1() {
+  const { usersV1 } = useTRPC();
 
-  const mutationOptions = users.deleteByData.mutationOptions({
+  const mutationOptions = usersV1.deleteByData.mutationOptions({
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     onSettled: () => {
-      const findByData = users.findByData.queryKey();
-      const findById = users.findById.queryKey();
+      const findByData = usersV1.findByData.queryKey();
+      const findById = usersV1.findById.queryKey();
       queryClient.invalidateQueries([findByData, findById] as any);
     },
   });
 
   const mutation = useMutation(mutationOptions);
 
-  const exec = async (input: DeleteByUserDataInputType) => {
+  const exec = async (input: DeleteByUserDataInput) => {
     const promise = mutation.mutateAsync(input);
 
     toast.promise(promise, {

@@ -19,7 +19,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 
 import { status } from "@/components/keys-data-table/data";
-import { keyOutputSchema } from "@/lib/trpc/schemas/keys";
+import { keyOutput } from "@/lib/trpc/schemas/v1/keys";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -28,7 +28,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const key = keyOutputSchema.parse(row.original);
+  const key = keyOutput.parse(row.original);
 
   return (
     <DropdownMenu>

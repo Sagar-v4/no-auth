@@ -1,11 +1,13 @@
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "@/app.module";
-import { Logger } from "@nestjs/common";
-import { EnvService } from "@/env/env.service";
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from "@nestjs/platform-fastify";
+import { NestFactory } from "@nestjs/core";
+import { Logger, VersioningType } from "@nestjs/common";
+
+import { AppModule } from "@/app.module";
+import { EnvService } from "@/env/env.service";
+import { SwaggerDocumentBuilder } from "@/swagger/swagger-document-builder";
 
 const globalPrefix = "api";
 
@@ -17,11 +19,18 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
   app.enableCors();
-  // app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(globalPrefix);
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
 
   const envService: EnvService = app.get(EnvService);
-  const PORT: number = envService.get("PORT");
-  const NODE_ENV: string = envService.get("NODE_ENV");
+  const PORT = envService.get("PORT");
+  const NODE_ENV = envService.get("NODE_ENV");
+
+  const swaggerDocumentBuilder = new SwaggerDocumentBuilder(app);
+  swaggerDocumentBuilder.setupSwagger(envService);
+
   await app.listen(PORT);
 
   logger.debug(

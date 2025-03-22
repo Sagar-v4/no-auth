@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
 
-import { SSOService } from "@/app/sso/sso.service";
-import { SSOController } from "@/app/sso/sso.controller";
-import { SSORouter } from "@/app/sso/sso.router";
+import { SSOV1Service } from "@/app/sso/services/sso.v1.service";
+import { SSOV1Controller } from "@/app/sso/controllers/sso.v1.controller";
+import { SSOV1Router } from "@/app/sso/routers/sso.v1.router";
 import { EmailServicesModule } from "@/app/email/services/services.module";
 import { BasicModule } from "@/app/basic/basic.module";
 
 @Module({
   imports: [EmailServicesModule, BasicModule],
-  controllers: [SSOController],
-  providers: [SSOService, SSORouter],
-  exports: [SSOService],
+  controllers: [SSOV1Controller],
+  providers: [SSOV1Service, SSOV1Router],
+  exports: [SSOV1Service],
 })
 export class SSOModule {}
