@@ -42,22 +42,10 @@ import {
   DeleteBySSORefInput,
   deleteBySSORefOutput,
   DeleteBySSORefOutput,
-  sendEmailOTPSSOInput,
-  SendEmailOTPSSOInput,
-  sendEmailOTPSSOOutput,
-  SendEmailOTPSSOOutput,
-  verifyEmailOTPSSOInput,
-  VerifyEmailOTPSSOInput,
-  verifyEmailOTPSSOOutput,
-  VerifyEmailOTPSSOOutput,
 } from "../../../../../../libs/trpc/schemas/v1/sso";
 import { query$or } from "@/utils/query-builder";
 import { concatIds } from "@/utils/query-filter";
-import { generateOTP } from "@/utils/otp-generator";
 import { EmailServicesV1Service } from "@/app/email/services/services/services.v1.service";
-import { EmailServiceDocument } from "@/app/email/services/entities/service.entity";
-import { DeviceDocument } from "@/app/devices/entities/device.entity";
-import { UserDocument } from "@/app/users/entities/user.entity";
 import { BasicService } from "@/app/basic/basic.service";
 
 @Router({
@@ -553,151 +541,6 @@ export class SSOV1Router {
         method: this.deleteByRef.name,
         error: error,
         deleteBySSORefInputData,
-      });
-
-      throw error;
-    }
-  }
-
-  @Mutation({
-    input: sendEmailOTPSSOInput,
-    output: sendEmailOTPSSOOutput,
-  })
-  async sendEmailOTP(
-    @Input()
-    sendEmailOTPSSOInputData: SendEmailOTPSSOInput,
-  ): Promise<SendEmailOTPSSOOutput> {
-    try {
-      this.logger.debug({
-        action: "Entry",
-        method: this.sendEmailOTP.name,
-        metadata: {
-          sendEmailOTPSSOInputData,
-        },
-      });
-
-      let user_id: string;
-
-      const [user]: UserDocument[] = await this.basicService.find({
-        schema: "User",
-        filter: {
-          email: sendEmailOTPSSOInputData.email,
-        },
-        populate: [],
-        select: ["_id"],
-      });
-
-      if (!user) {
-        const newUser = await this.basicService.insertOne({
-          schema: "User",
-          doc: {
-            email: sendEmailOTPSSOInputData.email,
-            name: sendEmailOTPSSOInputData.email.split("@")[0],
-          },
-        });
-        user_id = newUser._id.toString();
-      } else {
-        user_id = user._id.toString();
-      }
-
-      const otp = generateOTP(6);
-
-      const emailResponse = await this.emailServicesService.sendEmail({
-        to: [sendEmailOTPSSOInputData.email],
-        subject: "One-Time Password (OTP)",
-        text: `Your one-time password (OTP) is: ${otp}`,
-      });
-
-      const [device]: DeviceDocument[] = await this.basicService.find({
-        schema: "Device",
-        filter: {
-          uuid: sendEmailOTPSSOInputData.device_uuid,
-        },
-        populate: [],
-        select: ["uuid"],
-      });
-
-      const email_service: EmailServiceDocument =
-        await this.basicService.insertOne({
-          schema: "Email_Service",
-          doc: {
-            user_id: user_id,
-            device_id: device.uuid,
-            metadata: {
-              otp: otp,
-              ...emailResponse,
-            },
-          },
-        });
-
-      const service_id = email_service.uuid;
-
-      this.logger.log({
-        action: "Exit",
-        method: this.sendEmailOTP.name,
-        metadata: {
-          service_id,
-        },
-      });
-
-      return sendEmailOTPSSOOutput.parse({ service_id });
-    } catch (error) {
-      this.logger.error({
-        action: "Exit",
-        method: this.sendEmailOTP.name,
-        error: error,
-        sendEmailOTPSSOInputData,
-      });
-
-      throw error;
-    }
-  }
-
-  @Mutation({
-    input: verifyEmailOTPSSOInput,
-    output: verifyEmailOTPSSOOutput,
-  })
-  async verifyEmailOTP(
-    @Input()
-    verifyEmailOTPSSOInputData: VerifyEmailOTPSSOInput,
-  ): Promise<VerifyEmailOTPSSOOutput> {
-    try {
-      this.logger.debug({
-        action: "Entry",
-        method: this.verifyEmailOTP.name,
-        metadata: {
-          verifyEmailOTPSSOInputData,
-        },
-      });
-
-      const [email_service]: EmailServiceDocument[] =
-        await this.basicService.find({
-          schema: "Email_Service",
-          filter: {
-            uuid: verifyEmailOTPSSOInputData.service_id,
-          },
-          populate: [],
-          select: ["metadata.otp"],
-        });
-
-      const is_otp_correct =
-        (email_service?.metadata as any)?.otp == verifyEmailOTPSSOInputData.otp;
-
-      this.logger.log({
-        action: "Exit",
-        method: this.verifyEmailOTP.name,
-        metadata: {
-          is_otp_correct,
-        },
-      });
-
-      return verifyEmailOTPSSOOutput.parse({ is_otp_correct });
-    } catch (error) {
-      this.logger.error({
-        action: "Exit",
-        method: this.verifyEmailOTP.name,
-        error: error,
-        verifyEmailOTPSSOInputData,
       });
 
       throw error;

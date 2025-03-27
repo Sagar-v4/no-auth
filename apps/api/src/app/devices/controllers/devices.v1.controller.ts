@@ -1,23 +1,19 @@
-import {
-  Body,
-  Controller,
-  Logger,
-  Param,
-  ParseIntPipe,
-  ParseUUIDPipe,
-  Post,
-  Query,
-} from "@nestjs/common";
-import { UUID } from "crypto";
-import { zodToOpenAPI, ZodValidationPipe } from "nestjs-zod";
+import { Controller, Get, Logger, Req, Res } from "@nestjs/common";
+import { zodToOpenAPI } from "nestjs-zod";
 
 import {
-  deviceInput,
-  DeviceInput,
-  deviceOutput,
+  FindDeviceUsersOutput,
+  findDeviceUsersOutput,
+  insertOneDeviceOutput,
+  InsertOneDeviceOutput,
 } from "@/lib/trpc/schemas/v1/devices";
 import { ApiBody, ApiResponse } from "@nestjs/swagger";
 import { DevicesV1Service } from "@/app/devices/services/devices.v1.service";
+import { FastifyReply, FastifyRequest } from "fastify";
+import { BasicService } from "@/app/basic/basic.service";
+import { AccessTokenService } from "@/app/sessions/jwt/access-token.service";
+import { RefreshTokenService } from "@/app/sessions/jwt/refresh-token.service";
+import { DeviceDocument } from "@/app/devices/entities/device.entity";
 
 @Controller({
   path: "devices",
@@ -26,7 +22,12 @@ import { DevicesV1Service } from "@/app/devices/services/devices.v1.service";
 export class DevicesV1Controller {
   private logger: Logger = new Logger(DevicesV1Controller.name);
 
-  constructor(private readonly devicesService: DevicesV1Service) {
+  constructor(
+    private readonly devicesService: DevicesV1Service,
+    private readonly basicService: BasicService,
+    private readonly accessTokenService: AccessTokenService,
+    private readonly refreshTokenService: RefreshTokenService,
+  ) {
     try {
       this.logger.log({
         action: "Construct",
@@ -41,24 +42,140 @@ export class DevicesV1Controller {
     }
   }
 
-  @ApiBody({
-    schema: zodToOpenAPI(deviceInput),
-  })
+  @Get("users")
   @ApiResponse({
-    status: 201,
-    schema: zodToOpenAPI(deviceOutput),
+    schema: zodToOpenAPI(findDeviceUsersOutput),
   })
-  @Post(":id")
-  async getDevices(
-    @Param("id", ParseIntPipe) id: number,
-    @Query("device", ParseUUIDPipe) device: UUID,
-    @Body(new ZodValidationPipe(deviceInput))
-    deviceId: DeviceInput,
-  ) {
-    return {
-      id,
-      device,
-      deviceId,
-    };
+  async findDeviceUsers(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) res: FastifyReply,
+  ): Promise<FindDeviceUsersOutput> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.findDeviceUsers.name,
+        metadata: {},
+      });
+
+      const device_uuid = req.cookies["_DID"];
+      const refresh_token = req.cookies["_RT"];
+      if (!device_uuid || !refresh_token) {
+        return findDeviceUsersOutput.parse([]);
+      }
+
+      const token = await this.refreshTokenService.verifyAsync(refresh_token);
+
+      const [device] = await this.basicService.find({
+        schema: "Device",
+        filter: {
+          uuid: device_uuid,
+        },
+        select: [],
+        populate: [],
+      });
+
+      if (device?.sessions) {
+        const sso_users_obj = device.sessions?.[token.sso];
+
+        if (sso_users_obj) {
+          const sso_users = sso_users_obj.users;
+          const user_uuids = Object.keys(sso_users);
+
+          const userDocuments = await this.basicService.find({
+            schema: "User",
+            filter: {
+              uuid: { $in: user_uuids },
+            },
+            select: [],
+            populate: [],
+          });
+
+          const users = userDocuments.map((userDocument) => ({
+            name: userDocument.name,
+            email: userDocument.email,
+            uuid: userDocument.uuid,
+            active: userDocument.uuid === token.act,
+            ...sso_users[userDocument.uuid],
+          }));
+
+          return findDeviceUsersOutput.parse(users);
+        }
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.findDeviceUsers.name,
+        metadata: {},
+      });
+
+      return findDeviceUsersOutput.parse([]);
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.findDeviceUsers.name,
+        error: error,
+      });
+
+      throw error;
+    }
+  }
+
+  @Get("uuid")
+  @ApiResponse({
+    schema: zodToOpenAPI(insertOneDeviceOutput),
+  })
+  async upsertDevice(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) res: FastifyReply,
+  ): Promise<InsertOneDeviceOutput> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.upsertDevice.name,
+        metadata: {},
+      });
+
+      const device_uuid = req.cookies["_DID"];
+      let device: DeviceDocument;
+      if (!device_uuid) {
+        device = await this.basicService.insertOne({
+          schema: "Device",
+          doc: {},
+        });
+      } else {
+        [device] = await this.basicService.find({
+          schema: "Device",
+          filter: {
+            uuid: device_uuid,
+          },
+          populate: [],
+          select: [],
+        });
+      }
+
+      res.setCookie("_DID", device.uuid, {
+        httpOnly: true,
+        priority: "high",
+        secure: true,
+        sameSite: true,
+        path: "/",
+      });
+
+      this.logger.log({
+        action: "Exit",
+        method: this.upsertDevice.name,
+        metadata: {},
+      });
+
+      return insertOneDeviceOutput.parse(device);
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.upsertDevice.name,
+        error: error,
+      });
+
+      throw error;
+    }
   }
 }

@@ -6,7 +6,7 @@ export const userInput = z.object({
   uuid: z.string().uuid().optional(),
   name: z.string().optional(),
   email: z.string().email().optional(),
-  organization_id: z.string().optional(),
+  organization_uuid: z.string().uuid().optional(),
   login_method: LOGIN_METHODS_ENUM.optional(),
   status: STATUS_ENUM.optional(),
   roles: z.array(z.string()).optional(),
@@ -18,7 +18,7 @@ export const userOutput = z.object({
   uuid: z.string().uuid().nonempty(),
   name: z.string().optional(),
   email: z.string().email().nonempty(),
-  organization_id: z.string().optional(),
+  organization_uuid: z.string().uuid().nonempty(),
   login_method: LOGIN_METHODS_ENUM,
   status: STATUS_ENUM,
   roles: z.array(z.string()).optional(),
@@ -31,7 +31,8 @@ export type UserOutput = z.infer<typeof userOutput>;
 export const userInsertInput = z.object({
   name: z.string().optional(),
   email: z.string().email().nonempty(),
-  organization_id: z.string().optional(),
+  organization_uuid: z.string().uuid().nonempty(),
+  login_method: LOGIN_METHODS_ENUM.optional(),
   roles: z.array(z.string()).optional(),
 });
 export type UserInsertInput = z.infer<typeof userInsertInput>;
@@ -47,7 +48,7 @@ export type UserIdInput = z.infer<typeof userIdInput>;
 export const userUpdateInput = z.object({
   name: z.string().optional(),
   email: z.string().email().optional(),
-  organization_id: z.string().optional(),
+  organization_uuid: z.string().uuid().optional(),
   login_method: LOGIN_METHODS_ENUM.optional(),
   status: STATUS_ENUM.optional(),
   roles: z.array(z.string()).optional(),

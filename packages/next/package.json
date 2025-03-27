@@ -1,0 +1,48 @@
+{
+  "name": "@no-auth/next",
+  "version": "0.0.1",
+  "description": "",
+  "homepage": "https://github.com/Sagar-v4/no-auth/blob/master/packages/next/README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sagar-v4/no-auth.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "publish:npm": "npm publish --access public"
+  },
+  "keywords": [
+    "no auth",
+    "auth",
+    "server"
+  ],
+  "author": "sv4dev",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
+    "next": "^15.2.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "swr": "^2.2.5"
+  }
+}

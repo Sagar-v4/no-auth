@@ -8,6 +8,8 @@ import { randomUUID } from "crypto";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { DEVICE_SCHEMA_NAME } from "@/app/devices/entities/device.entity";
 import { USER_SCHEMA_NAME } from "@/app/users/entities/user.entity";
+import { ORGANIZATION_SCHEMA_NAME } from "@/app/organizations/entities/organization.entity";
+import { SSO_SCHEMA_NAME } from "@/app/sso/entities/sso.entity";
 
 @Schema({
   timestamps: true,
@@ -29,11 +31,43 @@ export class Email_Service {
   user_id!: string;
 
   @Prop({
+    type: Types.UUID,
+    required: true,
+  })
+  user_uuid!: string;
+
+  @Prop({
     type: Types.ObjectId,
     ref: DEVICE_SCHEMA_NAME,
     required: true,
   })
   device_id!: string;
+
+  @Prop({
+    type: Types.UUID,
+    required: true,
+  })
+  device_uuid!: string;
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: ORGANIZATION_SCHEMA_NAME,
+    required: true,
+  })
+  organization_id!: string;
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: SSO_SCHEMA_NAME,
+    required: true,
+  })
+  sso_id!: string;
+
+  @Prop({
+    type: Types.UUID,
+    required: true,
+  })
+  sso_uuid!: string;
 
   @Prop({ type: Object })
   metadata?: object;

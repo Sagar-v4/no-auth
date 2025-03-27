@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { EnvService } from "@/env/env.service";
 import { Injectable, Logger, OnApplicationBootstrap } from "@nestjs/common";
 
@@ -79,11 +80,11 @@ export class AppService implements OnApplicationBootstrap {
         method: this.initializeAdmin.name,
       });
 
-      const adminEmail = this.envService.get("ADMIN_EMAIL");
+      const admin_email = this.envService.get("SYS_ADMIN_EMAIL");
 
       let [admin] = await this.basicService.find({
         schema: "User",
-        filter: { email: adminEmail },
+        filter: { email: admin_email },
         select: [],
         populate: [],
       });
@@ -92,8 +93,9 @@ export class AppService implements OnApplicationBootstrap {
         admin = await this.basicService.insertOne({
           schema: "User",
           doc: {
-            email: adminEmail,
-            name: adminEmail.split("@")[0],
+            email: admin_email,
+            name: admin_email.split("@")[0],
+            organization_uuid: randomUUID(),
             roles: [
               NO_AUTH_USER_ROLES_ENUM.Enum.CLIENT,
               NO_AUTH_USER_ROLES_ENUM.Enum.ADMIN,
@@ -173,6 +175,7 @@ export class AppService implements OnApplicationBootstrap {
           schema: "Organization",
           doc: {
             user_id: admin._id.toString(),
+            uuid: admin.organization_uuid,
             ...noAuth,
           },
         });
@@ -215,14 +218,19 @@ export class AppService implements OnApplicationBootstrap {
         method: this.initializeSSO.name,
       });
 
-      const ssoSecret = this.envService.get("NO_AUTH_SSO_SECRET");
+      const sso_uuid = this.envService.get("SYS_SSO_UUID");
+      const sso_secret = this.envService.get("NO_AUTH_SSO_SECRET");
+      const sso_webhook_url = this.envService.get("SYS_SSO_WEBHOOK_URL");
+      const sso_redirect_url = this.envService.get("SYS_SSO_REDIRECT_URL");
+      const sso_login_method = this.envService.get("SYS_SSO_LOGIN_METHOD");
 
       let [sso] = await this.basicService.find({
         schema: "SSO",
         filter: {
           user_id: admin._id.toString(),
           organization_id: noAuth._id.toString(),
-          secret: ssoSecret,
+          secret: sso_secret,
+          uuid: sso_uuid,
         },
         select: [],
         populate: [],
@@ -234,7 +242,11 @@ export class AppService implements OnApplicationBootstrap {
           doc: {
             user_id: admin._id.toString(),
             organization_id: noAuth._id.toString(),
-            secret: ssoSecret,
+            uuid: sso_uuid,
+            secret: sso_secret,
+            webhook_url: sso_webhook_url,
+            redirect_url: sso_redirect_url,
+            login_method: sso_login_method,
           },
         });
       }

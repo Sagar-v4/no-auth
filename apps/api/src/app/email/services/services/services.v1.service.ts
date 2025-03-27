@@ -38,8 +38,8 @@ export class EmailServicesV1Service {
         // secure: true, // true for port 465, false for other ports
         service: "gmail",
         auth: {
-          user: this.envService.get("GMAIL_USER"),
-          pass: this.envService.get("GMAIL_PASS"),
+          user: this.envService.get("SYS_GMAIL_USER"),
+          pass: this.envService.get("SYS_GMAIL_PASS"),
         },
       });
 
@@ -82,7 +82,8 @@ export class EmailServicesV1Service {
 
       const start = new Date();
       const info = await this.transporter.sendMail({
-        from: input.from ?? `no-reply <${this.envService.get("GMAIL_USER")}>`,
+        from:
+          input.from ?? `no-reply <${this.envService.get("SYS_GMAIL_USER")}>`,
         to: input.to,
         subject: input.subject,
         text: input.text,

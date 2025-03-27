@@ -26,6 +26,7 @@ export type OrganizationOutput = z.infer<typeof organizationOutput>;
 
 export const organizationInsertInput = z.object({
   user_id: z.string().nonempty(),
+  uuid: z.string().uuid().optional(),
   name: z.string().nonempty(),
   description: z.string().optional(),
 });

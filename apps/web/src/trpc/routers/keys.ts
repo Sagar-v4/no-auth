@@ -88,6 +88,14 @@ export function getKeyByIdV1(input: FindByKeyIdInput) {
       abortOnUnmount: true,
       ssr: true,
     },
+    select(data) {
+      if (data)
+        return {
+          ...data,
+          createdAt: new Date(data.createdAt),
+          updatedAt: new Date(data.updatedAt),
+        };
+    },
   });
 
   const query = useQuery(queryOptions);

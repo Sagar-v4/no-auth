@@ -2,6 +2,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from "@nestjs/platform-fastify";
+import fastifyCookie from "@fastify/cookie";
 import { NestFactory } from "@nestjs/core";
 import { Logger, VersioningType } from "@nestjs/common";
 
@@ -18,13 +19,27 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
-  app.enableCors();
+
+  await app.register(fastifyCookie, {
+    secret: "your-secret-key", // for signed cookies
+    hook: "onRequest", // set to false to disable cookie parsing on each request
+    algorithm: "SHA256",
+    parseOptions: {}, // options for parsing cookies
+  });
+  // app.enableCors();
+  app.enableCors({
+    origin: "http://localhost:3000", // Replace with your Next.js URL
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    credentials: true, // If you need to send cookies
+    allowedHeaders: "Content-Type, Authorization",
+  });
+
   app.setGlobalPrefix(globalPrefix);
   app.enableVersioning({
     type: VersioningType.URI,
   });
 
-  const envService: EnvService = app.get(EnvService);
+  const envService = app.get(EnvService);
   const PORT = envService.get("PORT");
   const NODE_ENV = envService.get("NODE_ENV");
 

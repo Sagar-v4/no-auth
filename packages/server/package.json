@@ -2,13 +2,23 @@
   "name": "@no-auth/server",
   "version": "0.0.1",
   "description": "",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
   "homepage": "https://github.com/Sagar-v4/no-auth/blob/master/packages/server/README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Sagar-v4/no-auth.git"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
   },
   "scripts": {
     "build": "tsup",

@@ -22,6 +22,10 @@ import {
   FindByDeviceDataInput,
   findByDeviceDataOutput,
   FindByDeviceDataOutput,
+  findDeviceUsersInput,
+  FindDeviceUsersInput,
+  findDeviceUsersOutput,
+  FindDeviceUsersOutput,
   updateByDeviceIdInput,
   UpdateByDeviceIdInput,
   updateByDeviceIdOutput,
@@ -231,6 +235,80 @@ export class DevicesV1Router {
         method: this.findByData.name,
         error: error,
         findByDeviceDataInputData,
+      });
+
+      throw error;
+    }
+  }
+
+  @Query({
+    input: findDeviceUsersInput,
+    output: findDeviceUsersOutput,
+  })
+  async findDeviceUsers(
+    @Input() findDeviceUsersInputData: FindDeviceUsersInput,
+  ): Promise<FindDeviceUsersOutput> {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.findById.name,
+        metadata: {
+          findDeviceUsersInputData,
+        },
+      });
+
+      const [device]: DeviceDocument[] = await this.basicService.find({
+        schema: "Device",
+        filter: {
+          uuid: findDeviceUsersInputData.filter.device_uuid,
+        },
+        select: [],
+        populate: [],
+      });
+
+      if (device?.sessions) {
+        const sso_users_obj =
+          device.sessions?.[findDeviceUsersInputData.filter.sso_uuid];
+
+        if (sso_users_obj) {
+          const sso_users = sso_users_obj.users;
+          const user_uuids = Object.keys(sso_users);
+
+          const userDocuments = await this.basicService.find({
+            schema: "User",
+            filter: {
+              uuid: { $in: user_uuids },
+            },
+            select: [],
+            populate: [],
+          });
+
+          const users = userDocuments.map((userDocument) => ({
+            name: userDocument.name,
+            email: userDocument.email,
+            uuid: userDocument.uuid,
+            ...sso_users[userDocument.uuid],
+          }));
+
+          return findDeviceUsersOutput.parse(users);
+        }
+      }
+
+      this.logger.log({
+        action: "Exit",
+        method: this.findById.name,
+        metadata: {
+          device,
+        },
+      });
+
+      return findDeviceUsersOutput.parse([]);
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.findById.name,
+        error: error,
+        findDeviceUsersInputData,
       });
 
       throw error;

@@ -17,21 +17,21 @@ export function useCurrentUser() {
   ] = useLocalStorage(ACTIVE_ORGANIZATION_KEY, "");
 
   const user = {
-    _id: "67d9f47276052dc2a414cdc3",
+    _id: "67e44642ec52e2cdbd5652fa",
     name: "sagarvariya4",
     email: "sagarvariya4@gmail.com",
     login_method: "OTP",
     status: "ACTIVE",
     roles: ["CLIENT", "ADMIN"],
-    uuid: "94c951ba-4929-4c0f-89c7-52cff3485baf",
+    uuid: "8a1abe95-c608-4afe-a97d-680ab4dc534c",
     createdAt: "2025-03-18T22:32:18.059Z",
     updatedAt: "2025-03-18T22:32:18.059Z",
     __v: 0,
   };
 
   const organization = {
-    _id: "67d9f47276052dc2a414cdd0",
-    user_id: "67d9f47276052dc2a414cdc3",
+    _id: "67e44642ec52e2cdbd565308",
+    user_id: "67e44642ec52e2cdbd5652fa",
     name: "No Auth",
     description: "This is No Auth Organization",
     status: "ACTIVE",
