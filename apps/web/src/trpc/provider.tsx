@@ -14,19 +14,6 @@ import { env } from "@/env/client/env.schema";
 import { TRPCProvider } from "@/trpc/server";
 import type { AppRouter } from "@/lib/trpc/@generated/server";
 
-function getBaseUrl() {
-  if (typeof window !== "undefined") return env.APP_BASE_URL;
-  // browser should use relative path
-  if (process.env.VERCEL_URL)
-    // reference for vercel.com
-    return `https://${process.env.VERCEL_URL}`;
-  if (process.env.RENDER_INTERNAL_HOSTNAME)
-    // reference for render.com
-    return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
-  // assume localhost
-  return env.APP_BASE_URL;
-}
-
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
@@ -63,16 +50,6 @@ export function TrpcReactQueryProvider({
 }: {
   children: React.ReactNode;
 }) {
-  // const [trpcClient] = useState(() =>
-  //   createTRPCClient<AppRouter>({
-  //     links: [
-  //       httpBatchLink({
-  //         url: `${env.APP_BASE_URL}/trpc`,
-  //       }),
-  //     ],
-  //   })
-  // );
-
   const queryClient = getQueryClient();
   const trpcClient = createTRPCClient<AppRouter>({
     links: [

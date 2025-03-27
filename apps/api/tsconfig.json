@@ -24,7 +24,8 @@
     "strict": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@/lib/trpc/*": ["../../libs/trpc/*"]
+      "@/lib/trpc/*": ["../../libs/trpc/*"],
+      "@/lib/const/*": ["../../libs/constants/*"]
     }
   }
 }

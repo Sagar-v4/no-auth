@@ -145,7 +145,7 @@ export function getOrganizationsByRefV1(input: FindByOrganizationRefInput) {
   const queryOptions = organizationsV1.findByRef.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
-    enabled: false,
+    // enabled: false,
     staleTime: 1000 * 60 * 10, // 10 min
     refetchInterval: 1000 * 60 * 10, // 10 min
     trpc: {

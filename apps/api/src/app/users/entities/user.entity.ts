@@ -28,9 +28,9 @@ export class User {
   email!: string;
 
   @Prop({
-    type: Types.ObjectId,
+    type: Types.UUID,
   })
-  organization_id?: string;
+  organization_uuid?: string;
 
   @Prop({
     type: String,

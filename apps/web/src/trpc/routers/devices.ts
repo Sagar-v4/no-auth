@@ -9,6 +9,7 @@ import {
   UpdateByDeviceIdInput,
   UpdateByDeviceDataInput,
   DeleteByDeviceDataInput,
+  FindDeviceUsersInput,
 } from "@/lib/trpc/schemas/v1/devices";
 import { useTRPC } from "@/trpc/server";
 import { queryClient } from "@/trpc/provider";
@@ -114,6 +115,38 @@ export function getDevicesByDataV1(input: FindByDeviceDataInput) {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
     enabled: false,
+    staleTime: 1000 * 60 * 10, // 10 min
+    refetchInterval: 1000 * 60 * 10, // 10 min
+    trpc: {
+      abortOnUnmount: true,
+      ssr: true,
+    },
+  });
+
+  const query = useQuery(queryOptions);
+
+  const exec = async () => {
+    const promise = query.refetch({
+      cancelRefetch: false,
+    });
+
+    toast.promise(promise, {
+      richColors: true,
+      loading: "Fetching device...",
+      error: "Failed to fetch device",
+    });
+  };
+
+  return { exec, ...query };
+}
+
+export function getDeviceUsersV1(input: FindDeviceUsersInput) {
+  const { devicesV1 } = useTRPC();
+
+  const queryOptions = devicesV1.findDeviceUsers.queryOptions(input, {
+    retry: 2,
+    retryDelay: (retryCount) => retryCount * 1000,
+    // enabled: false,
     staleTime: 1000 * 60 * 10, // 10 min
     refetchInterval: 1000 * 60 * 10, // 10 min
     trpc: {

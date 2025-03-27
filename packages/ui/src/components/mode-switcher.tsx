@@ -43,10 +43,11 @@ export function ModeSwitcher({
       variant={variant}
       onClick={toggleTheme}
       className={cn("group/toggle", className)}
+      title="Toggle Theme"
     >
       <SunIcon className="hidden [html.dark_&]:block" />
       <MoonIcon className="hidden [html.light_&]:block" />
-      <span className="sr-only">Toggle theme</span>
+      <span className="sr-only">Toggle Theme</span>
     </Button>
   );
 }

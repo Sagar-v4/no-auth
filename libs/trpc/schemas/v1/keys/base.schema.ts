@@ -24,14 +24,13 @@ export const keyOutput = z.object({
   description: z.string().optional(),
   expiry: z.number(),
   status: STATUS_ENUM,
-  metadata: z.object({}).optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
 export type KeyOutput = z.infer<typeof keyOutput>;
 
 export const keyInsertInput = z.object({
-  secret: z.string().nanoid().nonempty(),
+  secret: z.string().nanoid().optional(),
   user_id: z.string().nonempty(),
   organization_id: z.string().nonempty(),
   name: z.string().nonempty(),

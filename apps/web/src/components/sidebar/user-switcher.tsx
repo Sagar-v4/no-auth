@@ -9,6 +9,7 @@ import {
   ExternalLink,
   RefreshCw,
 } from "lucide-react";
+import { sso_url } from "@no-auth/next";
 
 import {
   DropdownMenu,
@@ -25,7 +26,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar";
-import { getOrganizationsByDataV1 } from "@/trpc/routers/organizations";
+import { getOrganizationsByRefV1 } from "@/trpc/routers/organizations";
 import { UserSwitcherSkeleton } from "@/skeletons/sidebar/user-switcher";
 import { useURL } from "@/hooks/use-url";
 import { useCurrentUser } from "@/hooks/use-current-user";
@@ -36,14 +37,15 @@ import { NO_AUTH_USER_ROLES_ENUM } from "@/lib/trpc/schemas/v1/users";
 export function SidebarUserSwitcher() {
   const { isMobile } = useSidebar();
   const { user_type, page_name } = useURL();
-  const { user, organization, localUser } = useCurrentUser();
+  const { user, organization } = useCurrentUser();
 
-  const { data, isLoading, isError } = getOrganizationsByDataV1({
-    filter: [
-      {
-        user_id: user._id,
+  const { data, isLoading, isError } = getOrganizationsByRefV1({
+    filter: {
+      user: {
+        uuid: user.uuid,
       },
-    ],
+      organization: {},
+    },
   });
 
   const Reload = () => {
@@ -52,7 +54,7 @@ export function SidebarUserSwitcher() {
         <SidebarMenuItem>
           <SidebarMenuButton
             size="lg"
-            className="bg-destructive hover:bg-destructive text-white"
+            className="bg-red-500 !text-white hover:bg-red-600"
             onClick={() => window.location.reload()}
           >
             <div className="flex aspect-square size-8 items-center justify-center">
@@ -73,7 +75,7 @@ export function SidebarUserSwitcher() {
   const User = () => {
     return (
       <>
-        <Avatar className="h-8 w-8 rounded-lg">
+        <Avatar className="size-8 rounded-lg">
           <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground rounded-lg">
             {user.name.toUpperCase()[0]}
           </AvatarFallback>
@@ -107,7 +109,7 @@ export function SidebarUserSwitcher() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground rounded-lg"
             >
               {user_type === USERS.CLIENT ? <User /> : null}
               {user_type === USERS.ORGANIZATION ? <Organization /> : null}
@@ -120,24 +122,28 @@ export function SidebarUserSwitcher() {
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Organizations
-            </DropdownMenuLabel>
-            <DropdownMenuGroup>
-              {data.map((organization) => (
-                <Link
-                  href={
-                    user_type === USERS.ORGANIZATION
-                      ? `/o/${page_name}`
-                      : "/o/dashboard"
-                  }
-                  key={organization.name}
-                >
-                  <DropdownMenuItem>{organization.name}</DropdownMenuItem>
-                </Link>
-              ))}
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            {data.length !== 0 ? (
+              <>
+                <DropdownMenuLabel className="text-muted-foreground text-xs">
+                  Organizations
+                </DropdownMenuLabel>
+                <DropdownMenuGroup>
+                  {data.map((organization) => (
+                    <Link
+                      href={
+                        user_type === USERS.ORGANIZATION
+                          ? `/o/${page_name}`
+                          : "/o/dashboard"
+                      }
+                      key={organization.name}
+                    >
+                      <DropdownMenuItem>{organization.name}</DropdownMenuItem>
+                    </Link>
+                  ))}
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+              </>
+            ) : null}
             <DropdownMenuGroup>
               {user.roles.includes(NO_AUTH_USER_ROLES_ENUM.Enum.ADMIN) && (
                 <>
@@ -148,10 +154,12 @@ export function SidebarUserSwitcher() {
                   <DropdownMenuSeparator />
                 </>
               )}
-              <DropdownMenuItem>
-                <ArrowRightLeft />
-                Switch User
-              </DropdownMenuItem>
+              <Link href={sso_url}>
+                <DropdownMenuItem>
+                  <ArrowRightLeft />
+                  Switch User
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
               <Link
                 href={

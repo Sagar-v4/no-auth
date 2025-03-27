@@ -5,7 +5,8 @@
     "strictNullChecks": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@/lib/trpc/*": ["../../libs/trpc/*"]
+      "@/lib/trpc/*": ["../../libs/trpc/*"],
+      "@/lib/const/*": ["../../libs/constants/*"]
     }
   },
   "include": [
@@ -13,7 +14,8 @@
     "**/*.tsx",
     "next-env.d.ts",
     "next.config.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "src/middleware.ts"
   ],
   "exclude": ["node_modules"]
 }

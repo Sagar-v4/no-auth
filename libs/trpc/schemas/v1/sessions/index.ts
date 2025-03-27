@@ -7,5 +7,7 @@ export * from "./find-by-id.schema";
 export * from "./find-by-ref.schema";
 export * from "./insert-many.schema";
 export * from "./insert-one.schema";
+export * from "./jwt-access.schema";
+export * from "./jwt-refresh.schema";
 export * from "./update-by-data.schema";
 export * from "./update-by-id.schema";

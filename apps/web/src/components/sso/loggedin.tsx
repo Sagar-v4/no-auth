@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 
 import {
   Select,
@@ -11,107 +11,164 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@workspace/ui/components/avatar";
+import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
 import { cn } from "@workspace/ui/lib/utils";
-import { Card, CardContent } from "@workspace/ui/components/card";
-import { useDevice } from "@/hooks/use-device";
+import { useParams } from "next/navigation";
+import { useDeviceUsers } from "@/swr/hooks/devices";
+import { useLoginMutation } from "@/swr/hooks/sessions";
+import { device_uuid, refresh_token } from "@/lib/const/cookies";
+import { FindDeviceUsersOutput } from "@/lib/trpc/schemas/v1/devices";
 
 export function SSOLoggedIn() {
-  const data = {
-    email: "test@email.com",
-    image_url: "shadcn.jpg",
+  const { sso_uuid } = useParams<{ sso_uuid: string }>();
+
+  const { data, isLoading, error } = useDeviceUsers();
+
+  const { trigger, isMutating } = useLoginMutation();
+
+  const recentIndex = data
+    ? data.reduce(
+        (
+          mostRecentIndex,
+          currentObj,
+          currentIndex,
+          array: FindDeviceUsersOutput,
+        ) => {
+          if (currentIndex === 0) {
+            return 0;
+          }
+          if (
+            array.length > 0 &&
+            currentObj.log_in_at && // Check if log_in_at is not undefined
+            new Date(currentObj.log_in_at).getTime() >
+              new Date(
+                array.at(mostRecentIndex)?.log_in_at ?? new Date(),
+              ).getTime()
+          ) {
+            return currentIndex;
+          } else {
+            return mostRecentIndex;
+          }
+        },
+        0,
+      )
+    : 0;
+
+  const handleClick = async (uuid: string) => {
+    try {
+      const { did, rt, redirect } = await trigger({
+        sso_uuid: sso_uuid,
+        user_uuid: uuid,
+      });
+      const redirect_url = new URL(redirect);
+      redirect_url.searchParams.set(device_uuid, did);
+      redirect_url.searchParams.set(refresh_token, rt);
+      window.location.href = redirect_url.toString();
+    } catch (error) {
+      console.error("Error sending data:", error);
+    }
   };
 
-  const User = () => {
+  const User = ({
+    name,
+    email,
+    log_in_at,
+    active = false,
+  }: {
+    name: string;
+    email: string;
+    log_in_at: Date;
+    active?: boolean;
+  }) => {
     return (
-      <div className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm">
-        <Avatar className="h-8 w-8 rounded-lg">
-          <AvatarImage src={data.image_url} />
-          <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground rounded-lg">
-            {data.email.toUpperCase()[0]}
+      <div className="flex w-full items-center gap-2 rounded-md text-left text-sm">
+        <Avatar className="size-8">
+          {/* <AvatarImage src={user.image_url} /> */}
+          <AvatarFallback
+            className={cn(
+              "bg-accent-foreground text-accent rounded-lg",
+              active && "!bg-blue-600 !text-white",
+            )}
+          >
+            {email.toUpperCase()[0]}
           </AvatarFallback>
         </Avatar>
         <div className="grid flex-1 text-left text-sm leading-tight">
-          <span className="truncate font-medium">{data.email}</span>
-          <span className="truncate text-xs">test name</span>
+          <span className="truncate text-xs">{name}</span>
+          <span className="truncate font-medium">{email}</span>
+          <span className="absolute right-2 bottom-1 text-[10px]">
+            {new Date(log_in_at).toLocaleDateString()}
+          </span>
         </div>
       </div>
     );
   };
 
-  const users = Array.from({ length: 5 });
-
   return (
     <>
       <div className="mb-6 flex flex-col items-center text-center">
-        <h1 className="text-2xl font-bold">Loggedin accounts</h1>
+        <h1 className="text-2xl font-bold">Continue</h1>
         <p className="text-muted-foreground text-sm text-balance">
-          Select email from below to login to that account
+          Select account to continue
         </p>
       </div>
-      <Card className="hidden overflow-scroll p-0 lg:block lg:h-60">
-        <CardContent className="p-2">
-          {users.length !== 0 ? (
-            users.map((_, user) => (
-              <span
-                key={user}
-                className={cn(
-                  user == 2
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "hover:bg-accent",
-                  "relative flex rounded-md",
-                )}
-              >
-                <User />
-                {user == 2 && (
-                  <span className="absolute right-2 my-4 flex size-3.5 items-center justify-center">
-                    <Check className="size-4" />
-                  </span>
-                )}
-              </span>
-            ))
-          ) : (
-            <div className="flex h-40 items-center justify-center">
-              No loggedin accounts
-            </div>
-          )}
-        </CardContent>
-      </Card>
-      <div className="lg:hidden">
-        <Select defaultValue="2">
-          <SelectTrigger className="h-14">
-            <SelectValue placeholder="Select loggedin account" />
-          </SelectTrigger>
-          <SelectContent className="h-83">
-            <SelectGroup>
-              {users.length !== 0 ? (
-                users.map((_, user) => (
-                  <SelectItem
-                    key={user}
-                    value={String(user)}
-                    className={cn(
-                      user == 2
-                        ? "!bg-blue-600 !text-white hover:!bg-blue-700"
-                        : "hover:!bg-accent",
-                      "relative flex rounded-md",
-                    )}
-                  >
-                    <User />
-                  </SelectItem>
-                ))
+      {error ? (
+        <div className="flex h-14.5 items-center justify-center">
+          <p className="text-muted-foreground text-sm">
+            An error occurred fetching device loggedin accounts data. Please try
+            again later.
+          </p>
+        </div>
+      ) : isMutating || isLoading || !data ? (
+        <div className="flex h-14.5 items-center justify-center">
+          <LoaderCircle className="animate-spin" />
+        </div>
+      ) : (
+        <>
+          <Select onValueChange={handleClick}>
+            <SelectTrigger className="relative h-14.5">
+              {data.length !== 0 ? (
+                <User
+                  name={data[recentIndex]?.name as string}
+                  email={data[recentIndex]?.email as string}
+                  log_in_at={data[recentIndex]?.log_in_at as Date}
+                  active={true}
+                />
               ) : (
-                <div className="flex h-76 items-center justify-center">
-                  No loggedin accounts
-                </div>
+                <SelectValue placeholder="Select loggedin account" />
               )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+            </SelectTrigger>
+            <SelectContent className="h-58 lg:h-45">
+              <SelectGroup>
+                {data.length !== 0 ? (
+                  data.map((user, index) => (
+                    <SelectItem
+                      key={index}
+                      value={user.uuid}
+                      className={cn(
+                        recentIndex === index
+                          ? "!bg-blue-600 !text-white hover:!bg-blue-700"
+                          : "hover:!bg-accent",
+                        "relative flex rounded-sm px-2 py-2.5",
+                      )}
+                    >
+                      <User
+                        name={user.name}
+                        email={user.email}
+                        log_in_at={user.log_in_at}
+                      />
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="flex h-24 items-center justify-center">
+                    No loggedin accounts
+                  </div>
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </>
+      )}
     </>
   );
 }

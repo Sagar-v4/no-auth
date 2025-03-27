@@ -24,6 +24,9 @@ export class Device {
   status!: string;
 
   @Prop({ type: Object })
+  sessions?: object;
+
+  @Prop({ type: Object })
   metadata?: object;
 }
 

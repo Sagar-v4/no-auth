@@ -1,45 +1,20 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@workspace/ui/components/checkbox";
 
 import { status as statuses } from "@/components/keys-data-table/data";
 import { KeyOutput } from "@/lib/trpc/schemas/v1/keys";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { DataTableRowActions } from "@/components/keys-data-table/data-table-row-actions";
+import { DataTableRowActions } from "@/components/keys-data-table/row-actions";
 
 export const columns: ColumnDef<KeyOutput>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "uuid",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="UUID" />
     ),
     cell: ({ row }) => (
-      <div className="w-[50px] overflow-hidden text-nowrap text-ellipsis">
+      <div className="max-w-[80px] truncate font-medium">
         {row.getValue("uuid")}
       </div>
     ),
@@ -54,7 +29,7 @@ export const columns: ColumnDef<KeyOutput>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
+          <span className="max-w-[150px] truncate font-medium">
             {row.getValue("name")}
           </span>
         </div>
@@ -69,7 +44,7 @@ export const columns: ColumnDef<KeyOutput>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
+          <span className="max-w-[250px] truncate font-medium">
             {row.getValue("description")}
           </span>
         </div>
@@ -91,7 +66,7 @@ export const columns: ColumnDef<KeyOutput>[] = [
       }
 
       return (
-        <div className="flex w-[100px] items-center">
+        <div className="flex max-w-[100px] items-center">
           {status.icon && (
             <status.icon className="text-muted-foreground mr-2 h-4 w-4" />
           )}
@@ -105,6 +80,10 @@ export const columns: ColumnDef<KeyOutput>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <div className="max-w-[30px] items-center">
+        <DataTableRowActions row={row} />
+      </div>
+    ),
   },
 ];

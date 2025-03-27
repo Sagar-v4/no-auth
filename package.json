@@ -51,10 +51,10 @@
     "typescript": "5.7.3"
   },
   "dependencies": {
-    "@trpc/server": "11.0.0-rc.802",
+    "@trpc/server": "11.0.0",
     "lucide-react": "0.475.0",
-    "next": "^15.1.6",
-    "next-themes": "^0.4.4",
+    "next": "^15.2.4",
+    "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "usehooks-ts": "^3.1.1",

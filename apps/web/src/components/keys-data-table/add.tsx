@@ -1,12 +1,9 @@
 import * as React from "react";
 import { Plus } from "lucide-react";
 
-import { cn } from "@workspace/ui/lib/utils";
 import { Button } from "@workspace/ui/components/button";
-import { Input } from "@workspace/ui/components/input";
-import { Textarea } from "@workspace/ui/components/textarea";
-import { Label } from "@workspace/ui/components/label";
 import { ResponsiveDialog } from "@workspace/ui/components/responsive-dialog";
+import { ACTIONS, Form } from "@/components/keys-data-table/form";
 
 export function Add() {
   const title = "API Key";
@@ -19,31 +16,7 @@ export function Add() {
 
   return (
     <ResponsiveDialog title={title} trigger={trigger} description={description}>
-      <Form />
+      <Form action={ACTIONS.ADD} />
     </ResponsiveDialog>
-  );
-}
-
-function Form({ className }: React.ComponentProps<"form">) {
-  return (
-    <form className={cn("grid items-start gap-4", className)}>
-      <div className="grid gap-2">
-        <Label htmlFor="name">Name</Label>
-        <Input required type="text" id="name" placeholder="Key name" />
-      </div>
-
-      <div className="grid gap-2">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          placeholder="Describe the key"
-          className="max-h-26 !min-h-14"
-        />
-      </div>
-
-      <Button type="submit" className="bg-green-600 hover:bg-green-700">
-        Save
-      </Button>
-    </form>
   );
 }

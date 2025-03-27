@@ -42,10 +42,6 @@ import {
   DeleteByEmailServiceRefInput,
   deleteByEmailServiceRefOutput,
   DeleteByEmailServiceRefOutput,
-  emailServiceSendEmailInput,
-  EmailServiceSendEmailInput,
-  emailServiceSendEmailOutput,
-  EmailServiceSendEmailOutput,
 } from "../../../../../../../libs/trpc/schemas/v1/email/services";
 import { UserDocument } from "@/app/users/entities/user.entity";
 import { DeviceDocument } from "@/app/devices/entities/device.entity";
@@ -597,46 +593,6 @@ export class EmailServicesV1Router {
         method: this.deleteByRef.name,
         error: error,
         deleteByEmailServiceRefInputData,
-      });
-
-      throw error;
-    }
-  }
-
-  @Query({
-    input: emailServiceSendEmailInput,
-    output: emailServiceSendEmailOutput,
-  })
-  async sendEmail(
-    @Input()
-    emailServiceSendEmailInputData: EmailServiceSendEmailInput,
-  ): Promise<EmailServiceSendEmailOutput> {
-    try {
-      this.logger.debug({
-        action: "Entry",
-        method: this.sendEmail.name,
-        metadata: {
-          emailServiceSendEmailInputData,
-        },
-      });
-
-      const info = await this.emailServicesService.sendEmail(
-        emailServiceSendEmailInputData,
-      );
-
-      this.logger.log({
-        action: "Exit",
-        method: this.sendEmail.name,
-        metadata: { message_id: info.messageId },
-      });
-
-      return info;
-    } catch (error) {
-      this.logger.error({
-        action: "Exit",
-        method: this.sendEmail.name,
-        error: error,
-        emailServiceSendEmailInputData,
       });
 
       throw error;

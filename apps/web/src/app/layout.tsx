@@ -9,6 +9,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Wrapper as ThemeWrapper } from "@workspace/ui/theme/wrapper";
 import { Toaster } from "@workspace/ui/components/sonner";
 import { Metadata } from "next";
+// import { NoAuthProvider } from "@no-auth/next";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -51,6 +52,7 @@ export default function RootLayout({
           }}
         />
       </head>
+      {/* <NoAuthProvider> */}
       <body
         className={cn(
           "bg-background overscroll-none font-sans antialiased",
@@ -62,9 +64,9 @@ export default function RootLayout({
           <TrpcReactQueryProvider>
             {/* <ThemeWrapper> */}
             <ThemeProvider
+              enableSystem
               attribute="class"
               defaultTheme="system"
-              enableSystem
               disableTransitionOnChange
             >
               {children}
@@ -74,6 +76,7 @@ export default function RootLayout({
           </TrpcReactQueryProvider>
         </NuqsAdapter>
       </body>
+      {/* </NoAuthProvider> */}
     </html>
   );
 }

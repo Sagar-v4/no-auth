@@ -11,8 +11,6 @@ import {
   UpdateBySSODataInput,
   DeleteBySSODataInput,
   DeleteBySSORefInput,
-  SendEmailOTPSSOInput,
-  VerifyEmailOTPSSOInput,
 } from "@/lib/trpc/schemas/v1/sso";
 import { useTRPC } from "@/trpc/server";
 import { queryClient } from "@/trpc/provider";
@@ -287,61 +285,6 @@ export function deleteSSOByRefV1() {
       loading: "Deleting sso...",
       success: "SSO deleted successfully",
       error: "Failed to delete sso",
-    });
-  };
-
-  return { exec, ...mutation };
-}
-
-export function sendEmailOTPV1() {
-  const { ssoV1 } = useTRPC();
-
-  const mutationOptions = ssoV1.sendEmailOTP.mutationOptions({
-    retry: 2,
-    retryDelay: (retryCount) => retryCount * 1000,
-    gcTime: 0,
-    networkMode: "online",
-  });
-
-  const mutation = useMutation(mutationOptions);
-
-  const exec = async (input: SendEmailOTPSSOInput) => {
-    const promise = mutation.mutateAsync(input);
-
-    toast.promise(promise, {
-      richColors: true,
-      loading: "Sending email otp...",
-      success: "Email OTP sent successfully",
-      error: "Failed to send email otp",
-    });
-  };
-
-  return { exec, ...mutation };
-}
-export function verifyEmailOTPV1() {
-  const { ssoV1 } = useTRPC();
-
-  const mutationOptions = ssoV1.verifyEmailOTP.mutationOptions({
-    retry: 2,
-    retryDelay: (retryCount) => retryCount * 1000,
-  });
-
-  const mutation = useMutation(mutationOptions);
-
-  const exec = async (input: VerifyEmailOTPSSOInput) => {
-    const promise = mutation.mutateAsync(input);
-
-    toast.promise(promise, {
-      richColors: true,
-      loading: "Verifying email otp...",
-      success: (res) => {
-        if (res.is_otp_correct) {
-          return "Email OTP verified successfully";
-        } else {
-          throw new Error("Failed to verify email otp");
-        }
-      },
-      error: "Failed to verify email otp",
     });
   };
 

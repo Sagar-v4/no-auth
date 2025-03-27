@@ -8,6 +8,7 @@ import {
   ExternalLink,
   RefreshCw,
 } from "lucide-react";
+import { sso_url } from "@no-auth/next";
 
 import {
   DropdownMenu,
@@ -18,10 +19,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
-import { getOrganizationsByDataV1 } from "@/trpc/routers/organizations";
+import { getOrganizationsByRefV1 } from "@/trpc/routers/organizations";
 import { useURL } from "@/hooks/use-url";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
 import { USERS } from "@/registry/sidebar";
 import { NO_AUTH_USER_ROLES_ENUM } from "@/lib/trpc/schemas/v1/users";
 import { Button } from "@workspace/ui/components/button";
@@ -29,62 +29,57 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 
 export function NavbarUserSwitcher() {
   const { user_type, page_name } = useURL();
-  const { user, organization, localUser } = useCurrentUser();
+  const { user } = useCurrentUser();
 
-  const { data, isLoading, isError } = getOrganizationsByDataV1({
-    filter: [
-      {
-        user_id: user._id,
+  const { data, isLoading, isError } = getOrganizationsByRefV1({
+    filter: {
+      user: {
+        uuid: user.uuid,
       },
-    ],
+      organization: {},
+    },
   });
+
+  const Loading = () => {
+    return (
+      <Skeleton className="bg-sidebar-primary text-sidebar-primary-foreground size-8 rounded-lg" />
+    );
+  };
 
   const Reload = () => {
     return (
       <Button
-        size="icon"
-        className="bg-destructive hover:bg-destructive rounded-full text-white"
+        size="sm"
+        className="rounded-lg bg-red-500 !text-white hover:bg-red-600"
         onClick={() => window.location.reload()}
       >
-        <div className="flex aspect-square size-8 items-center justify-center">
-          <RefreshCw className="size-4" />
-        </div>
+        <RefreshCw className="size-3" />
       </Button>
     );
   };
 
-  if (isLoading)
-    return (
-      <Skeleton className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-full" />
-    );
+  if (isLoading) return <Loading />;
   if (!data || isError) return <Reload />;
 
   const User = () => {
-    return (
-      <>
-        <Avatar className="size-9 rounded-full">
-          <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground rounded-lg">
-            {user.name.toUpperCase()[0]}
-          </AvatarFallback>
-        </Avatar>
-      </>
-    );
+    return <span className="w-8">{user.name.toUpperCase()[0]}</span>;
   };
 
   const Organization = () => {
     return (
       <>
-        <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-full">
-          <Building className="size-4" />
-        </div>
+        <Building className="size-3" />
       </>
     );
   };
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild className="rounded-full">
-        <Button size="icon">
+      <DropdownMenuTrigger asChild>
+        <Button
+          size="sm"
+          className="text-sidebar-primary-foreground bg-sidebar-primary hover:bg-sidebar-primary/80 rounded-lg p-0"
+        >
           {user_type === USERS.CLIENT ? <User /> : null}
           {user_type === USERS.ORGANIZATION ? <Organization /> : null}
         </Button>
@@ -95,24 +90,28 @@ export function NavbarUserSwitcher() {
         side="bottom"
         sideOffset={4}
       >
-        <DropdownMenuLabel className="text-muted-foreground text-xs">
-          Organizations
-        </DropdownMenuLabel>
-        <DropdownMenuGroup>
-          {data.map((organization) => (
-            <Link
-              href={
-                user_type === USERS.ORGANIZATION
-                  ? `/o/${page_name}`
-                  : "/o/dashboard"
-              }
-              key={organization.name}
-            >
-              <DropdownMenuItem>{organization.name}</DropdownMenuItem>
-            </Link>
-          ))}
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        {data.length !== 0 ? (
+          <>
+            <DropdownMenuLabel className="text-muted-foreground text-xs">
+              Organizations
+            </DropdownMenuLabel>
+            <DropdownMenuGroup>
+              {data.map((organization) => (
+                <Link
+                  href={
+                    user_type === USERS.ORGANIZATION
+                      ? `/o/${page_name}`
+                      : "/o/dashboard"
+                  }
+                  key={organization.name}
+                >
+                  <DropdownMenuItem>{organization.name}</DropdownMenuItem>
+                </Link>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        ) : null}
         <DropdownMenuGroup>
           {user.roles.includes(NO_AUTH_USER_ROLES_ENUM.Enum.ADMIN) && (
             <>
@@ -123,10 +122,12 @@ export function NavbarUserSwitcher() {
               <DropdownMenuSeparator />
             </>
           )}
-          <DropdownMenuItem>
-            <ArrowRightLeft />
-            Switch User
-          </DropdownMenuItem>
+          <Link href={sso_url}>
+            <DropdownMenuItem>
+              <ArrowRightLeft />
+              Switch User
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <Link
             href={
@@ -134,11 +135,12 @@ export function NavbarUserSwitcher() {
                 ? `/c/${page_name}`
                 : "/c/organizations"
             }
-            key={organization.name}
           >
             <DropdownMenuItem className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <User />
+                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-lg">
+                  {user.name.toUpperCase()[0]}
+                </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
                   <span className="truncate text-xs">{user.email}</span>
