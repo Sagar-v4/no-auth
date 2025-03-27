@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -17,10 +18,10 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 
 import { status } from "@/components/keys-data-table/data";
-import { keyOutput } from "@/lib/trpc/schemas/v1/keys";
-import { Edit } from "@/components/keys-data-table/update";
-import { StatusChange } from "@/components/keys-data-table/status-change";
+import { keyOutput, StatusEnum } from "@/lib/trpc/schemas/v1/keys";
+import { Edit } from "@/components/keys-data-table/edit";
 import { Delete } from "@/components/keys-data-table/delete";
+import { updateKeyByIdV1 } from "@/trpc/routers/keys";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -30,6 +31,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const key = keyOutput.parse(row.original);
+  const { exec: updateKey } = updateKeyByIdV1();
 
   return (
     <DropdownMenu>
@@ -44,28 +46,32 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem asChild>
-          <Edit _id={key._id} uuid={key.uuid} />
+          <Edit uuid={key.uuid} />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={key.name}>
+            <DropdownMenuRadioGroup
+              value={key.status}
+              onValueChange={(value) => {
+                updateKey({
+                  filter: { uuid: key.uuid },
+                  update: { status: value as StatusEnum },
+                });
+              }}
+            >
               {status.map((status, idx) => (
-                <StatusChange
-                  key={idx}
-                  value={status.value}
-                  ids={{ _id: key._id, uuid: key.uuid }}
-                >
+                <DropdownMenuRadioItem key={idx} value={status.value}>
                   {status.label}
-                </StatusChange>
+                </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Delete _id={key._id} uuid={key.uuid} />
+          <Delete uuid={key.uuid} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
