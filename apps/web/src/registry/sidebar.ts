@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   UserRoundCheck,
   Cloud,
+  FileCode,
 } from "lucide-react";
 
 export const enum GROUPS {
@@ -73,6 +74,11 @@ export const LINKS = {
     url: "permissions",
     icon: ShieldCheck,
   },
+  ENV: {
+    title: "env",
+    url: "env",
+    icon: FileCode,
+  },
 };
 
 export const TABS = {
@@ -87,6 +93,7 @@ export const TABS = {
   ROLE: { title: "Roles", value: "roles" },
   PERMISSION: { title: "Permissions", value: "permissions" },
   SSO: { title: "SSO", value: "sso" },
+  ENV: { title: "env", value: "env" },
 };
 
 export const data = [
@@ -154,6 +161,15 @@ export const data = [
     tabs: {
       default: TABS.SETTING.value,
       list: [TABS.SETTING],
+    },
+  },
+  {
+    users: USERS.ORGANIZATION,
+    group: GROUPS.ORGANIZATION,
+    ...LINKS.ENV,
+    tabs: {
+      default: TABS.ENV.value,
+      list: [TABS.ENV],
     },
   },
 
