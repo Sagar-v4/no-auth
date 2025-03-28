@@ -54,3 +54,15 @@ export const userUpdateInput = z.object({
   roles: z.array(z.string()).optional(),
 });
 export type UserUpdateInput = z.infer<typeof userUpdateInput>;
+
+export const useUser = z.object({
+  _id: z.custom<any>(),
+  name: z.string().nonempty(),
+  uuid: z.string().uuid().nonempty(),
+  email: z.string().email().nonempty(),
+  login_method: LOGIN_METHODS_ENUM,
+  status: STATUS_ENUM,
+  roles: z.array(z.string()),
+  createdAt: z.date(),
+});
+export type UseUser = z.infer<typeof useUser>;

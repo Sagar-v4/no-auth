@@ -88,12 +88,12 @@ export function getKeyByIdV1(input: FindByKeyIdInput) {
       abortOnUnmount: true,
       ssr: true,
     },
-    select(data) {
-      if (data)
+    select(key) {
+      if (key)
         return {
-          ...data,
-          createdAt: new Date(data.createdAt),
-          updatedAt: new Date(data.updatedAt),
+          ...key,
+          createdAt: new Date(key.createdAt),
+          updatedAt: new Date(key.updatedAt),
         };
     },
   });
@@ -128,11 +128,11 @@ export function getKeysByDataV1(input: FindByKeyDataInput) {
       abortOnUnmount: true,
       ssr: true,
     },
-    select(data) {
-      return data.map((d) => ({
-        ...d,
-        createdAt: new Date(d.createdAt),
-        updatedAt: new Date(d.updatedAt),
+    select(keys) {
+      return keys.map((key) => ({
+        ...key,
+        createdAt: new Date(key.createdAt),
+        updatedAt: new Date(key.updatedAt),
       }));
     },
   });

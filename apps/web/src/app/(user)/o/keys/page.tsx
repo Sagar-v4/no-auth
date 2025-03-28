@@ -4,7 +4,6 @@ import { z } from "zod";
 import { RefreshCw } from "lucide-react";
 import { TabsContent } from "@workspace/ui/components/tabs";
 import { TABS } from "@/registry/sidebar";
-import { useCurrentUser } from "@/hooks/use-current-user";
 import { getKeysByDataV1 } from "@/trpc/routers/keys";
 import { Button } from "@workspace/ui/components/button";
 import { columns } from "@/components/keys-data-table/columns";
@@ -13,13 +12,14 @@ import { keyOutput } from "@/lib/trpc/schemas/v1/keys";
 import { cn } from "@workspace/ui/lib/utils";
 import { Add } from "@/components/keys-data-table/add";
 import { LoadingCircle } from "@/skeletons/loading";
+import { useOrganization } from "@/hooks/use-organization";
 
 export default function Page() {
-  const { organization } = useCurrentUser();
+  const { org } = useOrganization();
   const { data, isLoading, isError, isRefetching, refetch } = getKeysByDataV1({
     filter: [
       {
-        organization_id: organization._id,
+        organization_id: org?._id,
       },
     ],
   });

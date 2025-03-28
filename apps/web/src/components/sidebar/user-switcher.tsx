@@ -1,5 +1,3 @@
-"use user";
-
 import * as React from "react";
 import Link from "next/link";
 import {
@@ -29,20 +27,21 @@ import {
 import { getOrganizationsByRefV1 } from "@/trpc/routers/organizations";
 import { UserSwitcherSkeleton } from "@/skeletons/sidebar/user-switcher";
 import { useURL } from "@/hooks/use-url";
-import { useCurrentUser } from "@/hooks/use-current-user";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
 import { USERS } from "@/registry/sidebar";
 import { NO_AUTH_USER_ROLES_ENUM } from "@/lib/trpc/schemas/v1/users";
+import { useUser } from "@/hooks/use-user";
+import { useOrganization } from "@/hooks/use-organization";
 
 export function SidebarUserSwitcher() {
   const { isMobile } = useSidebar();
   const { user_type, page_name } = useURL();
-  const { user, organization } = useCurrentUser();
-
+  const { user, isUserLoading, deleteUser, setUser } = useUser();
+  const { org, isOrgLoading, deleteOrg, setOrg } = useOrganization();
   const { data, isLoading, isError } = getOrganizationsByRefV1({
     filter: {
       user: {
-        uuid: user.uuid,
+        uuid: user?.uuid,
       },
       organization: {},
     },
@@ -69,8 +68,10 @@ export function SidebarUserSwitcher() {
     );
   };
 
-  if (isLoading) return <UserSwitcherSkeleton />;
-  if (!data || isError) return <Reload />;
+  if (isUserLoading || isOrgLoading || isLoading)
+    return <UserSwitcherSkeleton />;
+
+  if (!user || !data || isError) return <Reload />;
 
   const User = () => {
     return (
@@ -89,17 +90,18 @@ export function SidebarUserSwitcher() {
   };
 
   const Organization = () => {
-    return (
-      <>
-        <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-          <Building className="size-4" />
-        </div>
-        <div className="grid flex-1 text-left text-sm leading-tight">
-          <span className="truncate font-medium">{organization.name}</span>
-          <span className="truncate text-xs">{organization.status}</span>
-        </div>
-      </>
-    );
+    if (org)
+      return (
+        <>
+          <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+            <Building className="size-4" />
+          </div>
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-medium">{org.name}</span>
+            <span className="truncate text-xs">{org.status}</span>
+          </div>
+        </>
+      );
   };
 
   return (
@@ -128,14 +130,18 @@ export function SidebarUserSwitcher() {
                   Organizations
                 </DropdownMenuLabel>
                 <DropdownMenuGroup>
-                  {data.map((organization) => (
+                  {data.map((organization, idx) => (
                     <Link
                       href={
                         user_type === USERS.ORGANIZATION
                           ? `/o/${page_name}`
                           : "/o/dashboard"
                       }
-                      key={organization.name}
+                      key={idx}
+                      onClick={() => {
+                        // deleteUser();
+                        setOrg(organization.uuid);
+                      }}
                     >
                       <DropdownMenuItem>{organization.name}</DropdownMenuItem>
                     </Link>
@@ -154,7 +160,13 @@ export function SidebarUserSwitcher() {
                   <DropdownMenuSeparator />
                 </>
               )}
-              <Link href={sso_url}>
+              <Link
+                href={sso_url}
+                onClickCapture={() => {
+                  deleteUser();
+                  deleteOrg();
+                }}
+              >
                 <DropdownMenuItem>
                   <ArrowRightLeft />
                   Switch User
@@ -167,7 +179,10 @@ export function SidebarUserSwitcher() {
                     ? `/c/${page_name}`
                     : "/c/organizations"
                 }
-                key={organization.name}
+                onClick={() => {
+                  // deleteOrg();
+                  setUser(user.uuid);
+                }}
               >
                 <DropdownMenuItem className="p-0 font-normal">
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">

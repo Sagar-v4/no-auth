@@ -19,7 +19,7 @@ export function Edit(ids: KeyIdInput) {
       variant="ghost"
       size="sm"
       className="flex w-full justify-start"
-      onClick={() => refetch}
+      onClick={() => refetch()}
     >
       Edit
     </Button>

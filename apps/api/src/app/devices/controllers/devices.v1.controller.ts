@@ -7,13 +7,17 @@ import {
   insertOneDeviceOutput,
   InsertOneDeviceOutput,
 } from "@/lib/trpc/schemas/v1/devices";
-import { ApiBody, ApiResponse } from "@nestjs/swagger";
+import { ApiResponse } from "@nestjs/swagger";
 import { DevicesV1Service } from "@/app/devices/services/devices.v1.service";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { BasicService } from "@/app/basic/basic.service";
 import { AccessTokenService } from "@/app/sessions/jwt/access-token.service";
 import { RefreshTokenService } from "@/app/sessions/jwt/refresh-token.service";
 import { DeviceDocument } from "@/app/devices/entities/device.entity";
+import {
+  device_uuid as device_uuid_key,
+  refresh_token as refresh_token_key,
+} from "@/lib/const/cookies";
 
 @Controller({
   path: "devices",
@@ -57,8 +61,8 @@ export class DevicesV1Controller {
         metadata: {},
       });
 
-      const device_uuid = req.cookies["_DID"];
-      const refresh_token = req.cookies["_RT"];
+      const device_uuid = req.cookies[device_uuid_key];
+      const refresh_token = req.cookies[refresh_token_key];
       if (!device_uuid || !refresh_token) {
         return findDeviceUsersOutput.parse([]);
       }
@@ -135,7 +139,7 @@ export class DevicesV1Controller {
         metadata: {},
       });
 
-      const device_uuid = req.cookies["_DID"];
+      const device_uuid = req.cookies[device_uuid_key];
       let device: DeviceDocument;
       if (!device_uuid) {
         device = await this.basicService.insertOne({
@@ -153,7 +157,7 @@ export class DevicesV1Controller {
         });
       }
 
-      res.setCookie("_DID", device.uuid, {
+      res.setCookie(device_uuid_key, device.uuid, {
         httpOnly: true,
         priority: "high",
         secure: true,

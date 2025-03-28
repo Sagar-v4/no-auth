@@ -19,10 +19,8 @@ import { EmailServicesV1Service } from "@/app/email/services/services/services.v
 import { EnvService } from "@/env/env.service";
 import { generateEmailTemplate } from "@/utils/email-template-generator";
 import { Metadata } from "@/lib/trpc/schemas/v1/email/services";
-import {
-  Organization,
-  OrganizationDocument,
-} from "@/app/organizations/entities/organization.entity";
+import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
+import { device_uuid as device_uuid_key } from "@/lib/const/cookies";
 
 @Controller({
   path: "sso",
@@ -73,7 +71,7 @@ export class SSOV1Controller {
         },
       });
 
-      const device_uuid = req.cookies["_DID"];
+      const device_uuid = req.cookies[device_uuid_key];
       if (!device_uuid) {
         throw new Error("No device_uuid");
       }
