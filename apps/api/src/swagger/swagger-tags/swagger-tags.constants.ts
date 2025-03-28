@@ -1,4 +1,4 @@
-import { SwaggerTag } from "./swagger-tags.interface";
+import { SwaggerTag } from "@/swagger/swagger-tags/swagger-tags.interface";
 
 export const _SWAGGER_TAGS: SwaggerTag[] = [
   // {

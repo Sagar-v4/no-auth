@@ -11,14 +11,16 @@ export default function Page() {
   return (
     <>
       <TabsContent value={TABS.SETTING.value} asChild>
-        <Card>
-          <CardHeader>
-            <CardTitle>{TABS.SETTING.title}</CardTitle>
-            <CardDescription>
-              Name, Domain, Description etc details.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <div className="mx-auto p-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>{TABS.SETTING.title}</CardTitle>
+              <CardDescription>
+                Manage your workspace settings and preferences.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
       </TabsContent>
     </>
   );

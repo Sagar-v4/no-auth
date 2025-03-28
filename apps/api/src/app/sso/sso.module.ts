@@ -6,9 +6,10 @@ import { SSOV1Router } from "@/app/sso/routers/sso.v1.router";
 import { EmailServicesModule } from "@/app/email/services/services.module";
 import { BasicModule } from "@/app/basic/basic.module";
 import { EnvModule } from "@/env/env.module";
+import { HttpModule } from "@nestjs/axios";
 
 @Module({
-  imports: [EmailServicesModule, BasicModule, EnvModule],
+  imports: [EmailServicesModule, BasicModule, EnvModule, HttpModule],
   controllers: [SSOV1Controller],
   providers: [SSOV1Service, SSOV1Router],
   exports: [SSOV1Service],

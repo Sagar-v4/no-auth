@@ -1,7 +1,7 @@
 import { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { SwaggerUI } from "./swagger-ui.class";
-import { _SWAGGER_TAGS } from "./swagger-tags/swagger-tags.constants";
+import { SwaggerUI } from "@/swagger/swagger-ui.class";
+import { _SWAGGER_TAGS } from "@/swagger/swagger-tags/swagger-tags.constants";
 import { EnvService } from "@/env/env.service";
 
 export class SwaggerDocumentBuilder {

@@ -1,5 +1,5 @@
 import { EnvService } from "@/env/env.service";
-import { SWAGGER_UI_CONSTANTS } from "./constants/swagger-ui.constants";
+import { SWAGGER_UI_CONSTANTS } from "@/swagger/constants/swagger-ui.constants";
 import { SwaggerCustomOptions } from "@nestjs/swagger";
 
 export class SwaggerUI {

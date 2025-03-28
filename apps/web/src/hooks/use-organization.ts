@@ -47,7 +47,7 @@ export function useOrganization() {
   });
 
   React.useEffect(() => {
-    if (org_uuid && !org) exec();
+    if ((org_uuid && !org) || org_uuid !== org?.uuid) exec();
     else if (org) setOrg(org.uuid);
     else if (org_uuid) setOrg(org_uuid);
     else if (isError || pathname.includes("/o/")) {

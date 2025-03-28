@@ -38,12 +38,14 @@ export default function Page() {
   return (
     <>
       <TabsContent value={TABS.KEY.value} asChild>
-        <DataTable
-          data={z.array(keyOutput).parse(data)}
-          columns={columns}
-          Refresh={Refresh}
-          Add={Add}
-        />
+        <div className="mx-auto p-2">
+          <DataTable
+            data={z.array(keyOutput).parse(data)}
+            columns={columns}
+            Refresh={Refresh}
+            Add={Add}
+          />
+        </div>
       </TabsContent>
     </>
   );

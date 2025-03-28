@@ -25,6 +25,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { useUser } from "@/hooks/use-user";
 import { useOrganization } from "@/hooks/use-organization";
+import { getShortName } from "@/utils/short-name";
 
 export function NavbarUserSwitcher() {
   const { user_type, page_name } = useURL();
@@ -62,7 +63,7 @@ export function NavbarUserSwitcher() {
   if (!user || !data || isError) return <Reload />;
 
   const User = () => {
-    return <span className="w-8">{user.name.toUpperCase()[0]}</span>;
+    return <span className="w-8">{getShortName(user.name)}</span>;
   };
 
   const Organization = () => {
@@ -105,11 +106,15 @@ export function NavbarUserSwitcher() {
                   }
                   key={idx}
                   onClick={() => {
-                    deleteUser();
                     setOrg(organization.uuid);
                   }}
                 >
-                  <DropdownMenuItem>{organization.name}</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Building />
+                    <span className="max-w-50 truncate font-medium">
+                      {organization.name}
+                    </span>
+                  </DropdownMenuItem>
                 </Link>
               ))}
             </DropdownMenuGroup>
@@ -153,7 +158,7 @@ export function NavbarUserSwitcher() {
             <DropdownMenuItem className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-lg">
-                  {user.name.toUpperCase()[0]}
+                  {getShortName(user.name)}
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
