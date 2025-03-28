@@ -11,14 +11,14 @@ export default function Page() {
   return (
     <>
       <TabsContent value={TABS.DASHBOARD.value} asChild>
-        <Card>
-          <CardHeader>
-            <CardTitle>{TABS.DASHBOARD.title}</CardTitle>
-            <CardDescription>
-              Name, Domain, Description etc details.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <div className="mx-auto p-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>{TABS.DASHBOARD.title}</CardTitle>
+              <CardDescription>Organization data</CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
       </TabsContent>
     </>
   );

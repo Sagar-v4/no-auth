@@ -32,6 +32,7 @@ import { USERS } from "@/registry/sidebar";
 import { NO_AUTH_USER_ROLES_ENUM } from "@/lib/trpc/schemas/v1/users";
 import { useUser } from "@/hooks/use-user";
 import { useOrganization } from "@/hooks/use-organization";
+import { getShortName } from "@/utils/short-name";
 
 export function SidebarUserSwitcher() {
   const { isMobile } = useSidebar();
@@ -78,7 +79,7 @@ export function SidebarUserSwitcher() {
       <>
         <Avatar className="size-8 rounded-lg">
           <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground rounded-lg">
-            {user.name.toUpperCase()[0]}
+            {getShortName(user.name)}
           </AvatarFallback>
         </Avatar>
         <div className="grid flex-1 text-left text-sm leading-tight">
@@ -139,11 +140,15 @@ export function SidebarUserSwitcher() {
                       }
                       key={idx}
                       onClick={() => {
-                        // deleteUser();
                         setOrg(organization.uuid);
                       }}
                     >
-                      <DropdownMenuItem>{organization.name}</DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Building />
+                        <span className="max-w-50 truncate font-medium">
+                          {organization.name}
+                        </span>
+                      </DropdownMenuItem>
                     </Link>
                   ))}
                 </DropdownMenuGroup>
@@ -180,7 +185,6 @@ export function SidebarUserSwitcher() {
                     : "/c/organizations"
                 }
                 onClick={() => {
-                  // deleteOrg();
                   setUser(user.uuid);
                 }}
               >

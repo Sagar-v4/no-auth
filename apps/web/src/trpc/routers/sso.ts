@@ -88,6 +88,14 @@ export function getSSOByIdV1(input: FindBySSOIdInput) {
       abortOnUnmount: true,
       ssr: true,
     },
+    select(data) {
+      if (data)
+        return {
+          ...data,
+          createdAt: new Date(data.createdAt),
+          updatedAt: new Date(data.updatedAt),
+        };
+    },
   });
 
   const query = useQuery(queryOptions);
@@ -113,7 +121,7 @@ export function getSSOByDataV1(input: FindBySSODataInput) {
   const queryOptions = ssoV1.findByData.queryOptions(input, {
     retry: 2,
     retryDelay: (retryCount) => retryCount * 1000,
-    enabled: false,
+    // enabled: false,
     staleTime: 1000 * 60 * 10, // 10 min
     refetchInterval: 1000 * 60 * 10, // 10 min
     trpc: {

@@ -65,7 +65,7 @@ export class SSO {
     type: String,
     enum: STATUS,
     required: true,
-    default: STATUS_ENUM.enum.PREACTIVE,
+    default: STATUS_ENUM.enum.ACTIVE,
   })
   status!: string;
 

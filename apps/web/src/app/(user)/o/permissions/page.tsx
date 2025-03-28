@@ -11,14 +11,16 @@ export default function Page() {
   return (
     <>
       <TabsContent value={TABS.PERMISSION.value} asChild>
-        <Card>
-          <CardHeader>
-            <CardTitle>{TABS.PERMISSION.title}</CardTitle>
-            <CardDescription>
-              Create permission for organization users and combine with role.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <div className="mx-auto p-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>{TABS.PERMISSION.title}</CardTitle>
+              <CardDescription>
+                Create permission for organization users and combine with role.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
       </TabsContent>
     </>
   );

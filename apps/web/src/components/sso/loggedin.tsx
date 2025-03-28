@@ -18,6 +18,7 @@ import { useDeviceUsers } from "@/swr/hooks/devices";
 import { useLoginMutation } from "@/swr/hooks/sessions";
 import { device_uuid, refresh_token } from "@/lib/const/cookies";
 import { FindDeviceUsersOutput } from "@/lib/trpc/schemas/v1/devices";
+import { getShortName } from "@/utils/short-name";
 
 export function SSOLoggedIn() {
   const { sso_uuid } = useParams<{ sso_uuid: string }>();
@@ -90,7 +91,7 @@ export function SSOLoggedIn() {
               active && "!bg-blue-600 !text-white",
             )}
           >
-            {email.toUpperCase()[0]}
+            {getShortName(name)}
           </AvatarFallback>
         </Avatar>
         <div className="grid flex-1 text-left text-sm leading-tight">

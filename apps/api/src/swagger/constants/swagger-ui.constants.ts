@@ -1,4 +1,4 @@
-import { SwaggerUIConstants } from "./swagger-ui-constants.interface";
+import { SwaggerUIConstants } from "@/swagger/constants/swagger-ui-constants.interface";
 
 export const SWAGGER_UI_CONSTANTS: SwaggerUIConstants = {
   TOPBAR: {

@@ -21,6 +21,7 @@ import { generateEmailTemplate } from "@/utils/email-template-generator";
 import { Metadata } from "@/lib/trpc/schemas/v1/email/services";
 import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
 import { device_uuid as device_uuid_key } from "@/lib/const/cookies";
+import { HttpService } from "@nestjs/axios";
 
 @Controller({
   path: "sso",
@@ -34,6 +35,7 @@ export class SSOV1Controller {
     private readonly basicService: BasicService,
     private readonly emailServicesService: EmailServicesV1Service,
     private readonly envService: EnvService,
+    private readonly httpService: HttpService,
   ) {
     try {
       this.logger.log({
@@ -123,7 +125,16 @@ export class SSOV1Controller {
         });
 
         if (this.envService.get("SYS_SSO_UUID") !== sso.uuid) {
-          // TODO: send new user data to webhook via sso service function
+          this.httpService.post(sso.webhook_url, {
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-key": sso.secret,
+            },
+            Body: {
+              user_uuid: user.uuid,
+              email: user.email,
+            },
+          });
         }
       }
 

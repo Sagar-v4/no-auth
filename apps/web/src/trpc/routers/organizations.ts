@@ -128,6 +128,13 @@ export function getOrganizationsByDataV1(input: FindByOrganizationDataInput) {
       abortOnUnmount: true,
       ssr: true,
     },
+    select(organizations) {
+      return organizations.map((organization) => ({
+        ...organization,
+        createdAt: new Date(organization.createdAt),
+        updatedAt: new Date(organization.updatedAt),
+      }));
+    },
   });
 
   const query = useQuery(queryOptions);
