@@ -2,6 +2,21 @@
 
 Every application needs Authentication and at some point Authorization, implementing this in each project can be tedious and time consuming. `No Auth` solves this problem for you so, you can focus on other important tasks.
 
+### How to use?
+
+- Clone the repo
+- Add env variables, refer env.example
+- Goto Root of the frontend in browser example:- localhost:3000
+- There is a link to `Go to Single Sign On`, click on it to land on single sign on page
+- Verify email and create account or login
+- Create new organization
+- Open organization page and create sso page from authentication section
+- Next go to env tab where you will get all envs for your frontend and backend
+- Now, add `@no-auth/next` package, go thru the instructions.
+- There is SSO_URL in the frontend env, you can redirect users to that link for login or sign ups, on every new signups system will send user generater `{uuid, email}` to the webhook link(your backend).
+- No auth is not managing users yet, so you need to manually store user into your system and all done.
+- here 3000 post is used for nextjs frontend and 3001 used for nestjs backend. changing this will need update env as well.
+
 ### Features
 
 - Single Sign On(SSO)
