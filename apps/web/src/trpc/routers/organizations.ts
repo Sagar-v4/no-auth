@@ -88,6 +88,14 @@ export function getOrganizationByIdV1(input: FindByOrganizationIdInput) {
       abortOnUnmount: true,
       ssr: false,
     },
+    select(organization) {
+      if (organization)
+        return {
+          ...organization,
+          createdAt: new Date(organization.createdAt),
+          updatedAt: new Date(organization.updatedAt),
+        };
+    },
   });
 
   const query = useQuery(queryOptions);

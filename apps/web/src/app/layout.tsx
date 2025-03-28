@@ -9,7 +9,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Wrapper as ThemeWrapper } from "@workspace/ui/theme/wrapper";
 import { Toaster } from "@workspace/ui/components/sonner";
 import { Metadata } from "next";
-// import { NoAuthProvider } from "@no-auth/next";
+import { NoAuthProvider } from "@no-auth/next";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -30,6 +30,18 @@ export const metadata: Metadata = {
   title: "No Auth",
   description: "Say, Good bye to Auth hiccups!",
   keywords: ["Authentication", "Authorization", "SSO"],
+  icons: {
+    icon: [
+      {
+        url: "/favicon.icon",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon.icon",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -52,7 +64,6 @@ export default function RootLayout({
           }}
         />
       </head>
-      {/* <NoAuthProvider> */}
       <body
         className={cn(
           "bg-background overscroll-none font-sans antialiased",
@@ -60,23 +71,24 @@ export default function RootLayout({
           fontMono.variable,
         )}
       >
-        <NuqsAdapter>
-          <TrpcReactQueryProvider>
-            {/* <ThemeWrapper> */}
+        <NoAuthProvider>
+          <ThemeWrapper>
             <ThemeProvider
               enableSystem
               attribute="class"
               defaultTheme="system"
               disableTransitionOnChange
             >
-              {children}
-              <Toaster />
+              <NuqsAdapter>
+                <TrpcReactQueryProvider>
+                  {children}
+                  <Toaster />
+                </TrpcReactQueryProvider>
+              </NuqsAdapter>
             </ThemeProvider>
-            {/* </ThemeWrapper> */}
-          </TrpcReactQueryProvider>
-        </NuqsAdapter>
+          </ThemeWrapper>
+        </NoAuthProvider>
       </body>
-      {/* </NoAuthProvider> */}
     </html>
   );
 }

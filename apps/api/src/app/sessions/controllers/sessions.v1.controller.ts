@@ -3,8 +3,6 @@ import {
   Controller,
   Get,
   Logger,
-  Options,
-  Param,
   Post,
   Query,
   Req,
@@ -26,9 +24,14 @@ import {
 } from "@/lib/trpc/schemas/v1/sessions";
 import { BasicService } from "@/app/basic/basic.service";
 import { OrganizationDocument } from "@/app/organizations/entities/organization.entity";
-import { randomUUID, UUID } from "crypto";
+import { randomUUID } from "crypto";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Sessions } from "@/lib/trpc/schemas/v1/devices";
+import { useUser } from "@/lib/trpc/schemas/v1/users";
+import {
+  device_uuid as device_uuid_key,
+  refresh_token as refresh_token_key,
+} from "@/lib/const/cookies";
 
 @Controller({
   path: "sessions",
@@ -54,6 +57,54 @@ export class SessionsV1Controller {
       });
 
       throw new Error("Constructor Failure!");
+    }
+  }
+
+  @Get("users")
+  @ApiResponse({
+    status: 200,
+    schema: zodToOpenAPI(useUser),
+  })
+  async useUser(@Req() req: FastifyRequest) {
+    try {
+      this.logger.debug({
+        action: "Entry",
+        method: this.useUser.name,
+        metadata: {},
+      });
+
+      const device_uuid = req.cookies[device_uuid_key];
+      const refresh_token = req.cookies[refresh_token_key];
+      if (!device_uuid || !refresh_token) {
+        throw new Error("No device_uuid or refresh_token");
+      }
+
+      const payload = await this.refreshTokenService.verifyAsync(refresh_token);
+
+      const [user] = await this.basicService.find({
+        schema: "User",
+        filter: {
+          uuid: payload.act,
+        },
+        populate: [],
+        select: [],
+      });
+
+      this.logger.log({
+        action: "Exit",
+        method: this.useUser.name,
+        metadata: {},
+      });
+
+      return useUser.parse(user);
+    } catch (error) {
+      this.logger.error({
+        action: "Exit",
+        method: this.useUser.name,
+        error: error,
+      });
+
+      throw error;
     }
   }
 
@@ -191,14 +242,14 @@ export class SessionsV1Controller {
         },
       });
 
-      const device_uuid = req.cookies["_DID"];
+      const device_uuid = req.cookies[device_uuid_key];
       if (!device_uuid) {
         throw new Error("No device_uuid");
       }
 
       let user_uuids: string[];
       let session_uuid: string;
-      const refresh_token = req.cookies["_RT"];
+      const refresh_token = req.cookies[refresh_token_key];
 
       if (refresh_token) {
         const payload = await this.verifyAsyncRefresh(refresh_token);
@@ -286,7 +337,7 @@ export class SessionsV1Controller {
         populate: [],
       });
 
-      res.setCookie("_DID", device_uuid, {
+      res.setCookie(device_uuid_key, device_uuid, {
         httpOnly: true,
         priority: "high",
         secure: true,
@@ -294,7 +345,7 @@ export class SessionsV1Controller {
         path: "/",
       });
 
-      res.setCookie("_RT", token, {
+      res.setCookie(refresh_token_key, token, {
         httpOnly: true,
         priority: "high",
         secure: true,

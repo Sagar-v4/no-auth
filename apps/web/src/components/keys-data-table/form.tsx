@@ -1,5 +1,3 @@
-"use client";
-
 import { ZodSchema } from "zod";
 import * as React from "react";
 import { LoaderCircle } from "lucide-react";
@@ -15,7 +13,9 @@ import { keyInsertInput, KeyOutput } from "@/lib/trpc/schemas/v1/keys";
 import { DialogTrigger } from "@workspace/ui/components/dialog";
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile";
 import { DrawerTrigger } from "@workspace/ui/components/drawer";
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { useUser } from "@/hooks/use-user";
+import { useOrganization } from "@/hooks/use-organization";
+import { LoadingCircle } from "@/skeletons/loading";
 
 export enum ACTIONS {
   ADD = "Add",
@@ -33,12 +33,16 @@ export function Form({
   const isMobile = useIsMobile();
   const { exec: createMutateAsync } = createOneKeyV1();
   const { exec: updateMutateAsync } = updateKeyByIdV1();
-  const { user, organization } = useCurrentUser();
+
+  const { user } = useUser();
+  const { org } = useOrganization();
+
+  if (!user || !org) return <LoadingCircle />;
 
   const form = useForm({
     defaultValues: {
       user_id: user._id,
-      organization_id: organization._id,
+      organization_id: org._id,
       name: data?.name ?? "",
       description: data?.description ?? "",
     },

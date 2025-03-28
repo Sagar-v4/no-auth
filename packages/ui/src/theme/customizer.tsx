@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useTheme } from "next-themes";
-import { useIsMounted } from "usehooks-ts";
 import { Check, Palette, RefreshCw } from "lucide-react";
 
 import { baseColors, Modes, modes, Radius, radius } from "../registry";
@@ -42,7 +41,6 @@ export function ThemeCustomizer() {
 function Customizer() {
   const { setTheme: setMode, resolvedTheme, theme: mode } = useTheme();
   const [config, setConfig] = useThemeConfig();
-  if (!useIsMounted()) return null;
 
   return (
     <ThemeWrapper className="flex flex-col">

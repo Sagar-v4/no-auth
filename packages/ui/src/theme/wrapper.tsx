@@ -1,7 +1,5 @@
 "use client";
 
-import { useIsMounted } from "usehooks-ts";
-
 import { cn } from "@workspace/ui/lib/utils";
 import { useThemeConfig } from "@workspace/ui/hooks/use-theme-config";
 
@@ -18,9 +16,9 @@ export function Wrapper({
 }: ThemeWrapperProps) {
   const [config] = useThemeConfig();
 
-  return useIsMounted() ? (
+  return (
     <div
-      suppressContentEditableWarning
+      suppressHydrationWarning
       className={cn(
         `theme-${defaultTheme || config.theme}`,
         "w-full",
@@ -34,7 +32,5 @@ export function Wrapper({
     >
       {children}
     </div>
-  ) : (
-    children
   );
 }

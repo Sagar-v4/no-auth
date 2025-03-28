@@ -1,3 +1,5 @@
+"use client";
+
 import { TABS } from "@/registry/sidebar";
 import {
   Card,
@@ -6,8 +8,10 @@ import {
   CardDescription,
 } from "@workspace/ui/components/card";
 import { TabsContent } from "@workspace/ui/components/tabs";
+import { useUser } from "@no-auth/next";
 
 export default function Page() {
+  const { user } = useUser();
   return (
     <>
       <TabsContent value={TABS.PROFILE.value} asChild>
@@ -15,7 +19,7 @@ export default function Page() {
           <CardHeader>
             <CardTitle>{TABS.PROFILE.title}</CardTitle>
             <CardDescription>
-              Name, Domain, Description etc details.
+              <pre>{JSON.stringify(user, null, 2)}</pre>
             </CardDescription>
           </CardHeader>
         </Card>
